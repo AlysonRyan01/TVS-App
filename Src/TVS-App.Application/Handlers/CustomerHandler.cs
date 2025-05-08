@@ -1,5 +1,6 @@
 using TVS_App.Application.Commands.CustomerCommands;
 using TVS_App.Application.DTOs;
+using TVS_App.Application.Exceptions;
 using TVS_App.Application.Repositories;
 using TVS_App.Domain.Entities;
 using TVS_App.Domain.ValueObjects.Customer;
@@ -19,6 +20,8 @@ public class CustomerHandler
     {
         try
         {
+            command.Validate();
+
             var name = new Name(command.Name);
             var address = new Address(
                 command.Street,
@@ -34,6 +37,10 @@ public class CustomerHandler
 
             return await _customerRepository.CreateAsync(customer);
         }
+        catch (CommandException<CreateCustomerCommand> ex)
+        {
+            return new BaseResponse<Customer?>(null, 400, $"Erro de validação: {ex.Message}");
+        }
         catch (Exception ex)
         {
             return new BaseResponse<Customer?>(null, 500, $"Ocorreu um erro desconhecido ao criar o cliente: {ex.Message}");
@@ -44,6 +51,8 @@ public class CustomerHandler
     {
         try
         {
+            command.Validate();
+
             var existingCustomer = await _customerRepository.GetByIdAsync(command.Id);
 
             if (!existingCustomer.IsSuccess || existingCustomer.Data is null)
@@ -63,21 +72,43 @@ public class CustomerHandler
 
             return await _customerRepository.UpdateAsync(customer);
         }
+        catch (CommandException<UpdateCustomerCommand> ex)
+        {
+            return new BaseResponse<Customer?>(null, 400, $"Erro de validação: {ex.Message}");
+        }
         catch (Exception ex)
         {
             return new BaseResponse<Customer?>(null, 500, $"Ocorreu um erro desconhecido ao atualizar o cliente: {ex.Message}");
         }
     }
 
-    public async Task<BaseResponse<Customer?>> GetCustomerByIdAsync(long id)
+    public async Task<BaseResponse<Customer?>> GetCustomerByIdAsync(GetCustomerByIdCommand command)
     {
         try
         {
-            return await _customerRepository.GetByIdAsync(id);
+            command.Validate();
+
+            return await _customerRepository.GetByIdAsync(command.Id);
+        }
+        catch (CommandException<GetCustomerByIdCommand> ex)
+        {
+            return new BaseResponse<Customer?>(null, 400, $"Erro de validação: {ex.Message}");
         }
         catch (Exception ex)
         {
             return new BaseResponse<Customer?>(null, 500, $"Ocorreu um erro desconhecido ao buscar o cliente: {ex.Message}");
+        }
+    }
+
+    public async Task<BaseResponse<IEnumerable<Customer?>>> GetAllCustomersAsync()
+    {
+        try
+        {
+            return await _customerRepository.GetAllAsync();
+        }
+        catch (Exception ex)
+        {
+            return new BaseResponse<IEnumerable<Customer?>>(null, 500, $"Ocorreu um erro desconhecido ao buscar todos os clientes: {ex.Message}");
         }
     }
 }

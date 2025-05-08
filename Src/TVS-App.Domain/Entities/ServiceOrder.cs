@@ -1,5 +1,7 @@
+using System.IO.Compression;
 using TVS_App.Domain.Enums;
 using TVS_App.Domain.Exceptions;
+using TVS_App.Domain.ValueObjects.Product;
 using TVS_App.Domain.ValueObjects.ServiceOrder;
 
 namespace TVS_App.Domain.Entities;
@@ -20,8 +22,8 @@ public class ServiceOrder : Entity
 
     public long CustomerId { get; private set; }
     public Customer Customer { get; private set; } = null!;
-    public long ProductId { get; set; }
-    public Product Product { get; set; } = null!;
+    public long ProductId { get; private set; }
+    public Product Product { get; private set; } = null!;
     public EEnterprise Enterprise { get; private set; }
     public DateTime EntryDate { get; private set; }
     public DateTime? InspectionDate { get; private set; }
@@ -69,7 +71,7 @@ public class ServiceOrder : Entity
 
         if (RepairStatus == ERepairStatus.Waiting)
             throw new EntityException<ServiceOrder>("Não podemos executar o conserto pois a estamos aguardando a resposta do cliente");
-            
+
 
         ServiceOrderStatus = EServiceOrderStatus.Repaired;
         RepairDate = DateTime.UtcNow;
@@ -79,5 +81,20 @@ public class ServiceOrder : Entity
     {
         ServiceOrderStatus = EServiceOrderStatus.Delivered;
         DeliveryDate = DateTime.UtcNow;
+    }
+
+    public void UpdateServiceOrder(
+        Customer customer,
+        string ProductModel,
+        string ProductSerialNumber,
+        string ProductDefect,
+        string accessories,
+        EProduct productType,
+        EEnterprise enterprise)
+    {
+        CustomerId = customer.Id;
+        Customer = customer;
+        Product.UpdateProduct(ProductModel, ProductSerialNumber, ProductDefect, accessories, productType);
+        Enterprise = enterprise;
     }
 }

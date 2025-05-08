@@ -7,8 +7,9 @@ namespace TVS_App.Application.Repositories;
 public interface IServiceOrderRepository
 {
     Task<BaseResponse<ServiceOrder?>> CreateAsync(ServiceOrder serviceOrder);
-    Task<BaseResponse<ServiceOrder?>> UpdateAsync();
-    Task<BaseResponse<ServiceOrder?>> GetById();
+    Task<BaseResponse<ServiceOrder?>> UpdateAsync(ServiceOrder serviceOrder);
+    Task<BaseResponse<ServiceOrder?>> GetById(long id);
+    Task<BaseResponse<ServiceOrder?>> GetByCustomerId(long customerId);
     Task<BaseResponse<IEnumerable<ServiceOrder>>> GetAllAsync();
     Task<BaseResponse<IEnumerable<ServiceOrder>>> GetByStatusAsync(EServiceOrderStatus status);
 }
