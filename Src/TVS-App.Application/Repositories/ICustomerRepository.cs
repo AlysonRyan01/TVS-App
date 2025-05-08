@@ -8,5 +8,5 @@ public interface ICustomerRepository
     Task<BaseResponse<Customer?>> CreateAsync(Customer customer);
     Task<BaseResponse<Customer?>> UpdateAsync(Customer customer);
     Task<BaseResponse<Customer?>> GetByIdAsync(long id);
-    Task<BaseResponse<IEnumerable<Customer?>>> GetAllAsync();
+    Task<BaseResponse<PaginatedResult<Customer?>>> GetAllAsync(int pageNumber, int pageSize);
 }

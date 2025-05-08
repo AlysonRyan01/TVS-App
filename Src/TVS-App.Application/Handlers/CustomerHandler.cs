@@ -100,15 +100,15 @@ public class CustomerHandler
         }
     }
 
-    public async Task<BaseResponse<IEnumerable<Customer?>>> GetAllCustomersAsync()
+    public async Task<BaseResponse<PaginatedResult<Customer?>>> GetAllCustomersAsync(int pageNumber, int pageSize)
     {
         try
         {
-            return await _customerRepository.GetAllAsync();
+            return await _customerRepository.GetAllAsync(pageNumber, pageSize);
         }
         catch (Exception ex)
         {
-            return new BaseResponse<IEnumerable<Customer?>>(null, 500, $"Ocorreu um erro desconhecido ao buscar todos os clientes: {ex.Message}");
+            return new BaseResponse<PaginatedResult<Customer?>>(null, 500, $"Ocorreu um erro desconhecido ao buscar todos os clientes: {ex.Message}");
         }
     }
 }

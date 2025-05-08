@@ -9,7 +9,7 @@ public class LaborCost : ValueObject
     public LaborCost(decimal amount)
     {
         if (amount < 0)
-            throw new ValueObjectException<PartCost>("O valor da mão de obra não pode ser menor que 0");
+            throw new ValueObjectException<LaborCost>("O valor da mão de obra não pode ser menor que 0");
 
         ServiceOrderLaborCost = amount;
     }
