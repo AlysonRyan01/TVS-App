@@ -18,6 +18,8 @@ public class Product : Entity
         Type = type;
     }
 
+    public long ServiceOrderId { get; private set; }
+    public ServiceOrder ServiceOrder { get; private set; } = null!;
     public Model Model { get; private set; }
     public SerialNumber SerialNumber { get; private set; }
     public Defect? Defect { get; set; }
