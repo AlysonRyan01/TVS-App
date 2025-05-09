@@ -6,12 +6,14 @@ public class PaginatedResult<T>
     public int TotalCount { get; set; }
     public int PageNumber { get; set; }
     public int PageSize { get; set; }
+    public int? TotalPages { get; set; }  // Torna TotalPages nullable
 
-    public PaginatedResult(IEnumerable<T> items, int totalCount, int pageNumber, int pageSize)
+    public PaginatedResult(IEnumerable<T> items, int totalCount, int pageNumber, int pageSize, int? totalPages = null)
     {
         Items = items;
         TotalCount = totalCount;
         PageNumber = pageNumber;
         PageSize = pageSize;
+        TotalPages = totalPages;
     }
 }
