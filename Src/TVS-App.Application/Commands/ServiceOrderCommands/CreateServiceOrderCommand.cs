@@ -7,6 +7,7 @@ public class CreateServiceOrderCommand : ICommand
 {
     public long CustomerId { get; set; }
 
+    public string ProductBrand { get; set; } = string.Empty;
     public string ProductModel { get; set; } = string.Empty;
     public string ProductSerialNumber { get; set; } = string.Empty;
     public string ProductDefect { get; set; } = string.Empty;

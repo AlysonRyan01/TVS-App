@@ -35,7 +35,15 @@ public class CustomerMapping : IEntityTypeConfiguration<Customer>
             phone.Property(p => p.CustomerPhone)
                 .HasColumnName("Phone")
                 .HasMaxLength(20)
-                .IsRequired();
+                .IsRequired(false);
+        });
+
+        builder.OwnsOne(c => c.Phone2, phone2 =>
+        {
+            phone2.Property(p => p.CustomerPhone)
+                .HasColumnName("Phone2")
+                .HasMaxLength(20)
+                .IsRequired(false);
         });
 
         builder.OwnsOne(c => c.Email, email =>

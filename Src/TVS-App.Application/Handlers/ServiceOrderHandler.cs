@@ -24,13 +24,14 @@ public class ServiceOrderHandler
         {
             command.Validate();
 
+            var productBrand = new Brand(command.ProductBrand);
             var model = new Model(command.ProductModel);
             var serialNumber = new SerialNumber(command.ProductSerialNumber);
             var defect = new Defect(command.ProductDefect);
             var accessories = command.Accessories;
             var type = command.ProductType;
 
-            var product = new Product(model, serialNumber, defect, accessories, type);
+            var product = new Product(productBrand, model, serialNumber, defect, accessories, type);
 
             var serviceOrder = new ServiceOrder(command.Enterprise, command.CustomerId, product);
 
@@ -65,6 +66,7 @@ public class ServiceOrderHandler
             var serviceOrder = existingServiceOrder.Data;
 
             serviceOrder.UpdateServiceOrder(customer,
+                command.ProductBrand,
                 command.ProductModel,
                 command.ProductSerialNumber,
                 command.ProductDefect,

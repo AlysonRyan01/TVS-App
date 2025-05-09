@@ -8,9 +8,6 @@ public class Phone : ValueObject
 
     public Phone(string phone)
     {
-        if (string.IsNullOrEmpty(phone))
-            throw new ValueObjectException<Phone>("O telefone do cliente não estar ser vazio");
-
         CustomerPhone = phone;
     }
 

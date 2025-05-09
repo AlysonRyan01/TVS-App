@@ -9,17 +9,19 @@ public class Customer : Entity
 
     protected Customer() { }
 
-    public Customer(Name name, Address address, Phone phone, Email? email)
+    public Customer(Name name, Address address, Phone phone, Phone phone2, Email? email)
     {
         Name = name;
         Address = address;
         Phone = phone;
+        Phone2 = phone2;
         Email = email;
     }
 
     public Name Name { get; private set; } = null!;
     public Address Address { get; private set; } = null!;
     public Phone Phone { get; private set; } = null!;
+    public Phone Phone2 { get; private set; } = null!;
     public Email? Email { get; private set; }
 
     public IReadOnlyCollection<ServiceOrder> ServiceOrders => _serviceOrders.AsReadOnly();
@@ -43,12 +45,10 @@ public class Customer : Entity
         Address = new Address(street, neighborhood, city, number, zipCode, state);
     }
 
-    public void UpdatePhone(string number)
+    public void UpdatePhone(string number1, string number2)
     {
-        if (string.IsNullOrEmpty(number))
-            throw new EntityException<Customer>("O número de telefone não pode estar vazio");
-
-        Phone = new Phone(number);
+        Phone = new Phone(number1);
+        Phone2 = new Phone(number2);
     }
 
     public void UpdateEmail(string email)

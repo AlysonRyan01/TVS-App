@@ -12,12 +12,20 @@ public class ProductMapping : IEntityTypeConfiguration<Product>
 
         builder.HasKey(p => p.Id);
 
+        builder.OwnsOne(p => p.Brand, brand =>
+        {
+            brand.Property(b => b.ProductBrand)
+                .HasColumnName("Brand")
+                .HasMaxLength(100)
+                .IsRequired(false);
+        });
+
         builder.OwnsOne(p => p.Model, model =>
         {
             model.Property(m => m.ProductModel)
                 .HasColumnName("Model")
                 .HasMaxLength(100)
-                .IsRequired();
+                .IsRequired(false);
         });
 
         builder.OwnsOne(p => p.SerialNumber, serial =>
@@ -25,7 +33,7 @@ public class ProductMapping : IEntityTypeConfiguration<Product>
             serial.Property(s => s.ProductSerialNumber)
                 .HasColumnName("SerialNumber")
                 .HasMaxLength(100)
-                .IsRequired();
+                .IsRequired(false);
         });
 
         builder.OwnsOne(p => p.Defect, defect =>

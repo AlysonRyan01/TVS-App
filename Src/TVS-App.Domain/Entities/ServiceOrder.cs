@@ -83,16 +83,17 @@ public class ServiceOrder : Entity
 
     public void UpdateServiceOrder(
         Customer customer,
-        string ProductModel,
-        string ProductSerialNumber,
-        string ProductDefect,
+        string productBrand,
+        string productModel,
+        string productSerialNumber,
+        string productDefect,
         string accessories,
         EProduct productType,
         EEnterprise enterprise)
     {
         CustomerId = customer.Id;
         Customer = customer;
-        Product.UpdateProduct(ProductModel, ProductSerialNumber, ProductDefect, accessories, productType);
+        Product.UpdateProduct(productBrand, productModel, productSerialNumber, productDefect, accessories, productType);
         Enterprise = enterprise;
     }
 
