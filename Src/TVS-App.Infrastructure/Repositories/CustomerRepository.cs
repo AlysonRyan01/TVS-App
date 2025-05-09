@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 using TVS_App.Application.DTOs;
 using TVS_App.Application.Repositories;
 using TVS_App.Domain.Entities;
@@ -18,18 +19,27 @@ public class CustomerRepository : ICustomerRepository
 
     public async Task<BaseResponse<Customer?>> CreateAsync(Customer customer)
     {
+        IDbContextTransaction? transaction = null;
+        
         try
         {
             if (customer == null)
                 return new BaseResponse<Customer?>(null, 404, "O cliente não pode ser nulo");
 
+            transaction = await _context.Database.BeginTransactionAsync();
+
             var createResult = await _context.Customers.AddAsync(customer);
             await _context.SaveChangesAsync();
+
+            await transaction.CommitAsync();
 
             return new BaseResponse<Customer?>(customer, 200, "Cliente criado com sucesso!");
         }
         catch (Exception ex)
         {
+            if (transaction != null)
+                await transaction.RollbackAsync();
+
             return DbExceptionHandler.Handle<Customer?>(ex);
         }
     }
@@ -84,6 +94,8 @@ public class CustomerRepository : ICustomerRepository
 
     public async Task<BaseResponse<Customer?>> UpdateAsync(Customer customer)
     {
+        IDbContextTransaction? transaction = null;
+
         try
         {
             if (customer == null)
@@ -93,13 +105,20 @@ public class CustomerRepository : ICustomerRepository
             if (existing == null)
                 return new BaseResponse<Customer?>(null, 404, $"Cliente com id {customer.Id} não encontrado.");
 
+            transaction = await _context.Database.BeginTransactionAsync();
+
             _context.Entry(existing).CurrentValues.SetValues(customer);
             await _context.SaveChangesAsync();
+
+            await transaction.CommitAsync();
 
             return new BaseResponse<Customer?>(customer, 200, "Cliente atualizado com sucesso!");
         }
         catch (Exception ex)
         {
+            if (transaction != null)
+                await transaction.RollbackAsync();
+
             return DbExceptionHandler.Handle<Customer?>(ex);
         }
     }

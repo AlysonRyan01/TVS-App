@@ -95,4 +95,9 @@ public class ServiceOrder : Entity
         Product.UpdateProduct(ProductModel, ProductSerialNumber, ProductDefect, accessories, productType);
         Enterprise = enterprise;
     }
+
+    public void UpdateProductId(long productId)
+    {
+        ProductId = productId;
+    }
 }
