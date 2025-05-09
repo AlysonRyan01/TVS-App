@@ -41,7 +41,7 @@ public class CustomerHandlerTests
 
         _getCustomerByIdCommand = new GetCustomerByIdCommand
         {
-            Id = 1
+            Id = 12
         };
 
         _updateCustomerCommand = new UpdateCustomerCommand
@@ -66,21 +66,21 @@ public class CustomerHandlerTests
         {
             var createResult = await _customerHandler.CreateCustomerAsync(_createCustomerCommand);
             if (!createResult.IsSuccess)
-                Assert.Fail();
+                Assert.Fail(createResult.Message);
 
             var customer = createResult.Data;
 
             var createResult2 = await _customerHandler.GetCustomerByIdAsync(_getCustomerByIdCommand);
             if (!createResult2.IsSuccess)
-                Assert.Fail();
+                Assert.Fail(createResult2.Message);
 
             var customer2 = createResult2.Data;
 
             Assert.AreEqual(customer, customer2);
         }
-        catch
+        catch (Exception ex)
         {
-            Assert.Fail();
+            Assert.Fail(ex.Message);
         }
     }
 
