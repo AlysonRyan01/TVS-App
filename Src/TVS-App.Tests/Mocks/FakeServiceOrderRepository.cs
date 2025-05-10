@@ -2,7 +2,6 @@ using TVS_App.Application.DTOs;
 using TVS_App.Application.Repositories;
 using TVS_App.Domain.Entities;
 using TVS_App.Domain.Enums;
-using TVS_App.Domain.ValueObjects.Product;
 using TVS_App.Domain.ValueObjects.ServiceOrder;
 
 namespace TVS_App.Tests.Mocks;
@@ -14,96 +13,45 @@ public class FakeServiceOrderRepository : IServiceOrderRepository
 
     public FakeServiceOrderRepository()
     {
-        CreateAsync(new ServiceOrder(
-            EEnterprise.Particular, 1,
-            new Product(
-                new Model("40PFG5000"),
-                new SerialNumber("2316765"),
-                new Defect("Sem imagem"), "Cabo e controle", EProduct.Tv)));
+        CreateAsync(new ServiceOrder(EEnterprise.Particular, 1,
+            new Product("PHILIPS", "40PFG5000", "2316765", "Sem imagem", "Cabo e controle", EProduct.Tv)));
 
-        CreateAsync(new ServiceOrder(
-            EEnterprise.Particular, 2,
-            new Product(
-                new Model("40LB5600"),
-                new SerialNumber("3214215"),
-                new Defect("Tela lisa"), "Cabo e controle", EProduct.Tv)));
+        CreateAsync(new ServiceOrder(EEnterprise.Particular, 2,
+            new Product("LG", "40LB5600", "3214215", "Tela lisa", "Cabo e controle", EProduct.Tv)));
 
-        CreateAsync(new ServiceOrder(
-            EEnterprise.Particular, 3,
-            new Product(
-                new Model("UN40J5200AG"),
-                new SerialNumber("31256457"),
-                new Defect("Sem som"), "Cabo e controle", EProduct.Tv)));
+        CreateAsync(new ServiceOrder(EEnterprise.Particular, 3,
+            new Product("SAMSUNG", "UN40J5200AG", "31256457", "Sem som", "Cabo e controle", EProduct.Tv)));
 
-        CreateAsync(new ServiceOrder(
-            EEnterprise.Cocel, 4,
-            new Product(
-                new Model("LG1234"),
-                new SerialNumber("6549876"),
-                new Defect("Imagem borrada"), "Cabo, controle e base", EProduct.Tv)));
+        CreateAsync(new ServiceOrder(EEnterprise.Cocel, 4,
+            new Product("LG", "LG1234", "6549876", "Imagem borrada", "Cabo, controle e base", EProduct.Tv)));
 
-        CreateAsync(new ServiceOrder(
-            EEnterprise.Copel, 5,
-            new Product(
-                new Model("SAMSUNG55XUHD"),
-                new SerialNumber("12346789"),
-                new Defect("Desligando sozinho"), "Controle remoto", EProduct.Tv)));
+        CreateAsync(new ServiceOrder(EEnterprise.Copel, 5,
+            new Product("SAMSUNG", "SAMSUNG55XUHD", "12346789", "Desligando sozinho", "Controle remoto", EProduct.Tv)));
 
-        CreateAsync(new ServiceOrder(
-            EEnterprise.Seguradora, 6,
-            new Product(
-                new Model("Philips6000"),
-                new SerialNumber("87654321"),
-                new Defect("Sem sinal"), "Cabo HDMI", EProduct.Tv)));
+        CreateAsync(new ServiceOrder(EEnterprise.Seguradora, 6,
+            new Product("SAMSUNG", "Philips6000", "87654321", "Sem sinal", "Cabo HDMI", EProduct.Tv)));
 
-        CreateAsync(new ServiceOrder(
-            EEnterprise.Particular, 7,
-            new Product(
-                new Model("SonyX9000F"),
-                new SerialNumber("56789012"),
-                new Defect("Cor distorcida"), "Controle remoto e base", EProduct.Tv)));
+        CreateAsync(new ServiceOrder(EEnterprise.Particular, 7,
+            new Product("SAMSUNG", "SonyX9000F", "56789012", "Cor distorcida", "Controle remoto e base", EProduct.Tv)));
 
-        CreateAsync(new ServiceOrder(
-            EEnterprise.Particular, 8,
-            new Product(
-                new Model("TCL40UHD"),
-                new SerialNumber("09876543"),
-                new Defect("Tela preta"), "Cabo de força", EProduct.Tv)));
+        CreateAsync(new ServiceOrder(EEnterprise.Particular, 8,
+            new Product("SAMSUNG", "TCL40UHD", "09876543", "Tela preta", "Cabo de força", EProduct.Tv)));
 
-        CreateAsync(new ServiceOrder(
-            EEnterprise.Particular, 9,
-            new Product(
-                new Model("SamsungUA75"),
-                new SerialNumber("34567890"),
-                new Defect("Sem imagem e som"), "Cabo HDMI, controle", EProduct.Tv)));
+        CreateAsync(new ServiceOrder(EEnterprise.Particular, 9,
+            new Product("SAMSUNG", "SamsungUA75", "34567890", "Sem imagem e som", "Cabo HDMI, controle", EProduct.Tv)));
 
-        CreateAsync(new ServiceOrder(
-            EEnterprise.Particular, 10,
-            new Product(
-                new Model("SamsungUA75"),
-                new SerialNumber("34567890"),
-                new Defect("Sem imagem e som"), "Cabo HDMI, controle", EProduct.Tv)));
+        CreateAsync(new ServiceOrder(EEnterprise.Particular, 10,
+            new Product("SAMSUNG", "SamsungUA75", "34567890", "Sem imagem e som", "Cabo HDMI, controle", EProduct.Tv)));
 
-        CreateAsync(new ServiceOrder(
-            EEnterprise.Particular, 11,
-            new Product(
-                new Model("SamsungUA75"),
-                new SerialNumber("34567890"),
-                new Defect("Sem imagem e som"), "Cabo HDMI, controle", EProduct.Tv)));
+        CreateAsync(new ServiceOrder(EEnterprise.Particular, 11,
+            new Product("SAMSUNG", "SamsungUA75", "34567890", "Sem imagem e som", "Cabo HDMI, controle", EProduct.Tv)));
 
-        CreateAsync(new ServiceOrder(
-            EEnterprise.Particular, 12,
-            new Product(
-                new Model("SamsungUA75"),
-                new SerialNumber("34567890"),
-                new Defect("Sem imagem e som"), "Cabo HDMI, controle", EProduct.Tv)));
+        CreateAsync(new ServiceOrder(EEnterprise.Particular, 12,
+            new Product("SAMSUNG", "SamsungUA75", "34567890", "Sem imagem e som", "Cabo HDMI, controle", EProduct.Tv)));
 
-        CreateAsync(new ServiceOrder(
-            EEnterprise.Particular, 13,
-            new Product(
-                new Model("SamsungUA75"),
-                new SerialNumber("34567890"),
-                new Defect("Sem imagem e som"), "Cabo HDMI, controle", EProduct.Tv)));
+        CreateAsync(new ServiceOrder(EEnterprise.Particular, 13,
+            new Product("SAMSUNG", "SamsungUA75", "34567890", "Sem imagem e som", "Cabo HDMI, controle", EProduct.Tv)));
+
     }
 
     public Task<BaseResponse<ServiceOrder?>> CreateAsync(ServiceOrder serviceOrder)

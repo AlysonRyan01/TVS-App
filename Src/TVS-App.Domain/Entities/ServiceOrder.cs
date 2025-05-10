@@ -13,14 +13,13 @@ public class ServiceOrder : Entity
         EntryDate = DateTime.UtcNow;
         Enterprise = enterprise;
         CustomerId = customerId;
-        Product = product;
         ServiceOrderStatus = EServiceOrderStatus.Entered;
         RepairStatus = ERepairStatus.Entered;
+        Product = product;
     }
 
     public long CustomerId { get; private set; }
     public Customer Customer { get; private set; } = null!;
-    public long ProductId { get; private set; }
     public Product Product { get; private set; } = null!;
     public EEnterprise Enterprise { get; private set; }
     public DateTime EntryDate { get; private set; }
@@ -93,12 +92,8 @@ public class ServiceOrder : Entity
     {
         CustomerId = customer.Id;
         Customer = customer;
-        Product.UpdateProduct(productBrand, productModel, productSerialNumber, productDefect, accessories, productType);
+        Product.UpdateProduct(productBrand, productModel,
+            productSerialNumber, productDefect, accessories, productType);
         Enterprise = enterprise;
-    }
-
-    public void UpdateProductId(long productId)
-    {
-        ProductId = productId;
     }
 }

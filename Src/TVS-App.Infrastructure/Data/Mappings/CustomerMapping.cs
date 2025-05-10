@@ -12,6 +12,9 @@ public class CustomerMapping : IEntityTypeConfiguration<Customer>
 
         builder.HasKey(c => c.Id);
 
+        builder.Property(x => x.Id)
+            .ValueGeneratedNever();
+
         builder.OwnsOne(c => c.Name, name =>
         {
             name.Property(n => n.CustomerName)
@@ -52,10 +55,5 @@ public class CustomerMapping : IEntityTypeConfiguration<Customer>
                 .HasColumnName("Email")
                 .HasMaxLength(100);
         });
-
-        builder.HasMany(c => c.ServiceOrders)
-               .WithOne(so => so.Customer)
-               .HasForeignKey(so => so.CustomerId)
-               .OnDelete(DeleteBehavior.Restrict);
     }
 }

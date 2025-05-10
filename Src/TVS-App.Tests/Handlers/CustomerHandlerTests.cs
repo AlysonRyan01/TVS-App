@@ -26,6 +26,7 @@ public class CustomerHandlerTests
             new Name("Alyson"),
             new Address("Rua Centenario", "Centro", "Campo Largo", "123", "83601000", "Parana"),
             new Phone("41997561468"),
+            new Phone("41997561468"),
             new Email("alysonullirsch8@gmail.com"));
 
         _createCustomerCommand = new()

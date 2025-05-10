@@ -9,12 +9,11 @@ public class ApplicationDataContext : IdentityDbContext
 {
     public ApplicationDataContext(DbContextOptions<ApplicationDataContext> options) : base(options)
     {
-        
+
     }
 
     public DbSet<Customer> Customers { get; set; } = null!;
     public DbSet<ServiceOrder> ServiceOrders { get; set; } = null!;
-    public DbSet<Product> Products { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

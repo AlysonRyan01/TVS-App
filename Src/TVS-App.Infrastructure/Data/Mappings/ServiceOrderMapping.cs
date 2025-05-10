@@ -12,6 +12,9 @@ public class ServiceOrderMapping : IEntityTypeConfiguration<ServiceOrder>
 
         builder.HasKey(x => x.Id);
 
+        builder.Property(x => x.Id)
+            .ValueGeneratedNever();
+
         builder.Property(x => x.EntryDate).IsRequired();
         builder.Property(x => x.InspectionDate);
         builder.Property(x => x.RepairDate);
@@ -32,15 +35,39 @@ public class ServiceOrderMapping : IEntityTypeConfiguration<ServiceOrder>
         builder.Property(x => x.RepairResult)
             .HasConversion<int?>();
 
-        builder.HasOne(x => x.Customer)
-            .WithMany()
-            .HasForeignKey(x => x.CustomerId)
+        builder.Property(so => so.CustomerId)
+            .HasColumnName("CustomerId");
+            
+        builder.HasOne(so => so.Customer)
+            .WithMany(c => c.ServiceOrders)
+            .HasForeignKey(so => so.CustomerId)
             .OnDelete(DeleteBehavior.Restrict);
 
-        builder.HasOne(x => x.Product)
-            .WithOne(p => p.ServiceOrder)
-            .HasForeignKey<ServiceOrder>(x => x.ProductId)
-            .OnDelete(DeleteBehavior.Restrict);
+        builder.OwnsOne(x => x.Product, p =>
+        {
+            p.Property(x => x.Brand)
+                .HasColumnName("Product_Brand")
+                .HasMaxLength(100);
+
+            p.Property(x => x.Model)
+                .HasColumnName("Product_Model")
+                .HasMaxLength(100);
+
+            p.Property(x => x.SerialNumber)
+                .HasColumnName("Product_SerialNumber")
+                .HasMaxLength(200);
+
+            p.Property(x => x.Defect)
+                .HasColumnName("Product_Defect")
+                .HasMaxLength(300);
+                
+            p.Property(x => x.Accessories)
+                .HasColumnName("Product_Accessories")
+                .HasMaxLength(300);
+
+            p.Property(x => x.Type)
+                .HasColumnName("Product_Type");
+        });
 
         builder.OwnsOne(x => x.Solution, s =>
         {

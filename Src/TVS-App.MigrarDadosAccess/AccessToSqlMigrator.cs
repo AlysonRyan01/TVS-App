@@ -2,7 +2,7 @@ using System.Data.OleDb;
 using TVS_App.Domain.Entities;
 using TVS_App.Domain.Enums;
 using TVS_App.Domain.ValueObjects.Customer;
-using TVS_App.Domain.ValueObjects.Product;
+using TVS_App.Domain.ValueObjects.ServiceOrder;
 using TVS_App.Infrastructure.Data;
 
 namespace TVS_App.MigrarDadosAccess;
@@ -26,18 +26,18 @@ public class AccessToSqlMigrator
         await connection.OpenAsync();
 
         const string query = @"SELECT 
-                            cli_codigo as Code,
-                            cli_nome as Name,
-                            cli_endereco as Street,
-                            cli_bairro as Neighborhood,
-                            cli_cidade as City,
-                            cli_numero as Number,
-                            cli_cep as ZipCode,
-                            cli_uf as State,
-                            cli_telefone as Phone,
-                            cli_celular as CellPhone,
-                            cli_email as Email
-                        FROM cliente";
+                            cli_codigo AS [Code],
+                            cli_nome AS [Name],
+                            cli_endereco AS [Street],
+                            cli_bairro AS [Neighborhood],
+                            cli_cidade AS [City],
+                            cli_numero AS [Number],
+                            cli_cep AS [ZipCode],
+                            cli_uf AS [State],
+                            cli_telefone AS [Phone],
+                            cli_celular AS [CellPhone],
+                            cli_email AS [Email]
+                            FROM cliente";
 
         using var command = new OleDbCommand(query, connection);
         using var reader = await command.ExecuteReaderAsync();
@@ -88,26 +88,27 @@ public class AccessToSqlMigrator
         await connection.OpenAsync();
 
         const string query = @"SELECT 
-            os.os_codigo AS Id,
-            os.os_situacao AS eServiceOrderStatus,
-            os.emp_codigo AS eEnterprise,
-            os.pro_codigo AS productType,
-            os.os_marca AS productBrand,
-            os.os_modelo AS productModel,
-            os.os_ns AS productSerialNumber,
-            os.os_defeito AS productDefect,
-            os.os_solucao AS solution,
-            os.os_valor AS amount,
-            os.os_data_entrada AS entryDate,
-            os.os_data_vistoria AS inspectionDate,
-            os.os_data_concerto AS repairDate,
-            os.os_data_entrega AS deliveryDate,
-            os.cli_codigo AS customerId,
-            os.os_concerto AS eRepair,
-            os.os_semconserto AS eUnrepaired,
-            os.os_valpeca AS partCost,
-            os.os_valmo AS laborCost
-            FROM os ORDER BY os.os_codigo DESC";
+                                os.os_codigo AS [Id],
+                                os.os_situacao AS [eServiceOrderStatus],
+                                os.emp_codigo AS [eEnterprise],
+                                os.pro_codigo AS [productType],
+                                os.os_marca AS [productBrand],
+                                os.os_modelo AS [productModel],
+                                os.os_ns AS [productSerialNumber],
+                                os.os_defeito AS [productDefect],
+                                os.os_solucao AS [solution],
+                                os.os_valor AS [amount],
+                                os.os_data_entrada AS [entryDate],
+                                os.os_data_vistoria AS [inspectionDate],
+                                os.os_data_concerto AS [repairDate],
+                                os.os_data_entrega AS [deliveryDate],
+                                os.cli_codigo AS [customerId],
+                                os.os_concerto AS [eRepair],
+                                os.os_semconserto AS [eUnrepaired],
+                                os.os_valpeca AS [partCost],
+                                os.os_valmo AS [laborCost]
+                            FROM os
+                            ORDER BY os.os_codigo DESC";
 
         using var command = new OleDbCommand(query, connection);
         using var reader = await command.ExecuteReaderAsync();
@@ -126,11 +127,12 @@ public class AccessToSqlMigrator
                 var brand = reader["productBrand"] as string ?? "Não tem";
                 var accessories = "Não tem";
 
-                var product = new Product(new Brand(brand), new Model(model), new SerialNumber(serial), new Defect(defect), accessories, productType);
+                var product = new Product(brand, model, serial, defect, accessories, productType);
 
-                var serviceOrder = new ServiceOrder(enterprise, customerId, product);
+                var serviceOrderId = Convert.ToInt64(reader["Id"]);
+                var serviceOrder = new ServiceOrder(enterprise, customerId, product) { Id = serviceOrderId };
 
-                if (reader["solution"] != DBNull.Value)
+                if (reader["solution"] != DBNull.Value && !string.IsNullOrWhiteSpace(reader["solution"]?.ToString()))
                 {
                     var solution = reader["solution"] as string ?? "Não tem";
                     var partCost = reader["partCost"] != DBNull.Value ? Convert.ToDecimal(reader["partCost"]) : 0;
@@ -151,6 +153,8 @@ public class AccessToSqlMigrator
 
                 if (status == EServiceOrderStatus.Repaired || repairDate.HasValue)
                 {
+                    if (serviceOrder.Solution == null || string.IsNullOrEmpty(serviceOrder.Solution.ServiceOrderSolution))
+                        serviceOrder.AddEstimate("Não tem", serviceOrder.PartCost.ServiceOrderPartCost, serviceOrder.LaborCost.ServiceOrderLaborCost, serviceOrder.RepairResult ?? ERepairResult.Repair);
                     serviceOrder.ApproveEstimate();
                     serviceOrder.ExecuteRepair();
                 }
@@ -160,7 +164,15 @@ public class AccessToSqlMigrator
                     serviceOrder.AddDelivery();
                 }
 
+                if (!_sqlDbContext.Customers.Any(c => c.Id == serviceOrder.CustomerId))
+                {
+                    Console.WriteLine($"Erro: CustomerId {serviceOrder.CustomerId} da OS {serviceOrder.Id} não existe no SQL Server. OS ignorada.");
+                    continue;
+                }
+                
                 serviceOrders.Add(serviceOrder);
+                Console.WriteLine($"OS: {serviceOrder.Id} com custumerID: {serviceOrder.CustomerId} adicionada com sucesso!");
+                
             }
             catch (Exception ex)
             {

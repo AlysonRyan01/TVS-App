@@ -8,9 +8,6 @@ public class Solution : ValueObject
 
     public Solution(string solution)
     {
-        if (string.IsNullOrEmpty(solution))
-            throw new ValueObjectException<Solution>("A solução não pode estar vazia");
-
         ServiceOrderSolution = solution;
     }
 

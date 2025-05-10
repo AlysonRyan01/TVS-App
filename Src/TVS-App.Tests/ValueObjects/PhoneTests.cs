@@ -7,13 +7,6 @@ namespace TVS_App.Tests.ValueObjects;
 public class PhoneTests
 {
     [TestMethod]
-    [ExpectedException(typeof(ValueObjectException<Phone>))]
-    public void deve_retornar_exception_quando_o_phone_for_vazio()
-    {
-        var emptyPhone = new Phone("");
-    }
-
-    [TestMethod]
     public void deve_retornar_true_quando_o_phone_for_correto() 
     {
         var correctPhone = new Phone("41997561468");

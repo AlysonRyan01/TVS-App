@@ -32,12 +32,6 @@ public class ServiceOrderRepository : IServiceOrderRepository
 
             transaction = await _context.Database.BeginTransactionAsync();
 
-            var product = serviceOrder.Product;
-
-            await _context.Products.AddAsync(product);
-            await _context.SaveChangesAsync();
-
-            serviceOrder.UpdateProductId(product.Id);
             await _context.ServiceOrders.AddAsync(serviceOrder);
             await _context.SaveChangesAsync();
 
@@ -278,12 +272,6 @@ public class ServiceOrderRepository : IServiceOrderRepository
 
             transaction = await _context.Database.BeginTransactionAsync();
 
-            var product = serviceOrder.Product;
-
-            _context.Products.Update(product);
-            await _context.SaveChangesAsync();
-
-            serviceOrder.UpdateProductId(product.Id);
             _context.ServiceOrders.Update(serviceOrder);
             await _context.SaveChangesAsync();
 

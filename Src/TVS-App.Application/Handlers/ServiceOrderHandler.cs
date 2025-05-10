@@ -1,9 +1,10 @@
 using TVS_App.Application.Commands.ServiceOrderCommands;
 using TVS_App.Application.DTOs;
 using TVS_App.Application.Exceptions;
+using TVS_App.Application.Interfaces;
 using TVS_App.Application.Repositories;
 using TVS_App.Domain.Entities;
-using TVS_App.Domain.ValueObjects.Product;
+using TVS_App.Domain.ValueObjects.ServiceOrder;
 
 namespace TVS_App.Application.Handlers;
 
@@ -11,11 +12,15 @@ public class ServiceOrderHandler
 {
     private readonly IServiceOrderRepository _serviceOrderRepository;
     private readonly ICustomerRepository _customerRepository;
+    private readonly IGenerateServiceOrderPdf _generateServiceOrderPdf;
 
-    public ServiceOrderHandler(IServiceOrderRepository serviceOrderRepository, ICustomerRepository customerRepository)
+
+    public ServiceOrderHandler(IServiceOrderRepository serviceOrderRepository, ICustomerRepository customerRepository,
+    IGenerateServiceOrderPdf generateServiceOrderPdf)
     {
         _serviceOrderRepository = serviceOrderRepository;
         _customerRepository = customerRepository;
+        _generateServiceOrderPdf = generateServiceOrderPdf;
     }
 
     public async Task<BaseResponse<ServiceOrder?>> CreateServiceOrderAsync(CreateServiceOrderCommand command)
@@ -24,18 +29,20 @@ public class ServiceOrderHandler
         {
             command.Validate();
 
-            var productBrand = new Brand(command.ProductBrand);
-            var model = new Model(command.ProductModel);
-            var serialNumber = new SerialNumber(command.ProductSerialNumber);
-            var defect = new Defect(command.ProductDefect);
-            var accessories = command.Accessories;
-            var type = command.ProductType;
-
-            var product = new Product(productBrand, model, serialNumber, defect, accessories, type);
+            var product = new Product(command.ProductBrand, command.ProductModel,
+                    command.ProductSerialNumber, command.ProductDefect, command.Accessories, command.ProductType);
 
             var serviceOrder = new ServiceOrder(command.Enterprise, command.CustomerId, product);
 
-            return await _serviceOrderRepository.CreateAsync(serviceOrder);
+            var createServiceOrder = await _serviceOrderRepository.CreateAsync(serviceOrder);
+            if (!createServiceOrder.IsSuccess)
+                return new BaseResponse<ServiceOrder?>(null, 500, createServiceOrder.Message);
+
+            var createPdf = await _generateServiceOrderPdf.GenerateCheckInDocumentAsync(serviceOrder);
+            if (!createPdf.IsSuccess)
+                return new BaseResponse<ServiceOrder?>(null, 500, createPdf.Message);
+
+            return createServiceOrder;
         }
         catch (CommandException<CreateServiceOrderCommand> ex)
         {
@@ -310,6 +317,10 @@ public class ServiceOrderHandler
 
             await _serviceOrderRepository.UpdateAsync(serviceOrder);
 
+            var createPdf = await _generateServiceOrderPdf.GenerateCheckOutDocumentAsync(serviceOrder);
+            if (!createPdf.IsSuccess)
+                return new BaseResponse<ServiceOrder?>(null, 500, createPdf.Message);
+
             return new BaseResponse<ServiceOrder?>(serviceOrder, 200, "Ordem de serviço marcada como entregue com sucesso!");
         }
         catch (CommandException<GetServiceOrderByIdCommand> ex)
@@ -319,6 +330,34 @@ public class ServiceOrderHandler
         catch (Exception ex)
         {
             return new BaseResponse<ServiceOrder?>(null, 500, $"Ocorreu um erro desconhecido ao marcar a entrega na ordem de serviço: {ex.Message}");
+        }
+    }
+    
+    public async Task<BaseResponse<ServiceOrder?>> RegeneratePdfAsync(GetServiceOrderByIdCommand command)
+    {
+        try
+        {
+            command.Validate();
+
+            var result = await _serviceOrderRepository.GetById(command.Id);
+            if (result == null || result.Data == null)
+                return new BaseResponse<ServiceOrder?>(null, 404, "Essa ordem de serviço não existe");
+
+            var serviceOrder = result.Data;
+
+            var createPdf = await _generateServiceOrderPdf.RegeneratePdfAsync(serviceOrder);
+            if (!createPdf.IsSuccess)
+                return new BaseResponse<ServiceOrder?>(null, 500, createPdf.Message);
+
+            return new BaseResponse<ServiceOrder?>(serviceOrder, 200, "Ordem de serviço gerada com sucesso!");
+        }
+        catch (CommandException<GetServiceOrderByIdCommand> ex)
+        {
+            return new BaseResponse<ServiceOrder?>(null, 400, $"Erro de validação: {ex.Message}");
+        }
+        catch (Exception ex)
+        {
+            return new BaseResponse<ServiceOrder?>(null, 500, $"Ocorreu um erro desconhecido ao gerar o pdf: {ex.Message}");
         }
     }
 }

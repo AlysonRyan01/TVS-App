@@ -1,5 +1,6 @@
 using TVS_App.Application.Commands.ServiceOrderCommands;
 using TVS_App.Application.Handlers;
+using TVS_App.Application.Interfaces;
 using TVS_App.Application.Repositories;
 using TVS_App.Tests.Mocks;
 
@@ -11,12 +12,14 @@ public class ServiceOrderHandlerTests
     private readonly IServiceOrderRepository _serviceOrderRepository;
     private readonly ICustomerRepository _customerRepository;
     private readonly ServiceOrderHandler _serviceOrderHandler;
+    private readonly IGenerateServiceOrderPdf _genereteerviceOrderPdf;
 
     public ServiceOrderHandlerTests()
     {
         _serviceOrderRepository = new FakeServiceOrderRepository();
         _customerRepository = new FakeCustomerRepository();
-        _serviceOrderHandler = new(_serviceOrderRepository, _customerRepository);
+        _genereteerviceOrderPdf = null!;
+        _serviceOrderHandler = new(_serviceOrderRepository, _customerRepository, _genereteerviceOrderPdf);
     }
 
     [TestMethod]
@@ -72,7 +75,7 @@ public class ServiceOrderHandlerTests
 
             if (createResult?.Data?.Customer.Id == 10 &&
                 createResult.Data.Enterprise == Domain.Enums.EEnterprise.Particular &&
-                createResult?.Data?.Product.Model.ProductModel == "UN40J5200AG" &&
+                createResult?.Data?.Product.Model == "UN40J5200AG" &&
                 createResult?.Data?.Product.Accessories == "controle")
             {
                 Assert.IsTrue(true);
