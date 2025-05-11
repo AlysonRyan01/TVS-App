@@ -29,7 +29,7 @@ public static class CustomerEndpoints
                 var response = EndpointExceptions.Handle<Customer>(ex);
                 return Results.BadRequest(response ?? new BaseResponse<Customer>(null, 500, $"Ocorreu um erro desconhecido: {ex.Message}"));
             }
-        });
+        }).WithTags("Customer").RequireAuthorization();
 
         app.MapPut("/update-customer", async (CustomerHandler handler, UpdateCustomerCommand command) =>
         {
@@ -48,7 +48,7 @@ public static class CustomerEndpoints
                 var response = EndpointExceptions.Handle<Customer>(ex);
                 return Results.BadRequest(response ?? new BaseResponse<Customer>(null, 500, $"Ocorreu um erro desconhecido: {ex.Message}"));
             }
-        });
+        }).WithTags("Customer").RequireAuthorization();
 
         app.MapGet("/get-customer-by-id/{id}", async (CustomerHandler handler, [FromRoute] long id) =>
         {
@@ -68,7 +68,7 @@ public static class CustomerEndpoints
                 var response = EndpointExceptions.Handle<Customer>(ex);
                 return Results.BadRequest(response ?? new BaseResponse<Customer>(null, 500, $"Ocorreu um erro desconhecido: {ex.Message}"));
             }
-        });
+        }).WithTags("Customer").RequireAuthorization();
         
         app.MapGet("/get-all-customers/{pageSize}/{pageNumber}", async (
             CustomerHandler handler,
@@ -91,6 +91,6 @@ public static class CustomerEndpoints
                 var response = EndpointExceptions.Handle<Customer>(ex);
                 return Results.BadRequest(response ?? new BaseResponse<Customer>(null, 500, $"Ocorreu um erro desconhecido: {ex.Message}"));
             }
-        });
+        }).WithTags("Customer").RequireAuthorization();
     }
 }

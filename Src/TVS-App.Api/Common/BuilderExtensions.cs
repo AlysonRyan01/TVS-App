@@ -1,5 +1,7 @@
 using System.Text;
+using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Http.Json;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -61,5 +63,13 @@ public static class BuilderExtensions
         builder.Services.AddIdentity<User, IdentityRole>()
             .AddEntityFrameworkStores<ApplicationDataContext>()
             .AddDefaultTokenProviders();
+    }
+
+    public static void ConfigureJsonSerializer(this WebApplicationBuilder builder)
+    {
+        builder.Services.Configure<JsonOptions>(options =>
+        {
+            options.SerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
+        });
     }
 }

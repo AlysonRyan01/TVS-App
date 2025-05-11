@@ -35,6 +35,14 @@ public class ServiceOrderRepository : IServiceOrderRepository
             await _context.ServiceOrders.AddAsync(serviceOrder);
             await _context.SaveChangesAsync();
 
+            var customer = await _context.Customers
+            .FirstOrDefaultAsync(c => c.Id == serviceOrder.CustomerId);
+
+            if (customer == null)
+                return new BaseResponse<ServiceOrder?>(null, 404, "Cliente não encontrado");
+
+            serviceOrder.UpdateCustomer(customer);
+
             await transaction.CommitAsync();
 
             return new BaseResponse<ServiceOrder?>(serviceOrder, 200, "Ordem de serviço criada com sucesso!");

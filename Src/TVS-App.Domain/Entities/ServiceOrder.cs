@@ -111,6 +111,14 @@ public class ServiceOrder : Entity
         Enterprise = enterprise;
     }
 
+    public void UpdateCustomer(Customer customer)
+    {
+        if (customer.Id == 0 || string.IsNullOrEmpty(customer.Name.CustomerName))
+            throw new EntityException<ServiceOrder>("O campo ID e name do customer estão vazios");
+
+        Customer = customer;
+    }
+
     private string GenerateRandomCode()
     {
         const string letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";

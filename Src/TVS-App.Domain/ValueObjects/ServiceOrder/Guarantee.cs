@@ -10,6 +10,8 @@ public class Guarantee : ValueObject
     {
         if (string.IsNullOrEmpty(guarantee))
             throw new ValueObjectException<Guarantee>("A garantia não pode estar vazia");
+
+        ServiceOrderGuarantee = guarantee;
     }
 
     public string ServiceOrderGuarantee { get; private set; } = string.Empty;

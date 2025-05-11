@@ -22,8 +22,8 @@ public static class AuthEndpoints
             var token = await jwtService.Generate(user);
 
             return Results.Ok(new BaseResponse<string>(token, 200, "Token enviado com sucesso!"));
-        });
-        
+        }).WithTags("Auth");
+
         app.MapPost("/register", async (LoginRequest login, JwtService jwtService, UserManager<User> userManager) =>
         {
             var existingUser = await userManager.FindByEmailAsync(login.Email);
@@ -49,7 +49,7 @@ public static class AuthEndpoints
             var token = await jwtService.Generate(user);
 
             return Results.Ok(new BaseResponse<string>(token, 200, "Usuário criado com sucesso!"));
-        });
+        }).WithTags("Auth").RequireAuthorization();
     }
 }
     

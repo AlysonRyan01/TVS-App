@@ -40,6 +40,9 @@ public class ServiceOrderHandler
             if (!createServiceOrder.IsSuccess)
                 return new BaseResponse<byte[]>(null, 500, createServiceOrder.Message);
 
+            if (createServiceOrder.Data != null)
+                serviceOrder = createServiceOrder.Data;
+
             var createPdf = await _generateServiceOrderPdf.GenerateCheckInDocumentAsync(serviceOrder);
             if (!createPdf.IsSuccess)
                 return new BaseResponse<byte[]>(null, 500, createPdf.Message);

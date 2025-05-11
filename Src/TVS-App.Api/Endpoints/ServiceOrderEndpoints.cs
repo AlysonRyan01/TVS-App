@@ -28,7 +28,7 @@ public static class ServiceOrderEndpoints
                 var response = EndpointExceptions.Handle<ServiceOrder>(ex);
                 return Results.BadRequest(response ?? new BaseResponse<ServiceOrder>(null, 500, $"Ocorreu um erro desconhecido: {ex.Message}"));
             }
-        });
+        }).WithTags("ServiceOrder").RequireAuthorization();
 
         app.MapPut("/update-service-order-by-id", async (ServiceOrderHandler handler, UpdateServiceOrderCommand command) =>
         {
@@ -47,7 +47,7 @@ public static class ServiceOrderEndpoints
                 var response = EndpointExceptions.Handle<ServiceOrder>(ex);
                 return Results.BadRequest(response ?? new BaseResponse<ServiceOrder>(null, 500, $"Ocorreu um erro desconhecido: {ex.Message}"));
             }
-        });
+        }).WithTags("ServiceOrder").RequireAuthorization();
 
         app.MapGet("/get-service-order-by-id/{id}", async (ServiceOrderHandler handler, long id) =>
         {
@@ -67,7 +67,7 @@ public static class ServiceOrderEndpoints
                 var response = EndpointExceptions.Handle<ServiceOrder>(ex);
                 return Results.BadRequest(response ?? new BaseResponse<ServiceOrder>(null, 500, $"Ocorreu um erro desconhecido: {ex.Message}"));
             }
-        });
+        }).WithTags("ServiceOrder").RequireAuthorization();
 
         app.MapGet("/get-service-order-for-customer/{id}/{code}", async (ServiceOrderHandler handler, long id, string code) =>
         {
@@ -87,7 +87,7 @@ public static class ServiceOrderEndpoints
                 var response = EndpointExceptions.Handle<ServiceOrder>(ex);
                 return Results.BadRequest(response ?? new BaseResponse<ServiceOrder>(null, 500, $"Ocorreu um erro desconhecido: {ex.Message}"));
             }
-        });
+        }).WithTags("ServiceOrder");
 
         app.MapGet("/get-all-service-orders/{pageNumber}/{pageSize}", async (ServiceOrderHandler handler, int pageNumber, int pageSize) =>
         {
@@ -107,7 +107,7 @@ public static class ServiceOrderEndpoints
                 var response = EndpointExceptions.Handle<PaginatedResult<ServiceOrder?>>(ex);
                 return Results.BadRequest(response ?? new BaseResponse<PaginatedResult<ServiceOrder?>>(null, 500, $"Ocorreu um erro desconhecido: {ex.Message}"));
             }
-        });
+        }).WithTags("ServiceOrder").RequireAuthorization();
 
         app.MapGet("/get-pending-estimates-service-orders/{pageNumber}/{pageSize}", async (ServiceOrderHandler handler, int pageNumber, int pageSize) =>
         {
@@ -127,7 +127,7 @@ public static class ServiceOrderEndpoints
                 var response = EndpointExceptions.Handle<PaginatedResult<ServiceOrder?>>(ex);
                 return Results.BadRequest(response ?? new BaseResponse<PaginatedResult<ServiceOrder?>>(null, 500, $"Ocorreu um erro desconhecido: {ex.Message}"));
             }
-        });
+        }).WithTags("ServiceOrder").RequireAuthorization();
 
         app.MapGet("/get-waiting-response-service-orders/{pageNumber}/{pageSize}", async (ServiceOrderHandler handler, int pageNumber, int pageSize) =>
         {
@@ -147,7 +147,7 @@ public static class ServiceOrderEndpoints
                 var response = EndpointExceptions.Handle<PaginatedResult<ServiceOrder?>>(ex);
                 return Results.BadRequest(response ?? new BaseResponse<PaginatedResult<ServiceOrder?>>(null, 500, $"Ocorreu um erro desconhecido: {ex.Message}"));
             }
-        });
+        }).WithTags("ServiceOrder").RequireAuthorization();
 
         app.MapGet("/get-pending-purchase-service-orders/{pageNumber}/{pageSize}", async (ServiceOrderHandler handler, int pageNumber, int pageSize) =>
         {
@@ -167,7 +167,7 @@ public static class ServiceOrderEndpoints
                 var response = EndpointExceptions.Handle<PaginatedResult<ServiceOrder?>>(ex);
                 return Results.BadRequest(response ?? new BaseResponse<PaginatedResult<ServiceOrder?>>(null, 500, $"Ocorreu um erro desconhecido: {ex.Message}"));
             }
-        });
+        }).WithTags("ServiceOrder").RequireAuthorization();
 
         app.MapGet("/get-waiting-parts-service-orders/{pageNumber}/{pageSize}", async (ServiceOrderHandler handler, int pageNumber, int pageSize) =>
         {
@@ -187,7 +187,7 @@ public static class ServiceOrderEndpoints
                 var response = EndpointExceptions.Handle<PaginatedResult<ServiceOrder?>>(ex);
                 return Results.BadRequest(response ?? new BaseResponse<PaginatedResult<ServiceOrder?>>(null, 500, $"Ocorreu um erro desconhecido: {ex.Message}"));
             }
-        });
+        }).WithTags("ServiceOrder").RequireAuthorization();
 
         app.MapGet("/get-waiting-pickup-service-orders/{pageNumber}/{pageSize}", async (ServiceOrderHandler handler, int pageNumber, int pageSize) =>
         {
@@ -207,7 +207,7 @@ public static class ServiceOrderEndpoints
                 var response = EndpointExceptions.Handle<PaginatedResult<ServiceOrder?>>(ex);
                 return Results.BadRequest(response ?? new BaseResponse<PaginatedResult<ServiceOrder?>>(null, 500, $"Ocorreu um erro desconhecido: {ex.Message}"));
             }
-        });
+        }).WithTags("ServiceOrder").RequireAuthorization();
 
         app.MapGet("/get-delivered-service-orders/{pageNumber}/{pageSize}", async (ServiceOrderHandler handler, int pageNumber, int pageSize) =>
         {
@@ -227,7 +227,7 @@ public static class ServiceOrderEndpoints
                 var response = EndpointExceptions.Handle<PaginatedResult<ServiceOrder?>>(ex);
                 return Results.BadRequest(response ?? new BaseResponse<PaginatedResult<ServiceOrder?>>(null, 500, $"Ocorreu um erro desconhecido: {ex.Message}"));
             }
-        });
+        }).WithTags("ServiceOrder").RequireAuthorization();
 
         app.MapPut("/add-service-order-estimate", async (ServiceOrderHandler handler, AddServiceOrderEstimateCommand command) =>
         {
@@ -246,7 +246,7 @@ public static class ServiceOrderEndpoints
                 var response = EndpointExceptions.Handle<ServiceOrder>(ex);
                 return Results.BadRequest(response ?? new BaseResponse<ServiceOrder>(null, 500, $"Ocorreu um erro desconhecido: {ex.Message}"));
             }
-        });
+        }).WithTags("ServiceOrder").RequireAuthorization();
 
         app.MapPut("/add-service-order-approve-estimate", async (ServiceOrderHandler handler, GetServiceOrderByIdCommand command) =>
         {
@@ -265,7 +265,7 @@ public static class ServiceOrderEndpoints
                 var response = EndpointExceptions.Handle<ServiceOrder>(ex);
                 return Results.BadRequest(response ?? new BaseResponse<ServiceOrder>(null, 500, $"Ocorreu um erro desconhecido: {ex.Message}"));
             }
-        });
+        }).WithTags("ServiceOrder").RequireAuthorization();
 
         app.MapPut("/add-service-order-reject-estimate", async (ServiceOrderHandler handler, GetServiceOrderByIdCommand command) =>
         {
@@ -284,7 +284,7 @@ public static class ServiceOrderEndpoints
                 var response = EndpointExceptions.Handle<ServiceOrder>(ex);
                 return Results.BadRequest(response ?? new BaseResponse<ServiceOrder>(null, 500, $"Ocorreu um erro desconhecido: {ex.Message}"));
             }
-        });
+        }).WithTags("ServiceOrder").RequireAuthorization();
 
         app.MapPut("/add-service-order-purchased-part", async (ServiceOrderHandler handler, GetServiceOrderByIdCommand command) =>
         {
@@ -303,7 +303,7 @@ public static class ServiceOrderEndpoints
                 var response = EndpointExceptions.Handle<ServiceOrder>(ex);
                 return Results.BadRequest(response ?? new BaseResponse<ServiceOrder>(null, 500, $"Ocorreu um erro desconhecido: {ex.Message}"));
             }
-        });
+        }).WithTags("ServiceOrder").RequireAuthorization();
 
         app.MapPut("/add-service-order-repair", async (ServiceOrderHandler handler, GetServiceOrderByIdCommand command) =>
         {
@@ -322,7 +322,7 @@ public static class ServiceOrderEndpoints
                 var response = EndpointExceptions.Handle<ServiceOrder>(ex);
                 return Results.BadRequest(response ?? new BaseResponse<ServiceOrder>(null, 500, $"Ocorreu um erro desconhecido: {ex.Message}"));
             }
-        });
+        }).WithTags("ServiceOrder").RequireAuthorization();
 
         app.MapPut("/add-service-order-delivery", async (ServiceOrderHandler handler, GetServiceOrderByIdCommand command) =>
         {
@@ -341,7 +341,7 @@ public static class ServiceOrderEndpoints
                 var response = EndpointExceptions.Handle<ServiceOrder>(ex);
                 return Results.BadRequest(response ?? new BaseResponse<ServiceOrder>(null, 500, $"Ocorreu um erro desconhecido: {ex.Message}"));
             }
-        });
+        }).WithTags("ServiceOrder").RequireAuthorization();
 
         app.MapPut("/regenerate-service-order-pdf", async (ServiceOrderHandler handler, GetServiceOrderByIdCommand command) =>
         {
@@ -360,6 +360,6 @@ public static class ServiceOrderEndpoints
                 var response = EndpointExceptions.Handle<ServiceOrder>(ex);
                 return Results.BadRequest(response ?? new BaseResponse<ServiceOrder>(null, 500, $"Ocorreu um erro desconhecido: {ex.Message}"));
             }
-        });
+        }).WithTags("ServiceOrder").RequireAuthorization();
     }
 }

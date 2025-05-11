@@ -9,6 +9,7 @@ builder.AddSqlServer();
 builder.AddDependencies();
 builder.AddIdentity();
 builder.AddJwtService();
+builder.ConfigureJsonSerializer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddEndpointsApiExplorer(); 
 
@@ -18,6 +19,6 @@ app.AddAuthorization();
 app.AddEndpoints();
 app.AddSwagger();
 
-app.MapGet("/", () => "Hello World!");
+app.MapGet("/", () => "API RODANDO");
 
 app.Run();
