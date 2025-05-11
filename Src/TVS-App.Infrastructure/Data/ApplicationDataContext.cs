@@ -2,10 +2,11 @@ using System.Reflection;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using TVS_App.Domain.Entities;
+using TVS_App.Infrastructure.Models;
 
 namespace TVS_App.Infrastructure.Data;
 
-public class ApplicationDataContext : IdentityDbContext
+public class ApplicationDataContext : IdentityDbContext<User>
 {
     public ApplicationDataContext(DbContextOptions<ApplicationDataContext> options) : base(options)
     {

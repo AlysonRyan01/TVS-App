@@ -37,7 +37,7 @@ public class AccessToSqlMigrator
                             cli_telefone AS [Phone],
                             cli_celular AS [CellPhone],
                             cli_email AS [Email]
-                            FROM cliente";
+                            FROM cliente ORDER BY cli_codigo ASC";
 
         using var command = new OleDbCommand(query, connection);
         using var reader = await command.ExecuteReaderAsync();
@@ -64,7 +64,7 @@ public class AccessToSqlMigrator
 
                 var customer = new Customer(name, address, phone, phone2, email)
                 {
-                    Id = reader["Code"] != DBNull.Value ? Convert.ToInt32(reader["Code"]) : 0
+                    Id = 0
                 };
 
                 customers.Add(customer);
@@ -82,6 +82,20 @@ public class AccessToSqlMigrator
 
     public async Task MigrarOrdensDeServicoAsync()
     {
+        var listUselessOrders = new List<ServiceOrder>();
+
+        for (int i = 1; i <= 28001; i++)
+        {
+            var order = new ServiceOrder(EEnterprise.Particular, 1, new Product("NÃO TEM", "NÃO TEM", "NÃO TEM", "NÃO TEM", "NÃO TEM", EProduct.Tv));
+            order.Id = 0;
+            listUselessOrders.Add(order);
+            Console.WriteLine("adicionando OS para popular o banco");
+        }
+
+        await _sqlDbContext.ServiceOrders.AddRangeAsync(listUselessOrders);
+        await _sqlDbContext.SaveChangesAsync();
+
+        // separar codigo
         var serviceOrders = new List<ServiceOrder>();
 
         using var connection = new OleDbConnection(_accessConnStr);
@@ -107,8 +121,9 @@ public class AccessToSqlMigrator
                                 os.os_semconserto AS [eUnrepaired],
                                 os.os_valpeca AS [partCost],
                                 os.os_valmo AS [laborCost]
-                            FROM os
-                            ORDER BY os.os_codigo DESC";
+                            FROM os ORDER BY os.os_codigo ASC";
+
+        int countOsAccess = 0;
 
         using var command = new OleDbCommand(query, connection);
         using var reader = await command.ExecuteReaderAsync();
@@ -117,6 +132,8 @@ public class AccessToSqlMigrator
         {
             try
             {
+                countOsAccess++;
+
                 var customerId = Convert.ToInt64(reader["customerId"]);
                 var productType = (EProduct)Convert.ToInt32(reader["productType"]);
                 var enterprise = (EEnterprise)Convert.ToInt32(reader["eEnterprise"]);
@@ -129,7 +146,7 @@ public class AccessToSqlMigrator
 
                 var product = new Product(brand, model, serial, defect, accessories, productType);
 
-                var serviceOrderId = Convert.ToInt64(reader["Id"]);
+                var serviceOrderId = 0;
                 var serviceOrder = new ServiceOrder(enterprise, customerId, product) { Id = serviceOrderId };
 
                 if (reader["solution"] != DBNull.Value && !string.IsNullOrWhiteSpace(reader["solution"]?.ToString()))
@@ -144,7 +161,7 @@ public class AccessToSqlMigrator
                         ? ERepairResult.Repair
                         : unrepaired ? ERepairResult.Unrepaired : ERepairResult.Unrepaired;
 
-                    serviceOrder.AddEstimate(solution, partCost, laborCost, repairResult);
+                    serviceOrder.AddEstimate(solution, "3 MESES", partCost, laborCost, repairResult);
                 }
 
                 var status = (EServiceOrderStatus)Convert.ToInt32(reader["eServiceOrderStatus"]);
@@ -154,7 +171,7 @@ public class AccessToSqlMigrator
                 if (status == EServiceOrderStatus.Repaired || repairDate.HasValue)
                 {
                     if (serviceOrder.Solution == null || string.IsNullOrEmpty(serviceOrder.Solution.ServiceOrderSolution))
-                        serviceOrder.AddEstimate("Não tem", serviceOrder.PartCost.ServiceOrderPartCost, serviceOrder.LaborCost.ServiceOrderLaborCost, serviceOrder.RepairResult ?? ERepairResult.Repair);
+                        serviceOrder.AddEstimate("Não tem", "3 MESES", serviceOrder.PartCost.ServiceOrderPartCost, serviceOrder.LaborCost.ServiceOrderLaborCost, serviceOrder.RepairResult ?? ERepairResult.Repair);
                     serviceOrder.ApproveEstimate();
                     serviceOrder.ExecuteRepair();
                 }
@@ -180,9 +197,22 @@ public class AccessToSqlMigrator
             }
         }
 
-        await _sqlDbContext.ServiceOrders.AddRangeAsync(serviceOrders);
-        await _sqlDbContext.SaveChangesAsync();
+        using var transaction = await _sqlDbContext.Database.BeginTransactionAsync();
+        try
+        {
+            await _sqlDbContext.ServiceOrders.AddRangeAsync(serviceOrders);
+            await _sqlDbContext.SaveChangesAsync();
+            await transaction.CommitAsync();
+            Console.WriteLine("Migração concluída com sucesso!");
+        }
+        catch (Exception ex)
+        {
+            await transaction.RollbackAsync();
+            Console.WriteLine($"Erro durante a migração: {ex.Message}");
+        }
 
+        Console.WriteLine($"Total de OS no Access: {countOsAccess}");
+        Console.WriteLine($"Total de OS no SQL: {serviceOrders.Count}");
         Console.WriteLine("Migração de ordens de serviço concluída!");
     }
 }

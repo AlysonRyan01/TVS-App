@@ -54,7 +54,8 @@ namespace TVS_App.Infrastructure.Migrations
                 name: "Customers",
                 columns: table => new
                 {
-                    Id = table.Column<long>(type: "bigint", nullable: false),
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
                     Street = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: true),
                     Neighborhood = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
@@ -181,7 +182,9 @@ namespace TVS_App.Infrastructure.Migrations
                 name: "ServiceOrders",
                 columns: table => new
                 {
-                    Id = table.Column<long>(type: "bigint", nullable: false),
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    SecurityCode = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
                     CustomerId = table.Column<long>(type: "bigint", nullable: false),
                     Product_Brand = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Product_Model = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
@@ -195,6 +198,7 @@ namespace TVS_App.Infrastructure.Migrations
                     RepairDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     DeliveryDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     Solution = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
+                    Guarantee = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: true),
                     PartCost = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
                     LaborCost = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
                     ServiceOrderStatus = table.Column<int>(type: "int", nullable: false),

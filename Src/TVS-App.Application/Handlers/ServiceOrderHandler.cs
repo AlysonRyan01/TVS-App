@@ -1,3 +1,4 @@
+using TVS_App.Application.Commands;
 using TVS_App.Application.Commands.ServiceOrderCommands;
 using TVS_App.Application.DTOs;
 using TVS_App.Application.Exceptions;
@@ -23,10 +24,11 @@ public class ServiceOrderHandler
         _generateServiceOrderPdf = generateServiceOrderPdf;
     }
 
-    public async Task<BaseResponse<ServiceOrder?>> CreateServiceOrderAsync(CreateServiceOrderCommand command)
+    public async Task<BaseResponse<byte[]>> CreateServiceOrderAndReturnPdfAsync(CreateServiceOrderCommand command)
     {
         try
         {
+            command.Normalize();
             command.Validate();
 
             var product = new Product(command.ProductBrand, command.ProductModel,
@@ -36,21 +38,21 @@ public class ServiceOrderHandler
 
             var createServiceOrder = await _serviceOrderRepository.CreateAsync(serviceOrder);
             if (!createServiceOrder.IsSuccess)
-                return new BaseResponse<ServiceOrder?>(null, 500, createServiceOrder.Message);
+                return new BaseResponse<byte[]>(null, 500, createServiceOrder.Message);
 
             var createPdf = await _generateServiceOrderPdf.GenerateCheckInDocumentAsync(serviceOrder);
             if (!createPdf.IsSuccess)
-                return new BaseResponse<ServiceOrder?>(null, 500, createPdf.Message);
+                return new BaseResponse<byte[]>(null, 500, createPdf.Message);
 
-            return createServiceOrder;
+            return createPdf;
         }
         catch (CommandException<CreateServiceOrderCommand> ex)
         {
-            return new BaseResponse<ServiceOrder?>(null, 400, $"Erro de validação: {ex.Message}");
+            return new BaseResponse<byte[]>(null, 400, $"Erro de validação: {ex.Message}");
         }
         catch (Exception ex)
         {
-            return new BaseResponse<ServiceOrder?>(null, 500, $"Ocorreu um erro ao criar a ordem de serviço: {ex.Message}");
+            return new BaseResponse<byte[]>(null, 500, $"Ocorreu um erro ao criar a ordem de serviço: {ex.Message}");
         }
     }
 
@@ -58,6 +60,7 @@ public class ServiceOrderHandler
     {
         try
         {
+            command.Normalize();
             command.Validate();
 
             var existingCustomer = await _customerRepository.GetByIdAsync(command.CustomerId);
@@ -111,11 +114,41 @@ public class ServiceOrderHandler
         }
     }
 
-    public async Task<BaseResponse<PaginatedResult<ServiceOrder?>>> GetAllServiceOrdersAsync(int pageNumber, int pageSize)
+    public async Task<BaseResponse<ServiceOrder?>> GetServiceOrderForCustomer(GetServiceOrdersForCustomerCommand command)
     {
         try
         {
-            return await _serviceOrderRepository.GetAllAsync(pageNumber, pageSize);
+            command.Normalize();
+            command.Validate();
+
+            var orderResult = await _serviceOrderRepository.GetById(command.ServiceOrderId);
+            if (!orderResult.IsSuccess)
+                return new BaseResponse<ServiceOrder?>(null, 404, "Nenhuma ordem de serviço encontrada");
+
+            var serviceOrder = orderResult.Data;
+
+            if (!string.Equals(serviceOrder?.SecurityCode, command.SecurityCode))
+                return new BaseResponse<ServiceOrder?>(null, 404, "O código de segurança está incorreto");
+
+            return new BaseResponse<ServiceOrder?>(serviceOrder, 200, "Ordem de serviço obtida com sucesso!");
+        }
+        catch (CommandException<GetServiceOrdersForCustomerCommand> ex)
+        {
+            return new BaseResponse<ServiceOrder?>(null, 400, $"Erro de validação: {ex.Message}");
+        }
+        catch (Exception ex)
+        {
+            return new BaseResponse<ServiceOrder?>(null, 500, $"Ocorreu um erro desconhecido ao buscar a ordem de servico: {ex.Message}");
+        }
+    }
+
+    public async Task<BaseResponse<PaginatedResult<ServiceOrder?>>> GetAllServiceOrdersAsync(PaginationCommand command)
+    {
+        try
+        {
+            command.Validate();
+
+            return await _serviceOrderRepository.GetAllAsync(command.pageNumber, command.pageSize);
         }
         catch (Exception ex)
         {
@@ -124,11 +157,13 @@ public class ServiceOrderHandler
         }
     }
 
-    public async Task<BaseResponse<PaginatedResult<ServiceOrder?>>> GetPendingEstimatesAsync(int pageNumber, int pageSize)
+    public async Task<BaseResponse<PaginatedResult<ServiceOrder?>>> GetPendingEstimatesAsync(PaginationCommand command)
     {
         try
         {
-            return await _serviceOrderRepository.GetPendingEstimatesAsync(pageNumber, pageSize);
+            command.Validate();
+
+            return await _serviceOrderRepository.GetPendingEstimatesAsync(command.pageNumber, command.pageSize);
         }
         catch (Exception ex)
         {
@@ -137,11 +172,13 @@ public class ServiceOrderHandler
         }
     }
 
-    public async Task<BaseResponse<PaginatedResult<ServiceOrder?>>> GetWaitingResponseAsync(int pageNumber, int pageSize)
+    public async Task<BaseResponse<PaginatedResult<ServiceOrder?>>> GetWaitingResponseAsync(PaginationCommand command)
     {
         try
         {
-            return await _serviceOrderRepository.GetWaitingResponseAsync(pageNumber, pageSize);
+            command.Validate();
+
+            return await _serviceOrderRepository.GetWaitingResponseAsync(command.pageNumber, command.pageSize);
         }
         catch (Exception ex)
         {
@@ -150,11 +187,13 @@ public class ServiceOrderHandler
         }
     }
 
-    public async Task<BaseResponse<PaginatedResult<ServiceOrder?>>> GetWaitingPartsAsync(int pageNumber, int pageSize)
+    public async Task<BaseResponse<PaginatedResult<ServiceOrder?>>> GetWaitingPartsAsync(PaginationCommand command)
     {
         try
         {
-            return await _serviceOrderRepository.GetWaitingPartsAsync(pageNumber, pageSize);
+            command.Validate();
+
+            return await _serviceOrderRepository.GetWaitingPartsAsync(command.pageNumber, command.pageSize);
         }
         catch (Exception ex)
         {
@@ -163,11 +202,13 @@ public class ServiceOrderHandler
         }
     }
 
-    public async Task<BaseResponse<PaginatedResult<ServiceOrder?>>> GetWaitingPickupAsync(int pageNumber, int pageSize)
+    public async Task<BaseResponse<PaginatedResult<ServiceOrder?>>> GetWaitingPickupAsync(PaginationCommand command)
     {
         try
         {
-            return await _serviceOrderRepository.GetWaitingPickupAsync(pageNumber, pageSize);
+            command.Validate();
+        
+            return await _serviceOrderRepository.GetWaitingPickupAsync(command.pageNumber, command.pageSize);
         }
         catch (Exception ex)
         {
@@ -176,11 +217,13 @@ public class ServiceOrderHandler
         }
     }
 
-    public async Task<BaseResponse<PaginatedResult<ServiceOrder?>>> GetDeliveredAsync(int pageNumber, int pageSize)
+    public async Task<BaseResponse<PaginatedResult<ServiceOrder?>>> GetDeliveredAsync(PaginationCommand command)
     {
         try
         {
-            return await _serviceOrderRepository.GetDeliveredAsync(pageNumber, pageSize);
+            command.Validate();
+
+            return await _serviceOrderRepository.GetDeliveredAsync(command.pageNumber, command.pageSize);
         }
         catch (Exception ex)
         {
@@ -193,6 +236,7 @@ public class ServiceOrderHandler
     {
         try
         {
+            command.Normalize();
             command.Validate();
 
             var result = await _serviceOrderRepository.GetById(command.ServiceOrderId);
@@ -201,7 +245,7 @@ public class ServiceOrderHandler
 
             var serviceOrder = result.Data;
 
-            serviceOrder.AddEstimate(command.Solution, command.PartCost, command.LaborCost, command.RepairResult);
+            serviceOrder.AddEstimate(command.Solution, command.Guarantee, command.PartCost, command.LaborCost, command.RepairResult);
 
             await _serviceOrderRepository.UpdateAsync(serviceOrder);
 
@@ -301,7 +345,7 @@ public class ServiceOrderHandler
         }
     }
 
-    public async Task<BaseResponse<ServiceOrder?>> AddServiceOrderDelivery(GetServiceOrderByIdCommand command)
+    public async Task<BaseResponse<byte[]>> AddServiceOrderDeliveryAndReturnPdfAsync(GetServiceOrderByIdCommand command)
     {
         try
         {
@@ -309,7 +353,7 @@ public class ServiceOrderHandler
 
             var result = await _serviceOrderRepository.GetById(command.Id);
             if (result == null || result.Data == null)
-                return new BaseResponse<ServiceOrder?>(null, 404, "Essa ordem de serviço não existe");
+                return new BaseResponse<byte[]>(null, 404, "Essa ordem de serviço não existe");
 
             var serviceOrder = result.Data;
 
@@ -319,21 +363,21 @@ public class ServiceOrderHandler
 
             var createPdf = await _generateServiceOrderPdf.GenerateCheckOutDocumentAsync(serviceOrder);
             if (!createPdf.IsSuccess)
-                return new BaseResponse<ServiceOrder?>(null, 500, createPdf.Message);
+                return new BaseResponse<byte[]>(null, 500, createPdf.Message);
 
-            return new BaseResponse<ServiceOrder?>(serviceOrder, 200, "Ordem de serviço marcada como entregue com sucesso!");
+            return createPdf;
         }
         catch (CommandException<GetServiceOrderByIdCommand> ex)
         {
-            return new BaseResponse<ServiceOrder?>(null, 400, $"Erro de validação: {ex.Message}");
+            return new BaseResponse<byte[]>(null, 400, $"Erro de validação: {ex.Message}");
         }
         catch (Exception ex)
         {
-            return new BaseResponse<ServiceOrder?>(null, 500, $"Ocorreu um erro desconhecido ao marcar a entrega na ordem de serviço: {ex.Message}");
+            return new BaseResponse<byte[]>(null, 500, $"Ocorreu um erro desconhecido ao marcar a entrega na ordem de serviço: {ex.Message}");
         }
     }
     
-    public async Task<BaseResponse<ServiceOrder?>> RegeneratePdfAsync(GetServiceOrderByIdCommand command)
+    public async Task<BaseResponse<byte[]>> RegenerateAndReturnPdfAsync(GetServiceOrderByIdCommand command)
     {
         try
         {
@@ -341,23 +385,23 @@ public class ServiceOrderHandler
 
             var result = await _serviceOrderRepository.GetById(command.Id);
             if (result == null || result.Data == null)
-                return new BaseResponse<ServiceOrder?>(null, 404, "Essa ordem de serviço não existe");
+                return new BaseResponse<byte[]>(null, 404, "Essa ordem de serviço não existe");
 
             var serviceOrder = result.Data;
 
             var createPdf = await _generateServiceOrderPdf.RegeneratePdfAsync(serviceOrder);
             if (!createPdf.IsSuccess)
-                return new BaseResponse<ServiceOrder?>(null, 500, createPdf.Message);
+                return new BaseResponse<byte[]>(null, 500, createPdf.Message);
 
-            return new BaseResponse<ServiceOrder?>(serviceOrder, 200, "Ordem de serviço gerada com sucesso!");
+            return createPdf;
         }
         catch (CommandException<GetServiceOrderByIdCommand> ex)
         {
-            return new BaseResponse<ServiceOrder?>(null, 400, $"Erro de validação: {ex.Message}");
+            return new BaseResponse<byte[]>(null, 400, $"Erro de validação: {ex.Message}");
         }
         catch (Exception ex)
         {
-            return new BaseResponse<ServiceOrder?>(null, 500, $"Ocorreu um erro desconhecido ao gerar o pdf: {ex.Message}");
+            return new BaseResponse<byte[]>(null, 500, $"Ocorreu um erro desconhecido ao gerar o pdf: {ex.Message}");
         }
     }
 }

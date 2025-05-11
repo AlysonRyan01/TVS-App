@@ -34,4 +34,13 @@ public class CreateServiceOrderCommand : ICommand
             throw new CommandException<CreateServiceOrderCommand>("O Enterprise do CreateServiceOrderCommand não tem um valor válido");
 
     }
+
+    public void Normalize()
+    {
+        ProductBrand = ProductBrand.Trim().ToUpper();
+        ProductModel = ProductModel.Trim().ToUpper();
+        ProductSerialNumber = ProductSerialNumber.Trim().ToUpper();
+        ProductDefect = ProductDefect.Trim().ToUpper();
+        Accessories = Accessories.Trim().ToUpper();
+    }
 }

@@ -13,7 +13,7 @@ public class CustomerMapping : IEntityTypeConfiguration<Customer>
         builder.HasKey(c => c.Id);
 
         builder.Property(x => x.Id)
-            .ValueGeneratedNever();
+            .ValueGeneratedOnAdd();
 
         builder.OwnsOne(c => c.Name, name =>
         {

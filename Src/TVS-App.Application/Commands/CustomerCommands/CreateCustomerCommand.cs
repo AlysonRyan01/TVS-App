@@ -26,4 +26,18 @@ public class CreateCustomerCommand : ICommand
         if (string.IsNullOrEmpty(Phone))
             throw new CommandException<CreateCustomerCommand>("O telefone do CreateCustomerCommand não pode estar vazio");
     }
+
+    public void Normalize()
+    {
+        Name = Name.Trim().ToUpper();
+        Street = Street.Trim().ToUpper();
+        Neighborhood = Neighborhood.Trim().ToUpper();
+        City = City.Trim().ToUpper();
+        Number = Number.Trim().ToUpper();
+        ZipCode = ZipCode.Trim();
+        State = State.Trim().ToUpper();
+        Phone = Phone.Trim();
+        Phone2 = Phone2.Trim();
+        Email = Email.Trim().ToLower(); // E-mails geralmente são salvos em minúsculo
+    }
 }

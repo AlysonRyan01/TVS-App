@@ -1,3 +1,4 @@
+using TVS_App.Application.Commands;
 using TVS_App.Application.Commands.CustomerCommands;
 using TVS_App.Application.DTOs;
 using TVS_App.Application.Exceptions;
@@ -20,6 +21,7 @@ public class CustomerHandler
     {
         try
         {
+            command.Normalize();
             command.Validate();
 
             var name = new Name(command.Name);
@@ -52,6 +54,7 @@ public class CustomerHandler
     {
         try
         {
+            command.Normalize();
             command.Validate();
 
             var existingCustomer = await _customerRepository.GetByIdAsync(command.Id);
@@ -101,11 +104,13 @@ public class CustomerHandler
         }
     }
 
-    public async Task<BaseResponse<PaginatedResult<Customer?>>> GetAllCustomersAsync(int pageNumber, int pageSize)
+    public async Task<BaseResponse<PaginatedResult<Customer?>>> GetAllCustomersAsync(PaginationCommand command)
     {
         try
         {
-            return await _customerRepository.GetAllAsync(pageNumber, pageSize);
+            command.Validate();
+
+            return await _customerRepository.GetAllAsync(command.pageNumber, command.pageSize);
         }
         catch (Exception ex)
         {

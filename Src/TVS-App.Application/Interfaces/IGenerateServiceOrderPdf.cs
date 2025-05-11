@@ -5,7 +5,7 @@ namespace TVS_App.Application.Interfaces;
 
 public interface IGenerateServiceOrderPdf
 {
-    Task<BaseResponse<string>> GenerateCheckInDocumentAsync(ServiceOrder serviceOrder);
-    Task<BaseResponse<string>> GenerateCheckOutDocumentAsync(ServiceOrder serviceOrder);
-    Task<BaseResponse<string>> RegeneratePdfAsync(ServiceOrder serviceOrder);
+    Task<BaseResponse<byte[]>> GenerateCheckInDocumentAsync(ServiceOrder serviceOrder);
+    Task<BaseResponse<byte[]>> GenerateCheckOutDocumentAsync(ServiceOrder serviceOrder);
+    Task<BaseResponse<byte[]>> RegeneratePdfAsync(ServiceOrder serviceOrder);
 }

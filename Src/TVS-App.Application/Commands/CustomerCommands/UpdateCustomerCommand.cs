@@ -5,7 +5,7 @@ namespace TVS_App.Application.Commands.CustomerCommands;
 public class UpdateCustomerCommand : ICommand
 {
     public long Id { get; set; }
-    
+
     public string Name { get; set; } = string.Empty;
 
     public string Street { get; set; } = string.Empty;
@@ -30,5 +30,19 @@ public class UpdateCustomerCommand : ICommand
 
         if (string.IsNullOrEmpty(Phone))
             throw new CommandException<UpdateCustomerCommand>("O telefone do UpdateCustomerCommand não pode estar vazio");
+    }
+    
+    public void Normalize()
+    {
+        Name = Name.Trim().ToUpper();
+        Street = Street.Trim().ToUpper();
+        Neighborhood = Neighborhood.Trim().ToUpper();
+        City = City.Trim().ToUpper();
+        Number = Number.Trim().ToUpper();
+        ZipCode = ZipCode.Trim();
+        State = State.Trim().ToUpper();
+        Phone = Phone.Trim();
+        Phone2 = Phone2.Trim();
+        Email = Email.Trim().ToLower();
     }
 }

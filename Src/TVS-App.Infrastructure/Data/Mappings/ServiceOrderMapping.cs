@@ -13,7 +13,7 @@ public class ServiceOrderMapping : IEntityTypeConfiguration<ServiceOrder>
         builder.HasKey(x => x.Id);
 
         builder.Property(x => x.Id)
-            .ValueGeneratedNever();
+            .ValueGeneratedOnAdd();
 
         builder.Property(x => x.EntryDate).IsRequired();
         builder.Property(x => x.InspectionDate);
@@ -34,6 +34,10 @@ public class ServiceOrderMapping : IEntityTypeConfiguration<ServiceOrder>
 
         builder.Property(x => x.RepairResult)
             .HasConversion<int?>();
+
+        builder.Property(x => x.SecurityCode)
+            .HasColumnName("SecurityCode")
+            .HasMaxLength(10);
 
         builder.Property(so => so.CustomerId)
             .HasColumnName("CustomerId");
@@ -74,6 +78,13 @@ public class ServiceOrderMapping : IEntityTypeConfiguration<ServiceOrder>
             s.Property(x => x.ServiceOrderSolution)
                 .HasColumnName("Solution")
                 .HasMaxLength(500);
+        });
+
+        builder.OwnsOne(x => x.Guarantee, g =>
+        {
+            g.Property(x => x.ServiceOrderGuarantee)
+                .HasColumnName("Guarantee")
+                .HasMaxLength(300);
         });
 
         builder.OwnsOne(x => x.PartCost, pc =>

@@ -33,9 +33,18 @@ public class UpdateServiceOrderCommand : ICommand
 
         if (!Enum.IsDefined(typeof(EProduct), ProductType))
             throw new CommandException<UpdateServiceOrderCommand>("O tipo de produto no UpdateServiceOrderCommand é inválido.");
-            
+
         if (!Enum.IsDefined(typeof(EEnterprise), Enterprise))
             throw new CommandException<UpdateServiceOrderCommand>("A empresa informada no UpdateServiceOrderCommand é inválida.");
 
+    }
+    
+    public void Normalize()
+    {
+        ProductBrand = ProductBrand.Trim().ToUpper();
+        ProductModel = ProductModel.Trim().ToUpper();
+        ProductSerialNumber = ProductSerialNumber.Trim().ToUpper();
+        ProductDefect = ProductDefect.Trim().ToUpper();
+        Accessories = Accessories.Trim().ToUpper();
     }
 }

@@ -1,3 +1,5 @@
+using TVS_App.Domain.Exceptions;
+
 namespace TVS_App.Domain.ValueObjects.Customer;
 
 public class Address : ValueObject
@@ -11,6 +13,9 @@ public class Address : ValueObject
         string zipCode,
         string state)
     {
+        if (state.Length > 2)
+            throw new ValueObjectException<Address>("O state não pode ser maior que 2 caracteres");
+
         Street = street;
         Neighborhood = neighborhood;
         City = city;

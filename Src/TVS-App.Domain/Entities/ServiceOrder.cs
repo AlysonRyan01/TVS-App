@@ -16,8 +16,10 @@ public class ServiceOrder : Entity
         ServiceOrderStatus = EServiceOrderStatus.Entered;
         RepairStatus = ERepairStatus.Entered;
         Product = product;
+        SecurityCode = GenerateRandomCode();
     }
 
+    public string SecurityCode { get; private set; } = null!;
     public long CustomerId { get; private set; }
     public Customer Customer { get; private set; } = null!;
     public Product Product { get; private set; } = null!;
@@ -27,6 +29,7 @@ public class ServiceOrder : Entity
     public DateTime? RepairDate { get; private set; }
     public DateTime? DeliveryDate { get; private set; }
     public Solution? Solution { get; private set; }
+    public Guarantee? Guarantee { get; private set; }
     public PartCost PartCost { get; private set; } = new(0);
     public LaborCost LaborCost { get; private set; } = new(0);
     public decimal TotalAmount => PartCost.ServiceOrderPartCost + LaborCost.ServiceOrderLaborCost;
@@ -34,9 +37,10 @@ public class ServiceOrder : Entity
     public ERepairStatus RepairStatus { get; private set; }
     public ERepairResult? RepairResult { get; set; }
 
-    public void AddEstimate(string solution, decimal partCost, decimal laborCost, ERepairResult repairResult)
+    public void AddEstimate(string solution, string guarantee, decimal partCost, decimal laborCost, ERepairResult repairResult)
     {
         Solution = new Solution(solution);
+        Guarantee = new Guarantee(guarantee);
         PartCost = new PartCost(partCost);
         LaborCost = new LaborCost(laborCost);
         ServiceOrderStatus = EServiceOrderStatus.Evaluated;
@@ -95,5 +99,20 @@ public class ServiceOrder : Entity
         Product.UpdateProduct(productBrand, productModel,
             productSerialNumber, productDefect, accessories, productType);
         Enterprise = enterprise;
+    }
+
+    private string GenerateRandomCode()
+    {
+        const string letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+        const string digits = "0123456789";
+
+        Random random = new Random();
+
+        char letter1 = letters[random.Next(letters.Length)];
+        char digit1 = digits[random.Next(digits.Length)];
+        char letter2 = letters[random.Next(letters.Length)];
+        char digit2 = digits[random.Next(digits.Length)];
+
+        return $"{letter1}{digit1}{letter2}{digit2}".ToUpper();
     }
 }
