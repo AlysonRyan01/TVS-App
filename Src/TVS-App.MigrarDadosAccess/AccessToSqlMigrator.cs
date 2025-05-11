@@ -173,6 +173,7 @@ public class AccessToSqlMigrator
                     if (serviceOrder.Solution == null || string.IsNullOrEmpty(serviceOrder.Solution.ServiceOrderSolution))
                         serviceOrder.AddEstimate("Não tem", "3 MESES", serviceOrder.PartCost.ServiceOrderPartCost, serviceOrder.LaborCost.ServiceOrderLaborCost, serviceOrder.RepairResult ?? ERepairResult.Repair);
                     serviceOrder.ApproveEstimate();
+                    serviceOrder.AddPurchasedPart();
                     serviceOrder.ExecuteRepair();
                 }
 
