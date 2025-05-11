@@ -21,7 +21,7 @@ public static class ServiceOrderEndpoints
                 if (!createOrderResult.IsSuccess)
                     return Results.BadRequest(new BaseResponse<ServiceOrder>(null, 404, createOrderResult.Message));
 
-                return Results.Ok(createOrderResult);
+                return Results.File(createOrderResult.Data!, "application/pdf", "ordem_servico.pdf");
             }
             catch (Exception ex)
             {
@@ -295,7 +295,7 @@ public static class ServiceOrderEndpoints
                 if (!createOrderResult.IsSuccess)
                     return Results.BadRequest(new BaseResponse<ServiceOrder>(null, 404, createOrderResult.Message));
 
-                return Results.Ok(createOrderResult);
+                return Results.File(createOrderResult.Data!, "application/pdf", "ordem_servico.pdf");
             }
             catch (Exception ex)
             {
@@ -314,7 +314,7 @@ public static class ServiceOrderEndpoints
                 if (!createOrderResult.IsSuccess)
                     return Results.BadRequest(new BaseResponse<ServiceOrder>(null, 404, createOrderResult.Message));
 
-                return Results.Ok(createOrderResult);
+                return Results.File(createOrderResult.Data!, "application/pdf", "ordem_servico.pdf");
             }
             catch (Exception ex)
             {
