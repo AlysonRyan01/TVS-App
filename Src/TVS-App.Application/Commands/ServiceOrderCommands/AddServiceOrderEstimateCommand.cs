@@ -33,5 +33,6 @@ public class AddServiceOrderEstimateCommand : ICommand
     public void Normalize()
     {
         Solution = Solution.Trim().ToUpper();
+        Guarantee = Guarantee.Trim().ToUpper();
     }
 }

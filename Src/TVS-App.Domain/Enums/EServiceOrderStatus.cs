@@ -5,5 +5,6 @@ public enum EServiceOrderStatus
     Entered = 1,
     Evaluated = 2,
     Repaired = 3,
-    Delivered = 4
+    Delivered = 4,
+    OrderPart = 5
 }

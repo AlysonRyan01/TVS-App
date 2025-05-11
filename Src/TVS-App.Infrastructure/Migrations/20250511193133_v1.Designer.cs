@@ -12,7 +12,7 @@ using TVS_App.Infrastructure.Data;
 namespace TVS_App.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDataContext))]
-    [Migration("20250511035018_v1")]
+    [Migration("20250511193133_v1")]
     partial class v1
     {
         /// <inheritdoc />
@@ -195,6 +195,9 @@ namespace TVS_App.Infrastructure.Migrations
                     b.Property<DateTime?>("InspectionDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<DateTime?>("PurchasePartDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<DateTime?>("RepairDate")
                         .HasColumnType("datetime2");
 
@@ -203,6 +206,9 @@ namespace TVS_App.Infrastructure.Migrations
 
                     b.Property<int>("RepairStatus")
                         .HasColumnType("int");
+
+                    b.Property<DateTime?>("ResponseDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("SecurityCode")
                         .IsRequired()

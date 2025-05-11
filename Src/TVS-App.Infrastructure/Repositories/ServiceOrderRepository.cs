@@ -61,6 +61,8 @@ public class ServiceOrderRepository : IServiceOrderRepository
             var totalCount = await _context.ServiceOrders.CountAsync();
 
             var serviceOrders = await _context.ServiceOrders
+                .AsNoTracking()
+                .Include(x => x.Customer)
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();
@@ -84,7 +86,10 @@ public class ServiceOrderRepository : IServiceOrderRepository
             if (id <= 0)
                 return new BaseResponse<ServiceOrder?>(null, 400, "O ID não pode ser igual ou menor que 0");
 
-            var serviceOrder = await _context.ServiceOrders.FindAsync(id);
+            var serviceOrder = await _context.ServiceOrders
+                .Include(x => x.Customer)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(x => x.Id == id);
             if (serviceOrder == null)
                 return new BaseResponse<ServiceOrder?>(null, 404, $"A ordem de serviço com ID:{id} não existe");
 
@@ -113,6 +118,8 @@ public class ServiceOrderRepository : IServiceOrderRepository
             var totalCount = await query.CountAsync();
 
             var deliveredServiceOrders = await query
+                .Include(x => x.Customer)
+                .AsNoTracking()
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();
@@ -145,6 +152,8 @@ public class ServiceOrderRepository : IServiceOrderRepository
             var totalCount = await query.CountAsync();
 
             var deliveredServiceOrders = await query
+                .Include(x => x.Customer)
+                .AsNoTracking()
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();
@@ -153,6 +162,40 @@ public class ServiceOrderRepository : IServiceOrderRepository
 
             var result = new PaginatedResult<ServiceOrder?>(deliveredServiceOrders, totalCount, pageNumber, pageSize, totalPages);
             return new BaseResponse<PaginatedResult<ServiceOrder?>>(result, 200, "Ordens de serviço pendentes de orçamento recuperadas com sucesso!");
+        }
+        catch (Exception ex)
+        {
+            return DbExceptionHandler.Handle<PaginatedResult<ServiceOrder?>>(ex);
+        }
+    }
+
+    public async Task<BaseResponse<PaginatedResult<ServiceOrder?>>> GetPendingPartPurchase(int pageNumber, int pageSize)
+    {
+        try
+        {
+            if (pageNumber < 1)
+                return new BaseResponse<PaginatedResult<ServiceOrder?>>(null, 400, "O número da página deve ser maior que zero.");
+
+            if (pageSize < 1)
+                return new BaseResponse<PaginatedResult<ServiceOrder?>>(null, 400, "O tamanho da página deve ser maior que zero.");
+
+            var query = _context.ServiceOrders
+                .Where(x => x.ServiceOrderStatus == EServiceOrderStatus.Evaluated && x.RepairStatus == ERepairStatus.Approved && !x.PurchasePartDate.HasValue)
+                .OrderBy(x => x.Id);
+
+            var totalCount = await query.CountAsync();
+
+            var deliveredServiceOrders = await query
+                .Include(x => x.Customer)
+                .AsNoTracking()
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            int? totalPages = totalCount > 0 ? (int?)Math.Ceiling(totalCount / (double)pageSize) : null;
+
+            var result = new PaginatedResult<ServiceOrder?>(deliveredServiceOrders, totalCount, pageNumber, pageSize, totalPages);
+            return new BaseResponse<PaginatedResult<ServiceOrder?>>(result, 200, "Ordens de serviço pendentes de compra de peça recuperadas com sucesso!");
         }
         catch (Exception ex)
         {
@@ -171,12 +214,14 @@ public class ServiceOrderRepository : IServiceOrderRepository
                 return new BaseResponse<PaginatedResult<ServiceOrder?>>(null, 400, "O tamanho da página deve ser maior que zero.");
 
             var query = _context.ServiceOrders
-                .Where(x => x.ServiceOrderStatus == EServiceOrderStatus.Evaluated && x.RepairStatus == ERepairStatus.Approved)
+                .Where(x => x.ServiceOrderStatus == EServiceOrderStatus.OrderPart && x.RepairStatus == ERepairStatus.Approved && x.PurchasePartDate.HasValue)
                 .OrderBy(x => x.Id);
 
             var totalCount = await query.CountAsync();
 
             var deliveredServiceOrders = await query
+                .Include(x => x.Customer)
+                .AsNoTracking()
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();
@@ -211,6 +256,8 @@ public class ServiceOrderRepository : IServiceOrderRepository
             var totalCount = await query.CountAsync();
 
             var deliveredServiceOrders = await query
+                .Include(x => x.Customer)
+                .AsNoTracking()
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();
@@ -243,6 +290,8 @@ public class ServiceOrderRepository : IServiceOrderRepository
             var totalCount = await query.CountAsync();
 
             var deliveredServiceOrders = await query
+                .Include(x => x.Customer)
+                .AsNoTracking()
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();

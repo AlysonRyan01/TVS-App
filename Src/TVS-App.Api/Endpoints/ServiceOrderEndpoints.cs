@@ -149,6 +149,26 @@ public static class ServiceOrderEndpoints
             }
         });
 
+        app.MapGet("/get-pending-purchase-service-orders/{pageNumber}/{pageSize}", async (ServiceOrderHandler handler, int pageNumber, int pageSize) =>
+        {
+            try
+            {
+                var command = new PaginationCommand { pageNumber = pageNumber, pageSize = pageSize };
+                command.Validate();
+
+                var createOrderResult = await handler.GetPendingPurchasePartAsync(command);
+                if (!createOrderResult.IsSuccess)
+                    return Results.BadRequest(new BaseResponse<PaginatedResult<ServiceOrder?>>(null, 404, createOrderResult.Message));
+
+                return Results.Ok(createOrderResult);
+            }
+            catch (Exception ex)
+            {
+                var response = EndpointExceptions.Handle<PaginatedResult<ServiceOrder?>>(ex);
+                return Results.BadRequest(response ?? new BaseResponse<PaginatedResult<ServiceOrder?>>(null, 500, $"Ocorreu um erro desconhecido: {ex.Message}"));
+            }
+        });
+
         app.MapGet("/get-waiting-parts-service-orders/{pageNumber}/{pageSize}", async (ServiceOrderHandler handler, int pageNumber, int pageSize) =>
         {
             try
@@ -254,6 +274,25 @@ public static class ServiceOrderEndpoints
                 command.Validate();
 
                 var createOrderResult = await handler.AddServiceOrderRejectEstimate(command);
+                if (!createOrderResult.IsSuccess)
+                    return Results.BadRequest(new BaseResponse<ServiceOrder>(null, 404, createOrderResult.Message));
+
+                return Results.Ok(createOrderResult);
+            }
+            catch (Exception ex)
+            {
+                var response = EndpointExceptions.Handle<ServiceOrder>(ex);
+                return Results.BadRequest(response ?? new BaseResponse<ServiceOrder>(null, 500, $"Ocorreu um erro desconhecido: {ex.Message}"));
+            }
+        });
+
+        app.MapPut("/add-service-order-purchased-part", async (ServiceOrderHandler handler, GetServiceOrderByIdCommand command) =>
+        {
+            try
+            {
+                command.Validate();
+
+                var createOrderResult = await handler.AddPurchasedPart(command);
                 if (!createOrderResult.IsSuccess)
                     return Results.BadRequest(new BaseResponse<ServiceOrder>(null, 404, createOrderResult.Message));
 

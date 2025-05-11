@@ -192,6 +192,9 @@ namespace TVS_App.Infrastructure.Migrations
                     b.Property<DateTime?>("InspectionDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<DateTime?>("PurchasePartDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<DateTime?>("RepairDate")
                         .HasColumnType("datetime2");
 
@@ -200,6 +203,9 @@ namespace TVS_App.Infrastructure.Migrations
 
                     b.Property<int>("RepairStatus")
                         .HasColumnType("int");
+
+                    b.Property<DateTime?>("ResponseDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("SecurityCode")
                         .IsRequired()

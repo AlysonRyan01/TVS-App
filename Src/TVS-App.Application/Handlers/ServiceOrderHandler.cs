@@ -187,6 +187,21 @@ public class ServiceOrderHandler
         }
     }
 
+    public async Task<BaseResponse<PaginatedResult<ServiceOrder?>>> GetPendingPurchasePartAsync(PaginationCommand command)
+    {
+        try
+        {
+            command.Validate();
+
+            return await _serviceOrderRepository.GetPendingPartPurchase(command.pageNumber, command.pageSize);
+        }
+        catch (Exception ex)
+        {
+
+            return new BaseResponse<PaginatedResult<ServiceOrder?>>(null, 500, $"Ocorreu um erro desconhecido ao buscar as ordens de servico: {ex.Message}");
+        }
+    }
+
     public async Task<BaseResponse<PaginatedResult<ServiceOrder?>>> GetWaitingPartsAsync(PaginationCommand command)
     {
         try
@@ -314,6 +329,34 @@ public class ServiceOrderHandler
         catch (Exception ex)
         {
             return new BaseResponse<ServiceOrder?>(null, 500, $"Ocorreu um erro desconhecido ao reprovar o orçamento na ordem de serviço: {ex.Message}");
+        }
+    }
+
+    public async Task<BaseResponse<ServiceOrder?>> AddPurchasedPart(GetServiceOrderByIdCommand command)
+    {
+        try
+        {
+            command.Validate();
+
+            var result = await _serviceOrderRepository.GetById(command.Id);
+            if (result == null || result.Data == null)
+                return new BaseResponse<ServiceOrder?>(null, 404, "Essa ordem de serviço não existe");
+
+            var serviceOrder = result.Data;
+
+            serviceOrder.AddPurchasedPart();
+
+            await _serviceOrderRepository.UpdateAsync(serviceOrder);
+
+            return new BaseResponse<ServiceOrder?>(serviceOrder, 200, "Ordem de serviço marcada como consetada com sucesso!");
+        }
+        catch (CommandException<GetServiceOrderByIdCommand> ex)
+        {
+            return new BaseResponse<ServiceOrder?>(null, 400, $"Erro de validação: {ex.Message}");
+        }
+        catch (Exception ex)
+        {
+            return new BaseResponse<ServiceOrder?>(null, 500, $"Ocorreu um erro desconhecido ao marcar peça comprada na ordem de serviço: {ex.Message}");
         }
     }
 

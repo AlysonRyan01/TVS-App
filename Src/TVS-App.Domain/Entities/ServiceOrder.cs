@@ -26,7 +26,9 @@ public class ServiceOrder : Entity
     public EEnterprise Enterprise { get; private set; }
     public DateTime EntryDate { get; private set; }
     public DateTime? InspectionDate { get; private set; }
+    public DateTime? ResponseDate { get; set; }
     public DateTime? RepairDate { get; private set; }
+    public DateTime? PurchasePartDate { get; private set; }
     public DateTime? DeliveryDate { get; private set; }
     public Solution? Solution { get; private set; }
     public Guarantee? Guarantee { get; private set; }
@@ -55,6 +57,7 @@ public class ServiceOrder : Entity
             throw new EntityException<ServiceOrder>("A solução não pode estar nula ao adicionar a aprovação");
 
         RepairStatus = ERepairStatus.Approved;
+        ResponseDate = DateTime.UtcNow;
     }
 
     public void RejectEstimate()
@@ -63,6 +66,13 @@ public class ServiceOrder : Entity
             throw new EntityException<ServiceOrder>("A solução não pode estar nula ao adicionar a rejeição");
 
         RepairStatus = ERepairStatus.Disapproved;
+        ResponseDate = DateTime.UtcNow;
+    }
+
+    public void AddPurchasedPart()
+    {
+        ServiceOrderStatus = EServiceOrderStatus.OrderPart;
+        PurchasePartDate = DateTime.UtcNow;
     }
 
     public void ExecuteRepair()

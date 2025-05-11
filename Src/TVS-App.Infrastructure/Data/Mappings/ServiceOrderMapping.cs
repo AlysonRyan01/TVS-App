@@ -17,6 +17,8 @@ public class ServiceOrderMapping : IEntityTypeConfiguration<ServiceOrder>
 
         builder.Property(x => x.EntryDate).IsRequired();
         builder.Property(x => x.InspectionDate);
+        builder.Property(x => x.ResponseDate);
+        builder.Property(x => x.PurchasePartDate);
         builder.Property(x => x.RepairDate);
         builder.Property(x => x.DeliveryDate);
 
