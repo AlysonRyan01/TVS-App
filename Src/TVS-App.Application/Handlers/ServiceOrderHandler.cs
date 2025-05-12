@@ -99,6 +99,35 @@ public class ServiceOrderHandler
         }
     }
 
+    public async Task<BaseResponse<ServiceOrder?>> AddProductLocation(AddProductLocationCommand command)
+    {
+        try
+        {
+            command.Normalize();
+            command.Validate();
+
+            var result = await _serviceOrderRepository.GetById(command.ServiceOrderId);
+            if (result == null || result.Data == null)
+                return new BaseResponse<ServiceOrder?>(null, 404, "Essa ordem de serviço não existe");
+
+            var serviceOrder = result.Data;
+
+            serviceOrder.Product.AddLocation(command.Location);
+
+            await _serviceOrderRepository.UpdateAsync(serviceOrder);
+
+            return new BaseResponse<ServiceOrder?>(serviceOrder, 200, "Localização do produto adicionada com sucesso!");
+        }
+        catch (CommandException<GetServiceOrderByIdCommand> ex)
+        {
+            return new BaseResponse<ServiceOrder?>(null, 400, $"Erro de validação: {ex.Message}");
+        }
+        catch (Exception ex)
+        {
+            return new BaseResponse<ServiceOrder?>(null, 500, $"Ocorreu um erro desconhecido ao aprovar o orçamento na ordem de serviço: {ex.Message}");
+        }
+    }
+
     public async Task<BaseResponse<ServiceOrder?>> GetServiceOrderById(GetServiceOrderByIdCommand command)
     {
         try

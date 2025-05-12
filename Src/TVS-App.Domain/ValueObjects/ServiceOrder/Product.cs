@@ -23,6 +23,7 @@ public class Product : ValueObject
     public string? Defect { get; private set; } = null!;
     public string? Accessories { get; private set; }
     public EProduct Type { get; private set; }
+    public string Location { get; private set; } = string.Empty;
 
     public void UpdateProduct(string brand, string model, string serialNumber, string defect, string accessories, EProduct type)
     {
@@ -32,5 +33,10 @@ public class Product : ValueObject
         Defect = defect;
         Accessories = accessories;
         Type = type;
+    }
+
+    public void AddLocation(string location)
+    {
+        Location = location;
     }
 }

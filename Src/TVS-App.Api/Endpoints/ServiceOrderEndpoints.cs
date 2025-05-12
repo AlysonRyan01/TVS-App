@@ -229,6 +229,25 @@ public static class ServiceOrderEndpoints
             }
         }).WithTags("ServiceOrder").RequireAuthorization();
 
+        app.MapPut("/add-product-location", async (ServiceOrderHandler handler, AddProductLocationCommand command) =>
+        {
+            try
+            {
+                command.Validate();
+
+                var createOrderResult = await handler.AddProductLocation(command);
+                if (!createOrderResult.IsSuccess)
+                    return Results.BadRequest(new BaseResponse<ServiceOrder>(null, 404, createOrderResult.Message));
+
+                return Results.Ok(createOrderResult);
+            }
+            catch (Exception ex)
+            {
+                var response = EndpointExceptions.Handle<ServiceOrder>(ex);
+                return Results.BadRequest(response ?? new BaseResponse<ServiceOrder>(null, 500, $"Ocorreu um erro desconhecido: {ex.Message}"));
+            }
+        }).WithTags("ServiceOrder").RequireAuthorization();
+
         app.MapPut("/add-service-order-estimate", async (ServiceOrderHandler handler, AddServiceOrderEstimateCommand command) =>
         {
             try

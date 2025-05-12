@@ -66,13 +66,17 @@ public class ServiceOrderMapping : IEntityTypeConfiguration<ServiceOrder>
             p.Property(x => x.Defect)
                 .HasColumnName("Product_Defect")
                 .HasMaxLength(300);
-                
+
             p.Property(x => x.Accessories)
                 .HasColumnName("Product_Accessories")
                 .HasMaxLength(300);
 
             p.Property(x => x.Type)
                 .HasColumnName("Product_Type");
+                
+            p.Property(x => x.Location)
+                .HasColumnName("Product_Location")
+                .HasMaxLength(100);
         });
 
         builder.OwnsOne(x => x.Solution, s =>
