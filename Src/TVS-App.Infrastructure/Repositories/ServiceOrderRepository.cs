@@ -119,8 +119,10 @@ public class ServiceOrderRepository : IServiceOrderRepository
             if (pageSize < 1)
                 return new BaseResponse<PaginatedResult<ServiceOrder?>>(null, 400, "O tamanho da página deve ser maior que zero.");
 
+            var OneMonthAgo = DateTime.UtcNow.AddMonths(-1);
+
             var query = _context.ServiceOrders
-                .Where(x => x.ServiceOrderStatus == EServiceOrderStatus.Delivered)
+                .Where(x => x.ServiceOrderStatus == EServiceOrderStatus.Delivered && x.DeliveryDate >= OneMonthAgo)
                 .OrderBy(x => x.Id);
 
             var totalCount = await query.CountAsync();
@@ -153,8 +155,11 @@ public class ServiceOrderRepository : IServiceOrderRepository
             if (pageSize < 1)
                 return new BaseResponse<PaginatedResult<ServiceOrder?>>(null, 400, "O tamanho da página deve ser maior que zero.");
 
+            var OneMonthAgo = DateTime.UtcNow.AddMonths(-1);
+
             var query = _context.ServiceOrders
-                .Where(x => x.ServiceOrderStatus == EServiceOrderStatus.Entered && x.RepairStatus == ERepairStatus.Entered)
+                .Where(x => x.ServiceOrderStatus == EServiceOrderStatus.Entered &&
+                    x.RepairStatus == ERepairStatus.Entered && x.EntryDate >= OneMonthAgo)
                 .OrderBy(x => x.Id);
 
             var totalCount = await query.CountAsync();
@@ -187,8 +192,13 @@ public class ServiceOrderRepository : IServiceOrderRepository
             if (pageSize < 1)
                 return new BaseResponse<PaginatedResult<ServiceOrder?>>(null, 400, "O tamanho da página deve ser maior que zero.");
 
+            var OneMonthAgo = DateTime.UtcNow.AddMonths(-1);
+
             var query = _context.ServiceOrders
-                .Where(x => x.ServiceOrderStatus == EServiceOrderStatus.Evaluated && x.RepairStatus == ERepairStatus.Approved && !x.PurchasePartDate.HasValue)
+                .Where(x => x.ServiceOrderStatus == EServiceOrderStatus.Evaluated &&
+                    x.RepairStatus == ERepairStatus.Approved &&
+                    !x.PurchasePartDate.HasValue &&
+                    x.ResponseDate >= OneMonthAgo)
                 .OrderBy(x => x.Id);
 
             var totalCount = await query.CountAsync();
@@ -221,8 +231,13 @@ public class ServiceOrderRepository : IServiceOrderRepository
             if (pageSize < 1)
                 return new BaseResponse<PaginatedResult<ServiceOrder?>>(null, 400, "O tamanho da página deve ser maior que zero.");
 
+            var TwoMonthAgo = DateTime.UtcNow.AddMonths(-2);
+
             var query = _context.ServiceOrders
-                .Where(x => x.ServiceOrderStatus == EServiceOrderStatus.OrderPart && x.RepairStatus == ERepairStatus.Approved && x.PurchasePartDate.HasValue)
+                .Where(x => x.ServiceOrderStatus == EServiceOrderStatus.OrderPart &&
+                    x.RepairStatus == ERepairStatus.Approved &&
+                    x.PurchasePartDate.HasValue &&
+                    x.PurchasePartDate >= TwoMonthAgo)
                 .OrderBy(x => x.Id);
 
             var totalCount = await query.CountAsync();
@@ -255,9 +270,11 @@ public class ServiceOrderRepository : IServiceOrderRepository
             if (pageSize < 1)
                 return new BaseResponse<PaginatedResult<ServiceOrder?>>(null, 400, "O tamanho da página deve ser maior que zero.");
 
+            var TwelveMonthAgo = DateTime.UtcNow.AddMonths(-12);
+
             var query = _context.ServiceOrders
                 .Where(x => x.ServiceOrderStatus == EServiceOrderStatus.Repaired ||
-                (x.ServiceOrderStatus == EServiceOrderStatus.Evaluated &&
+                (x.ServiceOrderStatus == EServiceOrderStatus.Evaluated && x.RepairDate >= TwelveMonthAgo &&
                 (x.RepairStatus == ERepairStatus.Disapproved || x.RepairResult == ERepairResult.Unrepaired || x.RepairResult == ERepairResult.NoDefectFound)))
                 .OrderBy(x => x.Id);
 
@@ -291,8 +308,11 @@ public class ServiceOrderRepository : IServiceOrderRepository
             if (pageSize < 1)
                 return new BaseResponse<PaginatedResult<ServiceOrder?>>(null, 400, "O tamanho da página deve ser maior que zero.");
 
+            var SixMonthAgo = DateTime.UtcNow.AddMonths(-6);
+
             var query = _context.ServiceOrders
-                .Where(x => x.ServiceOrderStatus == EServiceOrderStatus.Evaluated && x.RepairStatus == ERepairStatus.Waiting)
+                .Where(x => x.ServiceOrderStatus == EServiceOrderStatus.Evaluated &&
+                    x.RepairStatus == ERepairStatus.Waiting && x.InspectionDate >= SixMonthAgo)
                 .OrderBy(x => x.Id);
 
             var totalCount = await query.CountAsync();
