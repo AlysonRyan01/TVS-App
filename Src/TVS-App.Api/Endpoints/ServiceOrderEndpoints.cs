@@ -35,7 +35,7 @@ public static class ServiceOrderEndpoints
             }
         }).WithTags("ServiceOrder").RequireAuthorization();
 
-        app.MapPut("/update-service-order-by-id", async (ServiceOrderHandler handler, UpdateServiceOrderCommand command) =>
+        app.MapPut("/update-service-order-by-id", async (ServiceOrderHandler handler, UpdateServiceOrderCommand command, IHubContext<ServiceOrderHub> hubContext) =>
         {
             try
             {
@@ -44,6 +44,8 @@ public static class ServiceOrderEndpoints
                 var createOrderResult = await handler.UpdateServiceOrderAsync(command);
                 if (!createOrderResult.IsSuccess)
                     return Results.BadRequest(new BaseResponse<ServiceOrder>(null, 404, createOrderResult.Message));
+
+                await hubContext.Clients.All.SendAsync("Atualizar", createOrderResult.Message);
 
                 return Results.Ok(createOrderResult);
             }
