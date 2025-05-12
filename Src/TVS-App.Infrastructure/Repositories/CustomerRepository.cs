@@ -57,6 +57,7 @@ public class CustomerRepository : ICustomerRepository
             var totalCount = await _context.Customers.CountAsync();
 
             var customers = await _context.Customers
+                .OrderBy(c => c.Name)
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();
