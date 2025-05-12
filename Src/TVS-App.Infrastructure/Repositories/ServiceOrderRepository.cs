@@ -287,12 +287,12 @@ public class ServiceOrderRepository : IServiceOrderRepository
             if (pageSize < 1)
                 return new BaseResponse<PaginatedResult<ServiceOrder?>>(null, 400, "O tamanho da página deve ser maior que zero.");
 
-            var TwelveMonthAgo = DateTime.UtcNow.AddMonths(-12);
+            var SixMonths = DateTime.UtcNow.AddMonths(-6);
 
             var query = _context.ServiceOrders
-                .Where(x => x.ServiceOrderStatus == EServiceOrderStatus.Repaired ||
-                (x.ServiceOrderStatus == EServiceOrderStatus.Evaluated && x.RepairDate >= TwelveMonthAgo &&
-                (x.RepairStatus == ERepairStatus.Disapproved || x.RepairResult == ERepairResult.Unrepaired || x.RepairResult == ERepairResult.NoDefectFound)))
+                .Where(x => x.RepairDate >= SixMonths && (x.ServiceOrderStatus == EServiceOrderStatus.Repaired ||
+                (x.ServiceOrderStatus == EServiceOrderStatus.Evaluated &&
+                (x.RepairStatus == ERepairStatus.Disapproved || x.RepairResult == ERepairResult.Unrepaired || x.RepairResult == ERepairResult.NoDefectFound))))
                 .OrderBy(x => x.Id);
 
             var totalCount = await query.CountAsync();

@@ -9,7 +9,7 @@ public class Program
         string accessConnStr = @"Provider=Microsoft.ACE.OLEDB.16.0;Data Source=C:\sisos\os.mdb;";
 
         var options = new DbContextOptionsBuilder<ApplicationDataContext>()
-            .UseSqlServer("Server=.\\SQLEXPRESS;Database=tvs-database;Trusted_Connection=True;TrustServerCertificate=True;")
+            .UseSqlServer("Server=localhost,1433;Database=tvs;User ID=sa;Password=1q2w3e4r@#$;Trusted_Connection=False; TrustServerCertificate=True;")
             .Options;
 
         var dbContext = new ApplicationDataContext(options);

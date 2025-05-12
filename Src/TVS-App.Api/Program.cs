@@ -4,18 +4,19 @@ using TVS_App.Api.Common;
 var builder = WebApplication.CreateBuilder(args);
 
 QuestPDF.Settings.License = LicenseType.Community;
-builder.AddAuthentication();
 builder.AddSqlServer();
-builder.AddDependencies();
 builder.AddIdentity();
+builder.AddAuthentication();
 builder.AddJwtService();
 builder.ConfigureJsonSerializer();
-builder.Services.AddSwaggerGen();
-builder.Services.AddEndpointsApiExplorer(); 
+builder.AddDependencies();
+builder.AddSwagger();
 
 var app = builder.Build();
 
-app.AddAuthorization();
+app.UseAuthentication();
+app.UseAuthorization();
+
 app.AddEndpoints();
 app.AddSwagger();
 

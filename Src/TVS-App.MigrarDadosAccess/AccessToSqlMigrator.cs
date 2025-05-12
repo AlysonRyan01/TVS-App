@@ -87,6 +87,11 @@ public class AccessToSqlMigrator
         for (int i = 1; i <= 28001; i++)
         {
             var order = new ServiceOrder(EEnterprise.Particular, 1, new Product("NÃO TEM", "NÃO TEM", "NÃO TEM", "NÃO TEM", "NÃO TEM", EProduct.Tv));
+            order.EntryDate = new DateTime(2009, 1, 1);
+            order.AddEstimate("NAO TEM", "NAO TEM", 0M, 0M, ERepairResult.NoDefectFound);
+            order.InspectionDate = new DateTime(2009, 1, 1);
+            order.AddDelivery();
+            order.DeliveryDate = new DateTime(2009, 1, 1);
             order.Id = 0;
             listUselessOrders.Add(order);
             Console.WriteLine("adicionando OS para popular o banco");
@@ -149,7 +154,13 @@ public class AccessToSqlMigrator
                 var serviceOrderId = 0;
                 var serviceOrder = new ServiceOrder(enterprise, customerId, product) { Id = serviceOrderId };
 
-                if (reader["solution"] != DBNull.Value && !string.IsNullOrWhiteSpace(reader["solution"]?.ToString()))
+                if (reader["entryDate"] != DBNull.Value)
+                {
+                    serviceOrder.EntryDate = Convert.ToDateTime(reader["entryDate"]);
+                }
+
+                if (reader["solution"] != DBNull.Value && !string.IsNullOrWhiteSpace(reader["solution"]?.ToString()) &&
+                    reader["inspectionDate"] != DBNull.Value && !string.IsNullOrWhiteSpace(reader["inspectionDate"]?.ToString()))
                 {
                     var solution = reader["solution"] as string ?? "Não tem";
                     var partCost = reader["partCost"] != DBNull.Value ? Convert.ToDecimal(reader["partCost"]) : 0;
@@ -162,6 +173,7 @@ public class AccessToSqlMigrator
                         : unrepaired ? ERepairResult.Unrepaired : ERepairResult.Unrepaired;
 
                     serviceOrder.AddEstimate(solution, "3 MESES", partCost, laborCost, repairResult);
+                    serviceOrder.InspectionDate = Convert.ToDateTime(reader["inspectionDate"]);
                 }
 
                 var status = (EServiceOrderStatus)Convert.ToInt32(reader["eServiceOrderStatus"]);
@@ -175,11 +187,28 @@ public class AccessToSqlMigrator
                     serviceOrder.ApproveEstimate();
                     serviceOrder.AddPurchasedPart();
                     serviceOrder.ExecuteRepair();
+                    serviceOrder.RepairDate = Convert.ToDateTime(reader["repairDate"]);
                 }
 
                 if (status == EServiceOrderStatus.Delivered || deliveryDate.HasValue)
                 {
                     serviceOrder.AddDelivery();
+                    serviceOrder.DeliveryDate = Convert.ToDateTime(reader["deliveryDate"]);
+                }
+
+                if (reader["inspectionDate"] != DBNull.Value)
+                {
+                    serviceOrder.InspectionDate = Convert.ToDateTime(reader["inspectionDate"]);
+                }
+
+                if (reader["repairDate"] != DBNull.Value)
+                {
+                    serviceOrder.RepairDate = Convert.ToDateTime(reader["repairDate"]);
+                }
+
+                if (reader["deliveryDate"] != DBNull.Value)
+                {
+                    serviceOrder.DeliveryDate = Convert.ToDateTime(reader["deliveryDate"]);
                 }
 
                 if (!_sqlDbContext.Customers.Any(c => c.Id == serviceOrder.CustomerId))

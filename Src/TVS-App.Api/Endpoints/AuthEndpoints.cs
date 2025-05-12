@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.Data;
 using TVS_App.Application.DTOs;
@@ -49,7 +50,13 @@ public static class AuthEndpoints
             var token = await jwtService.Generate(user);
 
             return Results.Ok(new BaseResponse<string>(token, 200, "Usuário criado com sucesso!"));
-        }).WithTags("Auth").RequireAuthorization();
+        }).WithTags("Auth");
+
+        app.MapGet("/test-auth", (ClaimsPrincipal user) =>
+        {
+            var name = user.Identity?.Name ?? "Sem nome";
+            return Results.Ok($"Usuário autenticado: {name}");
+        }).RequireAuthorization();
     }
 }
     
