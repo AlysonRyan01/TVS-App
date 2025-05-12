@@ -69,6 +69,23 @@ public static class ServiceOrderEndpoints
             }
         }).WithTags("ServiceOrder").RequireAuthorization();
 
+        app.MapGet("/get-service-orders-by-customer-name/{name}", async (ServiceOrderHandler handler, string name) =>
+        {
+            try
+            {
+                var createOrderResult = await handler.GetServiceOrdersByCustomerName(name);
+                if (!createOrderResult.IsSuccess)
+                    return Results.BadRequest(new BaseResponse<List<ServiceOrder>>(null, 404, createOrderResult.Message));
+
+                return Results.Ok(createOrderResult);
+            }
+            catch (Exception ex)
+            {
+                var response = EndpointExceptions.Handle<List<ServiceOrder>>(ex);
+                return Results.BadRequest(response ?? new BaseResponse<List<ServiceOrder>>(null, 500, $"Ocorreu um erro desconhecido: {ex.Message}"));
+            }
+        }).WithTags("ServiceOrder").RequireAuthorization();
+
         app.MapGet("/get-service-order-for-customer/{id}/{code}", async (ServiceOrderHandler handler, long id, string code) =>
         {
             try
@@ -235,11 +252,11 @@ public static class ServiceOrderEndpoints
             {
                 command.Validate();
 
-                var createOrderResult = await handler.AddProductLocation(command);
-                if (!createOrderResult.IsSuccess)
-                    return Results.BadRequest(new BaseResponse<ServiceOrder>(null, 404, createOrderResult.Message));
+                var addLocationResult = await handler.AddProductLocation(command);
+                if (!addLocationResult.IsSuccess)
+                    return Results.BadRequest(new BaseResponse<ServiceOrder>(null, 404, addLocationResult.Message));
 
-                return Results.Ok(createOrderResult);
+                return Results.Ok(addLocationResult);
             }
             catch (Exception ex)
             {

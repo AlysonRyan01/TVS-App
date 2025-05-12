@@ -11,6 +11,7 @@ public interface IServiceOrderRepository
     Task<BaseResponse<ServiceOrder?>> GetById(long id);
     Task<BaseResponse<PaginatedResult<ServiceOrder?>>> GetAllAsync(int pageNumber, int pageSize);
 
+    Task<BaseResponse<List<ServiceOrder>>> GetServiceOrdersByCustomerName(string customerName);
     Task<BaseResponse<PaginatedResult<ServiceOrder?>>> GetPendingEstimatesAsync(int pageNumber, int pageSize);
     Task<BaseResponse<PaginatedResult<ServiceOrder?>>> GetWaitingResponseAsync(int pageNumber, int pageSize);
     Task<BaseResponse<PaginatedResult<ServiceOrder?>>> GetPendingPartPurchase(int pageNumber, int pageSize);

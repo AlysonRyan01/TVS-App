@@ -128,6 +128,22 @@ public class ServiceOrderHandler
         }
     }
 
+    public async Task<BaseResponse<List<ServiceOrder>>> GetServiceOrdersByCustomerName(string customerName)
+    {
+        try
+        {
+            return await _serviceOrderRepository.GetServiceOrdersByCustomerName(customerName);
+        }
+        catch (CommandException<GetServiceOrderByIdCommand> ex)
+        {
+            return new BaseResponse<List<ServiceOrder>>(null, 400, $"Erro de validação: {ex.Message}");
+        }
+        catch (Exception ex)
+        {
+            return new BaseResponse<List<ServiceOrder>>(null, 500, $"Ocorreu um erro desconhecido ao buscar a ordem de servico: {ex.Message}");
+        }
+    }
+
     public async Task<BaseResponse<ServiceOrder?>> GetServiceOrderById(GetServiceOrderByIdCommand command)
     {
         try

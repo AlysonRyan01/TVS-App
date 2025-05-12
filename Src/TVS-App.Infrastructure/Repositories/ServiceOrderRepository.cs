@@ -109,6 +109,23 @@ public class ServiceOrderRepository : IServiceOrderRepository
         }
     }
 
+    public async Task<BaseResponse<List<ServiceOrder>>> GetServiceOrdersByCustomerName(string customerName)
+    {
+        try
+        {
+            var serviceOrders = await _context.ServiceOrders
+                .Include(so => so.Customer)
+                .Where(so => so.Customer.Name.CustomerName.Contains(customerName))
+                .ToListAsync();
+
+            return new BaseResponse<List<ServiceOrder>>(serviceOrders, 200, "Ordens obtidas com sucesso!");
+        }
+        catch (Exception ex)
+        {
+            return DbExceptionHandler.Handle<List<ServiceOrder>>(ex);
+        }
+    }
+
     public async Task<BaseResponse<PaginatedResult<ServiceOrder?>>> GetDeliveredAsync(int pageNumber, int pageSize)
     {
         try
