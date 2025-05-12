@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Mvc;
 using TVS_App.Api.Exceptions;
 using TVS_App.Application.Commands;
 using TVS_App.Application.Commands.ServiceOrderCommands;
@@ -69,7 +70,7 @@ public static class ServiceOrderEndpoints
             }
         }).WithTags("ServiceOrder").RequireAuthorization();
 
-        app.MapGet("/get-service-orders-by-customer-name/{name}", async (ServiceOrderHandler handler, string name) =>
+        app.MapGet("/get-service-orders-by-customer-name", async (ServiceOrderHandler handler, [FromQuery]string name) =>
         {
             try
             {
