@@ -557,6 +557,12 @@ namespace TVS_App.Infrastructure.Migrations
                                 .HasColumnType("nvarchar(300)")
                                 .HasColumnName("Product_Defect");
 
+                            b1.Property<string>("Location")
+                                .IsRequired()
+                                .HasMaxLength(100)
+                                .HasColumnType("nvarchar(100)")
+                                .HasColumnName("Product_Location");
+
                             b1.Property<string>("Model")
                                 .IsRequired()
                                 .HasMaxLength(100)

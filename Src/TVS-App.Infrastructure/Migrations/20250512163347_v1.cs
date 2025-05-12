@@ -192,6 +192,7 @@ namespace TVS_App.Infrastructure.Migrations
                     Product_Defect = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: true),
                     Product_Accessories = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: true),
                     Product_Type = table.Column<int>(type: "int", nullable: false),
+                    Product_Location = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Enterprise = table.Column<int>(type: "int", nullable: false),
                     EntryDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     InspectionDate = table.Column<DateTime>(type: "datetime2", nullable: true),

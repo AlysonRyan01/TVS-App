@@ -12,7 +12,7 @@ using TVS_App.Infrastructure.Data;
 namespace TVS_App.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDataContext))]
-    [Migration("20250511193133_v1")]
+    [Migration("20250512163347_v1")]
     partial class v1
     {
         /// <inheritdoc />
@@ -559,6 +559,12 @@ namespace TVS_App.Infrastructure.Migrations
                                 .HasMaxLength(300)
                                 .HasColumnType("nvarchar(300)")
                                 .HasColumnName("Product_Defect");
+
+                            b1.Property<string>("Location")
+                                .IsRequired()
+                                .HasMaxLength(100)
+                                .HasColumnType("nvarchar(100)")
+                                .HasColumnName("Product_Location");
 
                             b1.Property<string>("Model")
                                 .IsRequired()
