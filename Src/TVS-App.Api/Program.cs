@@ -1,3 +1,4 @@
+using AutomatizarOs.Api.Hubs;
 using QuestPDF.Infrastructure;
 using TVS_App.Api.Common;
 
@@ -13,6 +14,8 @@ builder.AddDependencies();
 builder.AddSwagger();
 
 var app = builder.Build();
+
+app.MapHub<ServiceOrderHub>("/osHub");
 
 app.UseAuthentication();
 app.UseAuthorization();

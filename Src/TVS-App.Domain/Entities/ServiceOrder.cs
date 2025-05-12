@@ -28,7 +28,7 @@ public class ServiceOrder : Entity
     public DateTime? InspectionDate { get; set; }
     public DateTime? ResponseDate { get; set; }
     public DateTime? RepairDate { get; set; }
-    public DateTime? PurchasePartDate { get; private set; }
+    public DateTime? PurchasePartDate { get; set; }
     public DateTime? DeliveryDate { get; set; }
     public Solution? Solution { get; private set; }
     public Guarantee? Guarantee { get; private set; }

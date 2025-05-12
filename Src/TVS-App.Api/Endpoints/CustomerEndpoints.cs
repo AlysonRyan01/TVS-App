@@ -1,4 +1,6 @@
+using AutomatizarOs.Api.Hubs;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using TVS_App.Api.Exceptions;
 using TVS_App.Application.Commands;
 using TVS_App.Application.Commands.CustomerCommands;
@@ -12,7 +14,7 @@ public static class CustomerEndpoints
 {
     public static void MapCustomerEndpoints(this WebApplication app)
     {
-        app.MapPost("/create-customer", async (CustomerHandler handler, CreateCustomerCommand command) =>
+        app.MapPost("/create-customer", async (CustomerHandler handler, CreateCustomerCommand command, IHubContext<ServiceOrderHub> hubContext) =>
         {
             try
             {
@@ -21,6 +23,8 @@ public static class CustomerEndpoints
                 var createResult = await handler.CreateCustomerAsync(command);
                 if (!createResult.IsSuccess)
                     return Results.Problem(createResult.Message);
+
+                await hubContext.Clients.All.SendAsync("Atualizar", createResult.Message);
 
                 return Results.Ok(new BaseResponse<Customer>(createResult.Data, 200, createResult.Message));
             }
@@ -31,7 +35,7 @@ public static class CustomerEndpoints
             }
         }).WithTags("Customer").RequireAuthorization();
 
-        app.MapPut("/update-customer", async (CustomerHandler handler, UpdateCustomerCommand command) =>
+        app.MapPut("/update-customer", async (CustomerHandler handler, UpdateCustomerCommand command, IHubContext<ServiceOrderHub> hubContext) =>
         {
             try
             {
@@ -40,6 +44,8 @@ public static class CustomerEndpoints
                 var createResult = await handler.UpdateCustomerAsync(command);
                 if (!createResult.IsSuccess)
                     return Results.Problem(createResult.Message);
+
+                await hubContext.Clients.All.SendAsync("Atualizar", createResult.Message);
 
                 return Results.Ok(new BaseResponse<Customer>(createResult.Data, 200, createResult.Message));
             }

@@ -1,4 +1,6 @@
+using AutomatizarOs.Api.Hubs;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using TVS_App.Api.Exceptions;
 using TVS_App.Application.Commands;
 using TVS_App.Application.Commands.ServiceOrderCommands;
@@ -12,7 +14,7 @@ public static class ServiceOrderEndpoints
 {
     public static void MapServiceOrderEndpoints(this WebApplication app)
     {
-        app.MapPost("/create-service-order", async (ServiceOrderHandler handler, CreateServiceOrderCommand command) =>
+        app.MapPost("/create-service-order", async (ServiceOrderHandler handler, CreateServiceOrderCommand command, IHubContext<ServiceOrderHub> hubContext) =>
         {
             try
             {
@@ -21,6 +23,8 @@ public static class ServiceOrderEndpoints
                 var createOrderResult = await handler.CreateServiceOrderAndReturnPdfAsync(command);
                 if (!createOrderResult.IsSuccess)
                     return Results.BadRequest(new BaseResponse<ServiceOrder>(null, 404, createOrderResult.Message));
+
+                await hubContext.Clients.All.SendAsync("Atualizar", createOrderResult.Message);
 
                 return Results.File(createOrderResult.Data!, "application/pdf", "ordem_servico.pdf");
             }
@@ -70,7 +74,7 @@ public static class ServiceOrderEndpoints
             }
         }).WithTags("ServiceOrder").RequireAuthorization();
 
-        app.MapGet("/get-service-orders-by-customer-name", async (ServiceOrderHandler handler, [FromQuery]string name) =>
+        app.MapGet("/get-service-orders-by-customer-name", async (ServiceOrderHandler handler, [FromQuery] string name) =>
         {
             try
             {
@@ -247,7 +251,7 @@ public static class ServiceOrderEndpoints
             }
         }).WithTags("ServiceOrder").RequireAuthorization();
 
-        app.MapPut("/add-product-location", async (ServiceOrderHandler handler, AddProductLocationCommand command) =>
+        app.MapPut("/add-product-location", async (ServiceOrderHandler handler, AddProductLocationCommand command, IHubContext<ServiceOrderHub> hubContext) =>
         {
             try
             {
@@ -256,6 +260,8 @@ public static class ServiceOrderEndpoints
                 var addLocationResult = await handler.AddProductLocation(command);
                 if (!addLocationResult.IsSuccess)
                     return Results.BadRequest(new BaseResponse<ServiceOrder>(null, 404, addLocationResult.Message));
+
+                await hubContext.Clients.All.SendAsync("Atualizar", addLocationResult.Message);
 
                 return Results.Ok(addLocationResult);
             }
@@ -266,7 +272,7 @@ public static class ServiceOrderEndpoints
             }
         }).WithTags("ServiceOrder").RequireAuthorization();
 
-        app.MapPut("/add-service-order-estimate", async (ServiceOrderHandler handler, AddServiceOrderEstimateCommand command) =>
+        app.MapPut("/add-service-order-estimate", async (ServiceOrderHandler handler, AddServiceOrderEstimateCommand command, IHubContext<ServiceOrderHub> hubContext) =>
         {
             try
             {
@@ -276,6 +282,8 @@ public static class ServiceOrderEndpoints
                 if (!createOrderResult.IsSuccess)
                     return Results.BadRequest(new BaseResponse<ServiceOrder>(null, 404, createOrderResult.Message));
 
+                await hubContext.Clients.All.SendAsync("Atualizar", createOrderResult.Message);
+
                 return Results.Ok(createOrderResult);
             }
             catch (Exception ex)
@@ -285,7 +293,7 @@ public static class ServiceOrderEndpoints
             }
         }).WithTags("ServiceOrder").RequireAuthorization();
 
-        app.MapPut("/add-service-order-approve-estimate", async (ServiceOrderHandler handler, GetServiceOrderByIdCommand command) =>
+        app.MapPut("/add-service-order-approve-estimate", async (ServiceOrderHandler handler, GetServiceOrderByIdCommand command, IHubContext<ServiceOrderHub> hubContext) =>
         {
             try
             {
@@ -295,6 +303,8 @@ public static class ServiceOrderEndpoints
                 if (!createOrderResult.IsSuccess)
                     return Results.BadRequest(new BaseResponse<ServiceOrder>(null, 404, createOrderResult.Message));
 
+                await hubContext.Clients.All.SendAsync("Atualizar", createOrderResult.Message);
+
                 return Results.Ok(createOrderResult);
             }
             catch (Exception ex)
@@ -304,7 +314,7 @@ public static class ServiceOrderEndpoints
             }
         }).WithTags("ServiceOrder").RequireAuthorization();
 
-        app.MapPut("/add-service-order-reject-estimate", async (ServiceOrderHandler handler, GetServiceOrderByIdCommand command) =>
+        app.MapPut("/add-service-order-reject-estimate", async (ServiceOrderHandler handler, GetServiceOrderByIdCommand command, IHubContext<ServiceOrderHub> hubContext) =>
         {
             try
             {
@@ -314,6 +324,8 @@ public static class ServiceOrderEndpoints
                 if (!createOrderResult.IsSuccess)
                     return Results.BadRequest(new BaseResponse<ServiceOrder>(null, 404, createOrderResult.Message));
 
+                await hubContext.Clients.All.SendAsync("Atualizar", createOrderResult.Message);
+
                 return Results.Ok(createOrderResult);
             }
             catch (Exception ex)
@@ -323,7 +335,7 @@ public static class ServiceOrderEndpoints
             }
         }).WithTags("ServiceOrder").RequireAuthorization();
 
-        app.MapPut("/add-service-order-purchased-part", async (ServiceOrderHandler handler, GetServiceOrderByIdCommand command) =>
+        app.MapPut("/add-service-order-purchased-part", async (ServiceOrderHandler handler, GetServiceOrderByIdCommand command, IHubContext<ServiceOrderHub> hubContext) =>
         {
             try
             {
@@ -333,6 +345,8 @@ public static class ServiceOrderEndpoints
                 if (!createOrderResult.IsSuccess)
                     return Results.BadRequest(new BaseResponse<ServiceOrder>(null, 404, createOrderResult.Message));
 
+                await hubContext.Clients.All.SendAsync("Atualizar", createOrderResult.Message);
+
                 return Results.Ok(createOrderResult);
             }
             catch (Exception ex)
@@ -342,7 +356,7 @@ public static class ServiceOrderEndpoints
             }
         }).WithTags("ServiceOrder").RequireAuthorization();
 
-        app.MapPut("/add-service-order-repair", async (ServiceOrderHandler handler, GetServiceOrderByIdCommand command) =>
+        app.MapPut("/add-service-order-repair", async (ServiceOrderHandler handler, GetServiceOrderByIdCommand command, IHubContext<ServiceOrderHub> hubContext) =>
         {
             try
             {
@@ -352,6 +366,8 @@ public static class ServiceOrderEndpoints
                 if (!createOrderResult.IsSuccess)
                     return Results.BadRequest(new BaseResponse<ServiceOrder>(null, 404, createOrderResult.Message));
 
+                await hubContext.Clients.All.SendAsync("Atualizar", createOrderResult.Message);
+
                 return Results.Ok(createOrderResult);
             }
             catch (Exception ex)
@@ -361,7 +377,7 @@ public static class ServiceOrderEndpoints
             }
         }).WithTags("ServiceOrder").RequireAuthorization();
 
-        app.MapPut("/add-service-order-delivery", async (ServiceOrderHandler handler, GetServiceOrderByIdCommand command) =>
+        app.MapPut("/add-service-order-delivery", async (ServiceOrderHandler handler, GetServiceOrderByIdCommand command, IHubContext<ServiceOrderHub> hubContext) =>
         {
             try
             {
@@ -370,6 +386,8 @@ public static class ServiceOrderEndpoints
                 var createOrderResult = await handler.AddServiceOrderDeliveryAndReturnPdfAsync(command);
                 if (!createOrderResult.IsSuccess)
                     return Results.BadRequest(new BaseResponse<ServiceOrder>(null, 404, createOrderResult.Message));
+
+                await hubContext.Clients.All.SendAsync("Atualizar", createOrderResult.Message);
 
                 return Results.File(createOrderResult.Data!, "application/pdf", "ordem_servico.pdf");
             }

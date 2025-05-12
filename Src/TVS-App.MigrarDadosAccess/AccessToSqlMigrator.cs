@@ -185,7 +185,9 @@ public class AccessToSqlMigrator
                     if (serviceOrder.Solution == null || string.IsNullOrEmpty(serviceOrder.Solution.ServiceOrderSolution))
                         serviceOrder.AddEstimate("Não tem", "3 MESES", serviceOrder.PartCost.ServiceOrderPartCost, serviceOrder.LaborCost.ServiceOrderLaborCost, serviceOrder.RepairResult ?? ERepairResult.Repair);
                     serviceOrder.ApproveEstimate();
+                    serviceOrder.ResponseDate = serviceOrder.EntryDate;
                     serviceOrder.AddPurchasedPart();
+                    serviceOrder.PurchasePartDate = serviceOrder.ResponseDate;
                     serviceOrder.ExecuteRepair();
                     serviceOrder.RepairDate = Convert.ToDateTime(reader["repairDate"]);
                 }
