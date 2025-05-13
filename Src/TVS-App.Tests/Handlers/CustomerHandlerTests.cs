@@ -1,3 +1,4 @@
+using TVS_App.Application.Commands;
 using TVS_App.Application.Commands.CustomerCommands;
 using TVS_App.Application.Handlers;
 using TVS_App.Application.Repositories;
@@ -141,10 +142,10 @@ public class CustomerHandlerTests
                     Assert.Fail($"Falha ao criar cliente {i}");
             }
 
-            var getAllCustomersResult = await _customerHandler.GetAllCustomersAsync(1, 25);
+            var getAllCustomersResult = await _customerHandler.GetAllCustomersAsync(new PaginationCommand{ pageNumber = 1, pageSize = 25});
             
             if (!getAllCustomersResult.IsSuccess)
-            Assert.Fail("Falha ao buscar todos os clientes");
+                Assert.Fail("Falha ao buscar todos os clientes");
 
             var clientes = getAllCustomersResult.Data?.Items;
 

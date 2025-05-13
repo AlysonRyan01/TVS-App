@@ -49,7 +49,7 @@ public class ServiceOrderTests
     {
         var os = new ServiceOrder(EEnterprise.Particular, _customer.Id, _product);
 
-        os.AddEstimate("Trocar a placa", 150, 200, ERepairResult.Repair);
+        os.AddEstimate("Trocar a placa", "3 meses", 150, 200, ERepairResult.Repair);
 
         Assert.AreEqual("Trocar a placa", os.Solution!.ServiceOrderSolution);
         Assert.AreEqual(150, os.PartCost.ServiceOrderPartCost);
@@ -63,7 +63,7 @@ public class ServiceOrderTests
     public void deve_aprovar_orcamento()
     {
         var os = new ServiceOrder(EEnterprise.Particular, _customer.Id, _product);
-        os.AddEstimate("Trocar a placa", 150, 200, ERepairResult.Repair);
+        os.AddEstimate("Trocar a placa", "3 meses",  150, 200, ERepairResult.Repair);
 
         os.ApproveEstimate();
 
@@ -82,7 +82,7 @@ public class ServiceOrderTests
     public void deve_rejeitar_orcamento()
     {
         var os = new ServiceOrder(EEnterprise.Particular, _customer.Id, _product);
-        os.AddEstimate("Não compensa o conserto", 100, 100, ERepairResult.Unrepaired);
+        os.AddEstimate("Não compensa o conserto","3 meses", 100, 100, ERepairResult.Unrepaired);
 
         os.RejectEstimate();
 
@@ -93,7 +93,7 @@ public class ServiceOrderTests
     public void deve_executar_conserto_apos_aprovacao()
     {
         var os = new ServiceOrder(EEnterprise.Particular, _customer.Id, _product);
-        os.AddEstimate("Trocar fonte", 100, 150, ERepairResult.Repair);
+        os.AddEstimate("Trocar fonte","3 meses", 100, 150, ERepairResult.Repair);
         os.ApproveEstimate();
 
         os.ExecuteRepair();
@@ -114,7 +114,7 @@ public class ServiceOrderTests
     public void deve_registrar_entrega()
     {
         var os = new ServiceOrder(EEnterprise.Particular, _customer.Id, _product);
-        os.AddEstimate("Reparo simples", 50, 50, ERepairResult.Repair);
+        os.AddEstimate("Reparo simples","3 meses", 50, 50, ERepairResult.Repair);
         os.ApproveEstimate();
         os.ExecuteRepair();
 

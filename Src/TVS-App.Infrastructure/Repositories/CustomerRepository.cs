@@ -23,12 +23,9 @@ public class CustomerRepository : ICustomerRepository
         
         try
         {
-            if (customer == null)
-                return new BaseResponse<Customer?>(null, 404, "O cliente não pode ser nulo");
-
             transaction = await _context.Database.BeginTransactionAsync();
 
-            var createResult = await _context.Customers.AddAsync(customer);
+            await _context.Customers.AddAsync(customer);
             await _context.SaveChangesAsync();
 
             await transaction.CommitAsync();
@@ -99,9 +96,6 @@ public class CustomerRepository : ICustomerRepository
 
         try
         {
-            if (customer == null)
-                return new BaseResponse<Customer?>(null, 400, "O cliente não pode ser null");
-
             var existing = await _context.Customers.FindAsync(customer.Id);
             if (existing == null)
                 return new BaseResponse<Customer?>(null, 404, $"Cliente com id {customer.Id} não encontrado.");

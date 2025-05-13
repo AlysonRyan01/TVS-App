@@ -1,12 +1,25 @@
-﻿<Router AppAssembly="@typeof(App).Assembly">
-    <Found Context="routeData">
-        <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
-        <FocusOnNavigate RouteData="@routeData"/>
-    </Found>
-    <NotFound>
-        <PageTitle>Not found</PageTitle>
-        <LayoutView Layout="@typeof(MainLayout)">
-            <p role="alert">Sorry, there's nothing at this address.</p>
-        </LayoutView>
-    </NotFound>
-</Router>
+﻿@using Microsoft.AspNetCore.Components.Authorization
+@using TVS_App.Web.Components
+
+<CascadingAuthenticationState>
+    <Router AppAssembly="@typeof(App).Assembly">
+        <Found Context="routeData">
+            <AuthorizeRouteView RouteData="routeData">
+                <Authorizing>
+                    <div style="display: flex; justify-content: center; align-items: center; height: 20vh; flex-direction: column;">
+                        <p style="margin-top: 10px; font-size: 18px;">Carregando...</p>
+                    </div>
+                </Authorizing>
+                <NotAuthorized>
+                    <h1>Você não tem acesso a esta funcionalidade</h1>
+                    <RedirectToLogin/>
+                </NotAuthorized>
+            </AuthorizeRouteView>
+        </Found>
+        <NotFound>
+            <PageTitle>Not found</PageTitle>
+            <h1>Erro 404</h1>
+            <p>Página não encontrada</p>
+        </NotFound>
+    </Router>
+</CascadingAuthenticationState>

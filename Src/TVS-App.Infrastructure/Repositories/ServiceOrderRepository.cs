@@ -24,12 +24,6 @@ public class ServiceOrderRepository : IServiceOrderRepository
         
         try
         {
-            if (serviceOrder == null)
-                return new BaseResponse<ServiceOrder?>(null, 400, "A ordem de serviço não pode ser nula");
-
-            if (serviceOrder.Product == null)
-                return new BaseResponse<ServiceOrder?>(null, 400, "O produto da ordem de serviço não pode ser nulo");
-
             transaction = await _context.Database.BeginTransactionAsync();
 
             await _context.ServiceOrders.AddAsync(serviceOrder);
@@ -136,10 +130,10 @@ public class ServiceOrderRepository : IServiceOrderRepository
             if (pageSize < 1)
                 return new BaseResponse<PaginatedResult<ServiceOrder?>>(null, 400, "O tamanho da página deve ser maior que zero.");
 
-            var OneMonthAgo = DateTime.UtcNow.AddMonths(-1);
+            var oneMonthAgo = DateTime.UtcNow.AddMonths(-1);
 
             var query = _context.ServiceOrders
-                .Where(x => x.ServiceOrderStatus == EServiceOrderStatus.Delivered && x.DeliveryDate >= OneMonthAgo)
+                .Where(x => x.ServiceOrderStatus == EServiceOrderStatus.Delivered && x.DeliveryDate >= oneMonthAgo)
                 .OrderBy(x => x.Id);
 
             var totalCount = await query.CountAsync();
@@ -172,11 +166,11 @@ public class ServiceOrderRepository : IServiceOrderRepository
             if (pageSize < 1)
                 return new BaseResponse<PaginatedResult<ServiceOrder?>>(null, 400, "O tamanho da página deve ser maior que zero.");
 
-            var OneMonthAgo = DateTime.UtcNow.AddMonths(-1);
+            var oneMonthAgo = DateTime.UtcNow.AddMonths(-1);
 
             var query = _context.ServiceOrders
                 .Where(x => x.ServiceOrderStatus == EServiceOrderStatus.Entered &&
-                    x.RepairStatus == ERepairStatus.Entered && x.EntryDate >= OneMonthAgo)
+                    x.RepairStatus == ERepairStatus.Entered && x.EntryDate >= oneMonthAgo)
                 .OrderBy(x => x.Id);
 
             var totalCount = await query.CountAsync();
@@ -209,13 +203,13 @@ public class ServiceOrderRepository : IServiceOrderRepository
             if (pageSize < 1)
                 return new BaseResponse<PaginatedResult<ServiceOrder?>>(null, 400, "O tamanho da página deve ser maior que zero.");
 
-            var OneMonthAgo = DateTime.UtcNow.AddMonths(-1);
+            var oneMonthAgo = DateTime.UtcNow.AddMonths(-1);
 
             var query = _context.ServiceOrders
                 .Where(x => x.ServiceOrderStatus == EServiceOrderStatus.Evaluated &&
                     x.RepairStatus == ERepairStatus.Approved &&
                     !x.PurchasePartDate.HasValue &&
-                    x.ResponseDate >= OneMonthAgo)
+                    x.ResponseDate >= oneMonthAgo)
                 .OrderBy(x => x.Id);
 
             var totalCount = await query.CountAsync();
@@ -248,13 +242,13 @@ public class ServiceOrderRepository : IServiceOrderRepository
             if (pageSize < 1)
                 return new BaseResponse<PaginatedResult<ServiceOrder?>>(null, 400, "O tamanho da página deve ser maior que zero.");
 
-            var TwoMonthAgo = DateTime.UtcNow.AddMonths(-2);
+            var twoMonthAgo = DateTime.UtcNow.AddMonths(-2);
 
             var query = _context.ServiceOrders
                 .Where(x => x.ServiceOrderStatus == EServiceOrderStatus.OrderPart &&
                     x.RepairStatus == ERepairStatus.Approved &&
                     x.PurchasePartDate.HasValue &&
-                    x.PurchasePartDate >= TwoMonthAgo)
+                    x.PurchasePartDate >= twoMonthAgo)
                 .OrderBy(x => x.Id);
 
             var totalCount = await query.CountAsync();
@@ -287,12 +281,12 @@ public class ServiceOrderRepository : IServiceOrderRepository
             if (pageSize < 1)
                 return new BaseResponse<PaginatedResult<ServiceOrder?>>(null, 400, "O tamanho da página deve ser maior que zero.");
 
-            var SixMonths = DateTime.UtcNow.AddMonths(-6);
+            var sixMonths = DateTime.UtcNow.AddMonths(-6);
 
             var query = _context.ServiceOrders
-                .Where(x => x.RepairDate >= SixMonths && (x.ServiceOrderStatus == EServiceOrderStatus.Repaired ||
-                (x.ServiceOrderStatus == EServiceOrderStatus.Evaluated &&
-                (x.RepairStatus == ERepairStatus.Disapproved || x.RepairResult == ERepairResult.Unrepaired || x.RepairResult == ERepairResult.NoDefectFound))))
+                .Where(x => x.RepairDate >= sixMonths && (x.ServiceOrderStatus == EServiceOrderStatus.Repaired ||
+                                                          (x.ServiceOrderStatus == EServiceOrderStatus.Evaluated &&
+                                                           (x.RepairStatus == ERepairStatus.Disapproved || x.RepairResult == ERepairResult.Unrepaired || x.RepairResult == ERepairResult.NoDefectFound))))
                 .OrderBy(x => x.Id);
 
             var totalCount = await query.CountAsync();
@@ -325,11 +319,11 @@ public class ServiceOrderRepository : IServiceOrderRepository
             if (pageSize < 1)
                 return new BaseResponse<PaginatedResult<ServiceOrder?>>(null, 400, "O tamanho da página deve ser maior que zero.");
 
-            var SixMonthAgo = DateTime.UtcNow.AddMonths(-6);
+            var sixMonthAgo = DateTime.UtcNow.AddMonths(-6);
 
             var query = _context.ServiceOrders
                 .Where(x => x.ServiceOrderStatus == EServiceOrderStatus.Evaluated &&
-                    x.RepairStatus == ERepairStatus.Waiting && x.InspectionDate >= SixMonthAgo)
+                    x.RepairStatus == ERepairStatus.Waiting && x.InspectionDate >= sixMonthAgo)
                 .OrderBy(x => x.Id);
 
             var totalCount = await query.CountAsync();
@@ -358,12 +352,6 @@ public class ServiceOrderRepository : IServiceOrderRepository
         
         try
         {
-            if (serviceOrder == null)
-                return new BaseResponse<ServiceOrder?>(null, 400, "A ordem de serviço não pode ser nula");
-
-            if (serviceOrder.Product == null)
-                return new BaseResponse<ServiceOrder?>(null, 400, "O produto da ordem de serviço não pode ser nulo");
-
             transaction = await _context.Database.BeginTransactionAsync();
 
             _context.ServiceOrders.Update(serviceOrder);

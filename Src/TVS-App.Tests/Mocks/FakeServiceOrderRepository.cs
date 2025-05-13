@@ -75,6 +75,11 @@ public class FakeServiceOrderRepository : IServiceOrderRepository
         return Task.FromResult(new BaseResponse<PaginatedResult<ServiceOrder?>>(result, 200, "Todos as ordens de servico foram retornadas com sucesso!"));
     }
 
+    public Task<BaseResponse<List<ServiceOrder>>> GetServiceOrdersByCustomerName(string customerName)
+    {
+        throw new NotImplementedException();
+    }
+
     public Task<BaseResponse<ServiceOrder?>> GetById(long id)
     {
         var serviceOrder = _serviceOrders.FirstOrDefault(x => x?.Id == id);
@@ -120,6 +125,11 @@ public class FakeServiceOrderRepository : IServiceOrderRepository
         var result = new PaginatedResult<ServiceOrder?>(items, totalCount, pageNumber, pageSize);
 
         return Task.FromResult(new BaseResponse<PaginatedResult<ServiceOrder?>>(result, 200, "Ordens de serviço com orçamentos pendentes obtidas com sucesso!"));
+    }
+
+    public Task<BaseResponse<PaginatedResult<ServiceOrder?>>> GetPendingPartPurchase(int pageNumber, int pageSize)
+    {
+        throw new NotImplementedException();
     }
 
     public Task<BaseResponse<PaginatedResult<ServiceOrder?>>> GetWaitingPartsAsync(int pageNumber, int pageSize)
@@ -199,7 +209,7 @@ public class FakeServiceOrderRepository : IServiceOrderRepository
         var serviceOrders = _serviceOrders.Where(x => x != null && x.Id >= 2 && x.Id <= 4).ToList();
 
         foreach (var serviceOrder in serviceOrders)
-            serviceOrder?.AddEstimate("placa", 200m, 300m, ERepairResult.Repair);
+            serviceOrder?.AddEstimate("placa", "3 meses", 200m, 300m, ERepairResult.Repair);
 
         return Task.CompletedTask;
     }

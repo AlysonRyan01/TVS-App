@@ -84,28 +84,28 @@ public class GenerateCheckInDocument : QuestPdf
                                     .ExtraBold()
                                     .FontColor(Colors.Red.Darken2);
 
-                                col.Item().Text($"EMPRESA:  {_serviceOrder.Enterprise.ToString().ToUpper() ?? ""}")
+                                col.Item().Text($"EMPRESA:  {_serviceOrder.Enterprise.ToString().ToUpper()}")
                                     .FontSize(10)
                                     .ExtraBold()
                                     .FontColor(Colors.Red.Darken2);
 
-                                col.Item().Text($"Cliente:  {_serviceOrder.Customer?.Name?.CustomerName.ToUpper() ?? ""}")
+                                col.Item().Text($"Cliente:  {_serviceOrder.Customer.Name.CustomerName.ToUpper()}")
                                     .FontSize(10)
                                     .SemiBold();
 
-                                col.Item().Text($"Endereço:  {_serviceOrder.Customer?.Address?.Street?.ToUpper() ?? ""}, {_serviceOrder.Customer?.Address?.Number ?? ""}, {_serviceOrder.Customer?.Address?.Neighborhood.ToUpper() ?? ""}")
+                                col.Item().Text($"Endereço:  {_serviceOrder.Customer.Address.Street.ToUpper()}, {_serviceOrder.Customer.Address.Number}, {_serviceOrder.Customer.Address.Neighborhood.ToUpper()}")
                                     .FontSize(10)
                                     .SemiBold();
 
-                                col.Item().Text($"Cidade:  {_serviceOrder.Customer?.Address?.City?.ToUpper() ?? ""}")
+                                col.Item().Text($"Cidade:  {_serviceOrder.Customer.Address.City.ToUpper()}")
                                     .FontSize(10)
                                     .SemiBold();
 
-                                col.Item().Text($"Fone:  {_serviceOrder.Customer?.Phone?.CustomerPhone?.ToUpper() ?? ""}")
+                                col.Item().Text($"Fone:  {_serviceOrder.Customer.Phone.CustomerPhone.ToUpper()}")
                                     .FontSize(10)
                                     .SemiBold();
 
-                                col.Item().Text($"Fone:  {_serviceOrder.Customer?.Phone2?.CustomerPhone?.ToUpper() ?? ""}")
+                                col.Item().Text($"Fone:  {_serviceOrder.Customer.Phone2.CustomerPhone.ToUpper()}")
                                     .FontSize(10)
                                     .SemiBold();
 
@@ -119,27 +119,27 @@ public class GenerateCheckInDocument : QuestPdf
                                     .ExtraBold()
                                     .FontColor(Colors.Red.Darken2);
 
-                                col.Item().Text($"Aparelho:  {_serviceOrder.Product?.Type.ToString().ToUpper() ?? ""}")
+                                col.Item().Text($"Aparelho:  {_serviceOrder.Product.Type.ToString().ToUpper()}")
                                     .FontSize(10)
                                     .SemiBold();
 
-                                col.Item().Text($"Marca:  {_serviceOrder.Product?.Brand?.ToString().ToUpper() ?? ""}")
+                                col.Item().Text($"Marca:  {_serviceOrder.Product.Brand.ToUpper()}")
                                     .FontSize(10)
                                     .SemiBold();
 
-                                col.Item().Text($"Modelo:  {_serviceOrder.Product?.Model.ToString().ToUpper() ?? ""}")
+                                col.Item().Text($"Modelo:  {_serviceOrder.Product.Model.ToUpper()}")
                                     .FontSize(10)
                                     .SemiBold();
 
-                                col.Item().Text($"Série:  {_serviceOrder.Product?.SerialNumber?.ToString().ToUpper() ?? ""}")
+                                col.Item().Text($"Série:  {_serviceOrder.Product.SerialNumber.ToUpper()}")
                                     .FontSize(10)
                                     .SemiBold();
 
-                                col.Item().Text($"Defeito:  {_serviceOrder?.Product?.Defect?.ToString().ToUpper() ?? ""}")
+                                col.Item().Text($"Defeito:  {_serviceOrder.Product.Defect?.ToUpper() ?? ""}")
                                     .FontSize(10)
                                     .SemiBold();
 
-                                col.Item().Text($"Acessórios:  {_serviceOrder?.Product?.Accessories?.ToString().ToUpper() ?? ""}")
+                                col.Item().Text($"Acessórios:  {_serviceOrder.Product.Accessories?.ToUpper() ?? ""}")
                                     .FontSize(10)
                                     .SemiBold();
                             });

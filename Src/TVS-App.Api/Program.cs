@@ -12,6 +12,7 @@ builder.AddJwtService();
 builder.ConfigureJsonSerializer();
 builder.AddDependencies();
 builder.AddSwagger();
+builder.Services.AddSignalR();
 
 var app = builder.Build();
 

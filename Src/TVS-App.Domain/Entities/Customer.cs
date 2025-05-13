@@ -28,7 +28,7 @@ public class Customer : Entity
 
     public void AddServiceOrder(ServiceOrder serviceOrder)
     {
-        if (serviceOrder != null && serviceOrder.Id != 0)
+        if (serviceOrder.Id != 0)
             _serviceOrders.Add(serviceOrder);
     }
 

@@ -53,7 +53,7 @@ public class JwtService
     {
         var ci = new ClaimsIdentity();
         
-        ci.AddClaim(new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()));
+        ci.AddClaim(new Claim(ClaimTypes.NameIdentifier, user.Id));
         ci.AddClaim(new Claim(ClaimTypes.Email, user.Email ?? string.Empty));
         
         var roles = await _userManager.GetRolesAsync(user);
