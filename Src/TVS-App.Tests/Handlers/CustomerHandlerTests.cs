@@ -142,7 +142,7 @@ public class CustomerHandlerTests
                     Assert.Fail($"Falha ao criar cliente {i}");
             }
 
-            var getAllCustomersResult = await _customerHandler.GetAllCustomersAsync(new PaginationCommand{ pageNumber = 1, pageSize = 25});
+            var getAllCustomersResult = await _customerHandler.GetAllCustomersAsync(new PaginationCommand{ PageNumber = 1, PageSize = 25});
             
             if (!getAllCustomersResult.IsSuccess)
                 Assert.Fail("Falha ao buscar todos os clientes");

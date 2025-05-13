@@ -1,6 +1,6 @@
-using AutomatizarOs.Api.Hubs;
 using QuestPDF.Infrastructure;
 using TVS_App.Api.Common;
+using TVS_App.Api.SignalR;
 
 var builder = WebApplication.CreateBuilder(args);
 

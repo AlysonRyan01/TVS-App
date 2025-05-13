@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.SignalR;
 
-namespace AutomatizarOs.Api.Hubs;
+namespace TVS_App.Api.SignalR;
 
 public class ServiceOrderHub : Hub
 {

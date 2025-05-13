@@ -6,7 +6,7 @@ public class PaginatedResult<T>
     public int TotalCount { get; set; }
     public int PageNumber { get; set; }
     public int PageSize { get; set; }
-    public int? TotalPages { get; set; }  // Torna TotalPages nullable
+    public int? TotalPages { get; set; }
 
     public PaginatedResult(IEnumerable<T> items, int totalCount, int pageNumber, int pageSize, int? totalPages = null)
     {

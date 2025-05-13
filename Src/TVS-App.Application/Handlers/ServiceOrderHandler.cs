@@ -67,13 +67,13 @@ public class ServiceOrderHandler
             command.Validate();
 
             var existingCustomer = await _customerRepository.GetByIdAsync(command.CustomerId);
-            if (existingCustomer == null || existingCustomer.Data == null)
+            if (existingCustomer.Data == null)
                 return new BaseResponse<ServiceOrder?>(null, 404, $"O cliente com id: {command.CustomerId} não existe");
 
             var customer = existingCustomer.Data;
 
             var existingServiceOrder = await _serviceOrderRepository.GetById(command.ServiceOrderId);
-            if (existingServiceOrder == null || existingServiceOrder.Data == null)
+            if (existingServiceOrder.Data == null)
                 return new BaseResponse<ServiceOrder?>(null, 404, $"A ordem de serviço com id: {command.ServiceOrderId} não existe");
 
             var serviceOrder = existingServiceOrder.Data;
@@ -107,7 +107,7 @@ public class ServiceOrderHandler
             command.Validate();
 
             var result = await _serviceOrderRepository.GetById(command.ServiceOrderId);
-            if (result == null || result.Data == null)
+            if (result.Data == null)
                 return new BaseResponse<ServiceOrder?>(null, 404, "Essa ordem de serviço não existe");
 
             var serviceOrder = result.Data;
@@ -196,7 +196,7 @@ public class ServiceOrderHandler
         {
             command.Validate();
 
-            return await _serviceOrderRepository.GetAllAsync(command.pageNumber, command.pageSize);
+            return await _serviceOrderRepository.GetAllAsync(command.PageNumber, command.PageSize);
         }
         catch (Exception ex)
         {
@@ -211,7 +211,7 @@ public class ServiceOrderHandler
         {
             command.Validate();
 
-            return await _serviceOrderRepository.GetPendingEstimatesAsync(command.pageNumber, command.pageSize);
+            return await _serviceOrderRepository.GetPendingEstimatesAsync(command.PageNumber, command.PageSize);
         }
         catch (Exception ex)
         {
@@ -226,7 +226,7 @@ public class ServiceOrderHandler
         {
             command.Validate();
 
-            return await _serviceOrderRepository.GetWaitingResponseAsync(command.pageNumber, command.pageSize);
+            return await _serviceOrderRepository.GetWaitingResponseAsync(command.PageNumber, command.PageSize);
         }
         catch (Exception ex)
         {
@@ -241,7 +241,7 @@ public class ServiceOrderHandler
         {
             command.Validate();
 
-            return await _serviceOrderRepository.GetPendingPartPurchase(command.pageNumber, command.pageSize);
+            return await _serviceOrderRepository.GetPendingPartPurchase(command.PageNumber, command.PageSize);
         }
         catch (Exception ex)
         {
@@ -256,7 +256,7 @@ public class ServiceOrderHandler
         {
             command.Validate();
 
-            return await _serviceOrderRepository.GetWaitingPartsAsync(command.pageNumber, command.pageSize);
+            return await _serviceOrderRepository.GetWaitingPartsAsync(command.PageNumber, command.PageSize);
         }
         catch (Exception ex)
         {
@@ -271,7 +271,7 @@ public class ServiceOrderHandler
         {
             command.Validate();
         
-            return await _serviceOrderRepository.GetWaitingPickupAsync(command.pageNumber, command.pageSize);
+            return await _serviceOrderRepository.GetWaitingPickupAsync(command.PageNumber, command.PageSize);
         }
         catch (Exception ex)
         {
@@ -286,7 +286,7 @@ public class ServiceOrderHandler
         {
             command.Validate();
 
-            return await _serviceOrderRepository.GetDeliveredAsync(command.pageNumber, command.pageSize);
+            return await _serviceOrderRepository.GetDeliveredAsync(command.PageNumber, command.PageSize);
         }
         catch (Exception ex)
         {
@@ -303,7 +303,7 @@ public class ServiceOrderHandler
             command.Validate();
 
             var result = await _serviceOrderRepository.GetById(command.ServiceOrderId);
-            if (result == null || result.Data == null)
+            if (result.Data == null)
                 return new BaseResponse<ServiceOrder?>(null, 404, "Essa ordem de serviço não existe");
 
             var serviceOrder = result.Data;
@@ -331,7 +331,7 @@ public class ServiceOrderHandler
             command.Validate();
 
             var result = await _serviceOrderRepository.GetById(command.Id);
-            if (result == null || result.Data == null)
+            if (result.Data == null)
                 return new BaseResponse<ServiceOrder?>(null, 404, "Essa ordem de serviço não existe");
 
             var serviceOrder = result.Data;
@@ -359,7 +359,7 @@ public class ServiceOrderHandler
             command.Validate();
 
             var result = await _serviceOrderRepository.GetById(command.Id);
-            if (result == null || result.Data == null)
+            if (result.Data == null)
                 return new BaseResponse<ServiceOrder?>(null, 404, "Essa ordem de serviço não existe");
 
             var serviceOrder = result.Data;
@@ -387,7 +387,7 @@ public class ServiceOrderHandler
             command.Validate();
 
             var result = await _serviceOrderRepository.GetById(command.Id);
-            if (result == null || result.Data == null)
+            if (result.Data == null)
                 return new BaseResponse<ServiceOrder?>(null, 404, "Essa ordem de serviço não existe");
 
             var serviceOrder = result.Data;
@@ -415,7 +415,7 @@ public class ServiceOrderHandler
             command.Validate();
 
             var result = await _serviceOrderRepository.GetById(command.Id);
-            if (result == null || result.Data == null)
+            if (result.Data == null)
                 return new BaseResponse<ServiceOrder?>(null, 404, "Essa ordem de serviço não existe");
 
             var serviceOrder = result.Data;
@@ -443,7 +443,7 @@ public class ServiceOrderHandler
             command.Validate();
 
             var result = await _serviceOrderRepository.GetById(command.Id);
-            if (result == null || result.Data == null)
+            if (result.Data == null)
                 return new BaseResponse<byte[]>(null, 404, "Essa ordem de serviço não existe");
 
             var serviceOrder = result.Data;
@@ -475,7 +475,7 @@ public class ServiceOrderHandler
             command.Validate();
 
             var result = await _serviceOrderRepository.GetById(command.Id);
-            if (result == null || result.Data == null)
+            if (result.Data == null)
                 return new BaseResponse<byte[]>(null, 404, "Essa ordem de serviço não existe");
 
             var serviceOrder = result.Data;

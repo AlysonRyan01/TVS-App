@@ -6,7 +6,7 @@
 <MudSnackbarProvider />
 
 <MudLayout>
-    <MudAppBar Color="Color.Secondary">
+    <MudAppBar  Elevation="2" Color="Color.Secondary">
         <div class="flex flex-row w-full justify-between">
             <MudIconButton Size="Size.Large" Onclick="ToggleDrawer" Icon="@Icons.Material.Filled.Menu" Color="Color.Primary"/>
         </div>
@@ -17,9 +17,9 @@
                 <img src="/img/tvs-logo.png" class="w-[80%] self-center" alt="logo"/>
             </div>
             <div class="flex self-center flex-col w-[100%] h-[90%] mt-[20px] gap-4">
-                <MudNavMenu Class="mud-width-full">
+                <MudNavMenu Dense="false" Rounded="true" Margin="Margin.Dense" Color="Color.Primary" Class="mud-width-full">
                     <MudDivider Class="mb-[70px]" />
-                    <MudNavLink Href="/gerenciar" Icon="@Icons.Material.Filled.Dashboard" IconColor="Color.Primary"><p class="font-sans text-titlecolor text-base font-bold">Gerenciar</p></MudNavLink>
+                    <MudNavLink Href="/" Icon="@Icons.Material.Filled.Dashboard" IconColor="Color.Primary"><p class="font-sans text-titlecolor text-base font-bold">Gerenciar</p></MudNavLink>
                     <MudNavLink Href="/criar" Icon="@Icons.Material.Filled.Add" IconColor="Color.Primary"><p class="font-sans text-titlecolor text-base font-bold">Adicionar OS</p></MudNavLink>
                     <MudNavLink Href="/buscar" Icon="@Icons.Material.Filled.Search" IconColor="Color.Primary"><p class="font-sans text-titlecolor text-base font-bold">Buscar OS</p></MudNavLink>
                     <MudNavLink Href="/lugar" Icon="@Icons.Material.Filled.LocationOn" IconColor="Color.Primary"><p class="font-sans text-titlecolor text-base font-bold">Adicionar/buscar lugar</p></MudNavLink>

@@ -110,7 +110,7 @@ public class CustomerHandler
         {
             command.Validate();
 
-            return await _customerRepository.GetAllAsync(command.pageNumber, command.pageSize);
+            return await _customerRepository.GetAllAsync(command.PageNumber, command.PageSize);
         }
         catch (Exception ex)
         {

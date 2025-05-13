@@ -1,4 +1,4 @@
-namespace TVS_App.Api.Requests.AuthRequests;
+namespace TVS_App.Application.Requests.AuthRequests;
 
 public class LoginRequest
 {

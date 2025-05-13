@@ -37,6 +37,29 @@
     </div>
     <script src="_framework/blazor.webassembly.js"></script>
     <script src="_content/MudBlazor/MudBlazor.min.js"></script>
+    <script>
+        function GeneratePdf(base64) {
+            const byteCharacters = atob(base64);
+            const byteNumbers = new Array(byteCharacters.length);
+            for (let i = 0; i < byteCharacters.length; i++) {
+                byteNumbers[i] = byteCharacters.charCodeAt(i);
+            }
+            const byteArray = new Uint8Array(byteNumbers);
+            const blob = new Blob([byteArray], { type: 'application/pdf' });
+            
+            const url = URL.createObjectURL(blob);
+            
+            const pdfWindow = window.open(url, '_blank');
+            
+            if (pdfWindow) {
+                pdfWindow.onload = function() {
+                    setTimeout(() => {
+                        pdfWindow.print();
+                    }, 500);
+                };
+            }
+        }
+    </script>
 </body>
 
 </html>

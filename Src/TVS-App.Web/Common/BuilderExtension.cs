@@ -11,6 +11,8 @@ public static class BuilderExtension
 {
     public static void AddServices(this WebAssemblyHostBuilder builder)
     {
+        builder.Services.AddTransient<CustomerHandler>();
+        builder.Services.AddTransient<ServiceOrderHandler>();
         builder.Services.AddScoped<CustomAuthStateProvider>();
         builder.Services.AddScoped<AuthenticationStateProvider>(sp => sp.GetRequiredService<CustomAuthStateProvider>());
         builder.Services.AddSingleton<HubConnection>(sp =>

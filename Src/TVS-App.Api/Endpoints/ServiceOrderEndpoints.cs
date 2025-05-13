@@ -1,7 +1,7 @@
-using AutomatizarOs.Api.Hubs;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using TVS_App.Api.Exceptions;
+using TVS_App.Api.SignalR;
 using TVS_App.Application.Commands;
 using TVS_App.Application.Commands.ServiceOrderCommands;
 using TVS_App.Application.DTOs;
@@ -22,7 +22,7 @@ public static class ServiceOrderEndpoints
 
                 var createOrderResult = await handler.CreateServiceOrderAndReturnPdfAsync(command);
                 if (!createOrderResult.IsSuccess)
-                    return Results.BadRequest(new BaseResponse<ServiceOrder>(null, 404, createOrderResult.Message));
+                    return Results.BadRequest(createOrderResult);
 
                 await hubContext.Clients.All.SendAsync("Atualizar", createOrderResult.Message);
 
@@ -31,7 +31,7 @@ public static class ServiceOrderEndpoints
             catch (Exception ex)
             {
                 var response = EndpointExceptions.Handle<ServiceOrder>(ex);
-                return Results.BadRequest(response ?? new BaseResponse<ServiceOrder>(null, 500, $"Ocorreu um erro desconhecido: {ex.Message}"));
+                return Results.BadRequest(response);
             }
         }).WithTags("ServiceOrder").RequireAuthorization();
 
@@ -43,7 +43,7 @@ public static class ServiceOrderEndpoints
 
                 var createOrderResult = await handler.UpdateServiceOrderAsync(command);
                 if (!createOrderResult.IsSuccess)
-                    return Results.BadRequest(new BaseResponse<ServiceOrder>(null, 404, createOrderResult.Message));
+                    return Results.BadRequest(createOrderResult);
 
                 await hubContext.Clients.All.SendAsync("Atualizar", createOrderResult.Message);
 
@@ -52,7 +52,7 @@ public static class ServiceOrderEndpoints
             catch (Exception ex)
             {
                 var response = EndpointExceptions.Handle<ServiceOrder>(ex);
-                return Results.BadRequest(response ?? new BaseResponse<ServiceOrder>(null, 500, $"Ocorreu um erro desconhecido: {ex.Message}"));
+                return Results.BadRequest(response);
             }
         }).WithTags("ServiceOrder").RequireAuthorization();
 
@@ -65,14 +65,14 @@ public static class ServiceOrderEndpoints
 
                 var createOrderResult = await handler.GetServiceOrderById(command);
                 if (!createOrderResult.IsSuccess)
-                    return Results.BadRequest(new BaseResponse<ServiceOrder>(null, 404, createOrderResult.Message));
+                    return Results.BadRequest(createOrderResult);
 
                 return Results.Ok(createOrderResult);
             }
             catch (Exception ex)
             {
                 var response = EndpointExceptions.Handle<ServiceOrder>(ex);
-                return Results.BadRequest(response ?? new BaseResponse<ServiceOrder>(null, 500, $"Ocorreu um erro desconhecido: {ex.Message}"));
+                return Results.BadRequest(response);
             }
         }).WithTags("ServiceOrder").RequireAuthorization();
 
@@ -82,14 +82,14 @@ public static class ServiceOrderEndpoints
             {
                 var createOrderResult = await handler.GetServiceOrdersByCustomerName(name);
                 if (!createOrderResult.IsSuccess)
-                    return Results.BadRequest(new BaseResponse<List<ServiceOrder>>(null, 404, createOrderResult.Message));
+                    return Results.BadRequest(createOrderResult);
 
                 return Results.Ok(createOrderResult);
             }
             catch (Exception ex)
             {
                 var response = EndpointExceptions.Handle<List<ServiceOrder>>(ex);
-                return Results.BadRequest(response ?? new BaseResponse<List<ServiceOrder>>(null, 500, $"Ocorreu um erro desconhecido: {ex.Message}"));
+                return Results.BadRequest(response);
             }
         }).WithTags("ServiceOrder").RequireAuthorization();
 
@@ -102,14 +102,14 @@ public static class ServiceOrderEndpoints
 
                 var createOrderResult = await handler.GetServiceOrderForCustomer(command);
                 if (!createOrderResult.IsSuccess)
-                    return Results.BadRequest(new BaseResponse<ServiceOrder>(null, 404, createOrderResult.Message));
+                    return Results.BadRequest(createOrderResult);
 
                 return Results.Ok(createOrderResult);
             }
             catch (Exception ex)
             {
                 var response = EndpointExceptions.Handle<ServiceOrder>(ex);
-                return Results.BadRequest(response ?? new BaseResponse<ServiceOrder>(null, 500, $"Ocorreu um erro desconhecido: {ex.Message}"));
+                return Results.BadRequest(response);
             }
         }).WithTags("ServiceOrder");
 
@@ -117,19 +117,19 @@ public static class ServiceOrderEndpoints
         {
             try
             {
-                var command = new PaginationCommand { pageNumber = pageNumber, pageSize = pageSize };
+                var command = new PaginationCommand { PageNumber = pageNumber, PageSize = pageSize };
                 command.Validate();
 
                 var createOrderResult = await handler.GetAllServiceOrdersAsync(command);
                 if (!createOrderResult.IsSuccess)
-                    return Results.BadRequest(new BaseResponse<PaginatedResult<ServiceOrder?>>(null, 404, createOrderResult.Message));
+                    return Results.BadRequest(createOrderResult);
 
                 return Results.Ok(createOrderResult);
             }
             catch (Exception ex)
             {
                 var response = EndpointExceptions.Handle<PaginatedResult<ServiceOrder?>>(ex);
-                return Results.BadRequest(response ?? new BaseResponse<PaginatedResult<ServiceOrder?>>(null, 500, $"Ocorreu um erro desconhecido: {ex.Message}"));
+                return Results.BadRequest(response);
             }
         }).WithTags("ServiceOrder").RequireAuthorization();
 
@@ -137,19 +137,19 @@ public static class ServiceOrderEndpoints
         {
             try
             {
-                var command = new PaginationCommand { pageNumber = pageNumber, pageSize = pageSize };
+                var command = new PaginationCommand { PageNumber = pageNumber, PageSize = pageSize };
                 command.Validate();
 
                 var createOrderResult = await handler.GetPendingEstimatesAsync(command);
                 if (!createOrderResult.IsSuccess)
-                    return Results.BadRequest(new BaseResponse<PaginatedResult<ServiceOrder?>>(null, 404, createOrderResult.Message));
+                    return Results.BadRequest(createOrderResult);
 
                 return Results.Ok(createOrderResult);
             }
             catch (Exception ex)
             {
                 var response = EndpointExceptions.Handle<PaginatedResult<ServiceOrder?>>(ex);
-                return Results.BadRequest(response ?? new BaseResponse<PaginatedResult<ServiceOrder?>>(null, 500, $"Ocorreu um erro desconhecido: {ex.Message}"));
+                return Results.BadRequest(response);
             }
         }).WithTags("ServiceOrder").RequireAuthorization();
 
@@ -157,19 +157,19 @@ public static class ServiceOrderEndpoints
         {
             try
             {
-                var command = new PaginationCommand { pageNumber = pageNumber, pageSize = pageSize };
+                var command = new PaginationCommand { PageNumber = pageNumber, PageSize = pageSize };
                 command.Validate();
 
                 var createOrderResult = await handler.GetWaitingResponseAsync(command);
                 if (!createOrderResult.IsSuccess)
-                    return Results.BadRequest(new BaseResponse<PaginatedResult<ServiceOrder?>>(null, 404, createOrderResult.Message));
+                    return Results.BadRequest(createOrderResult);
 
                 return Results.Ok(createOrderResult);
             }
             catch (Exception ex)
             {
                 var response = EndpointExceptions.Handle<PaginatedResult<ServiceOrder?>>(ex);
-                return Results.BadRequest(response ?? new BaseResponse<PaginatedResult<ServiceOrder?>>(null, 500, $"Ocorreu um erro desconhecido: {ex.Message}"));
+                return Results.BadRequest(response);
             }
         }).WithTags("ServiceOrder").RequireAuthorization();
 
@@ -177,19 +177,19 @@ public static class ServiceOrderEndpoints
         {
             try
             {
-                var command = new PaginationCommand { pageNumber = pageNumber, pageSize = pageSize };
+                var command = new PaginationCommand { PageNumber = pageNumber, PageSize = pageSize };
                 command.Validate();
 
                 var createOrderResult = await handler.GetPendingPurchasePartAsync(command);
                 if (!createOrderResult.IsSuccess)
-                    return Results.BadRequest(new BaseResponse<PaginatedResult<ServiceOrder?>>(null, 404, createOrderResult.Message));
+                    return Results.BadRequest(createOrderResult);
 
                 return Results.Ok(createOrderResult);
             }
             catch (Exception ex)
             {
                 var response = EndpointExceptions.Handle<PaginatedResult<ServiceOrder?>>(ex);
-                return Results.BadRequest(response ?? new BaseResponse<PaginatedResult<ServiceOrder?>>(null, 500, $"Ocorreu um erro desconhecido: {ex.Message}"));
+                return Results.BadRequest(response);
             }
         }).WithTags("ServiceOrder").RequireAuthorization();
 
@@ -197,19 +197,19 @@ public static class ServiceOrderEndpoints
         {
             try
             {
-                var command = new PaginationCommand { pageNumber = pageNumber, pageSize = pageSize };
+                var command = new PaginationCommand { PageNumber = pageNumber, PageSize = pageSize };
                 command.Validate();
 
                 var createOrderResult = await handler.GetWaitingPartsAsync(command);
                 if (!createOrderResult.IsSuccess)
-                    return Results.BadRequest(new BaseResponse<PaginatedResult<ServiceOrder?>>(null, 404, createOrderResult.Message));
+                    return Results.BadRequest(createOrderResult);
 
                 return Results.Ok(createOrderResult);
             }
             catch (Exception ex)
             {
                 var response = EndpointExceptions.Handle<PaginatedResult<ServiceOrder?>>(ex);
-                return Results.BadRequest(response ?? new BaseResponse<PaginatedResult<ServiceOrder?>>(null, 500, $"Ocorreu um erro desconhecido: {ex.Message}"));
+                return Results.BadRequest(response);
             }
         }).WithTags("ServiceOrder").RequireAuthorization();
 
@@ -217,19 +217,19 @@ public static class ServiceOrderEndpoints
         {
             try
             {
-                var command = new PaginationCommand { pageNumber = pageNumber, pageSize = pageSize };
+                var command = new PaginationCommand { PageNumber = pageNumber, PageSize = pageSize };
                 command.Validate();
 
                 var createOrderResult = await handler.GetWaitingPickupAsync(command);
                 if (!createOrderResult.IsSuccess)
-                    return Results.BadRequest(new BaseResponse<PaginatedResult<ServiceOrder?>>(null, 404, createOrderResult.Message));
+                    return Results.BadRequest(createOrderResult);
 
                 return Results.Ok(createOrderResult);
             }
             catch (Exception ex)
             {
                 var response = EndpointExceptions.Handle<PaginatedResult<ServiceOrder?>>(ex);
-                return Results.BadRequest(response ?? new BaseResponse<PaginatedResult<ServiceOrder?>>(null, 500, $"Ocorreu um erro desconhecido: {ex.Message}"));
+                return Results.BadRequest(response);
             }
         }).WithTags("ServiceOrder").RequireAuthorization();
 
@@ -237,19 +237,19 @@ public static class ServiceOrderEndpoints
         {
             try
             {
-                var command = new PaginationCommand { pageNumber = pageNumber, pageSize = pageSize };
+                var command = new PaginationCommand { PageNumber = pageNumber, PageSize = pageSize };
                 command.Validate();
 
                 var createOrderResult = await handler.GetDeliveredAsync(command);
                 if (!createOrderResult.IsSuccess)
-                    return Results.BadRequest(new BaseResponse<PaginatedResult<ServiceOrder?>>(null, 404, createOrderResult.Message));
+                    return Results.BadRequest(createOrderResult);
 
                 return Results.Ok(createOrderResult);
             }
             catch (Exception ex)
             {
                 var response = EndpointExceptions.Handle<PaginatedResult<ServiceOrder?>>(ex);
-                return Results.BadRequest(response ?? new BaseResponse<PaginatedResult<ServiceOrder?>>(null, 500, $"Ocorreu um erro desconhecido: {ex.Message}"));
+                return Results.BadRequest(response);
             }
         }).WithTags("ServiceOrder").RequireAuthorization();
 
@@ -261,7 +261,7 @@ public static class ServiceOrderEndpoints
 
                 var addLocationResult = await handler.AddProductLocation(command);
                 if (!addLocationResult.IsSuccess)
-                    return Results.BadRequest(new BaseResponse<ServiceOrder>(null, 404, addLocationResult.Message));
+                    return Results.BadRequest(addLocationResult);
 
                 await hubContext.Clients.All.SendAsync("Atualizar", addLocationResult.Message);
 
@@ -270,7 +270,7 @@ public static class ServiceOrderEndpoints
             catch (Exception ex)
             {
                 var response = EndpointExceptions.Handle<ServiceOrder>(ex);
-                return Results.BadRequest(response ?? new BaseResponse<ServiceOrder>(null, 500, $"Ocorreu um erro desconhecido: {ex.Message}"));
+                return Results.BadRequest(response);
             }
         }).WithTags("ServiceOrder").RequireAuthorization();
 
@@ -282,7 +282,7 @@ public static class ServiceOrderEndpoints
 
                 var createOrderResult = await handler.AddServiceOrderEstimate(command);
                 if (!createOrderResult.IsSuccess)
-                    return Results.BadRequest(new BaseResponse<ServiceOrder>(null, 404, createOrderResult.Message));
+                    return Results.BadRequest(createOrderResult);
 
                 await hubContext.Clients.All.SendAsync("Atualizar", createOrderResult.Message);
 
@@ -291,7 +291,7 @@ public static class ServiceOrderEndpoints
             catch (Exception ex)
             {
                 var response = EndpointExceptions.Handle<ServiceOrder>(ex);
-                return Results.BadRequest(response ?? new BaseResponse<ServiceOrder>(null, 500, $"Ocorreu um erro desconhecido: {ex.Message}"));
+                return Results.BadRequest(response);
             }
         }).WithTags("ServiceOrder").RequireAuthorization();
 
@@ -303,7 +303,7 @@ public static class ServiceOrderEndpoints
 
                 var createOrderResult = await handler.AddServiceOrderApproveEstimate(command);
                 if (!createOrderResult.IsSuccess)
-                    return Results.BadRequest(new BaseResponse<ServiceOrder>(null, 404, createOrderResult.Message));
+                    return Results.BadRequest(createOrderResult);
 
                 await hubContext.Clients.All.SendAsync("Atualizar", createOrderResult.Message);
 
@@ -312,7 +312,7 @@ public static class ServiceOrderEndpoints
             catch (Exception ex)
             {
                 var response = EndpointExceptions.Handle<ServiceOrder>(ex);
-                return Results.BadRequest(response ?? new BaseResponse<ServiceOrder>(null, 500, $"Ocorreu um erro desconhecido: {ex.Message}"));
+                return Results.BadRequest(response);
             }
         }).WithTags("ServiceOrder").RequireAuthorization();
 
@@ -324,7 +324,7 @@ public static class ServiceOrderEndpoints
 
                 var createOrderResult = await handler.AddServiceOrderRejectEstimate(command);
                 if (!createOrderResult.IsSuccess)
-                    return Results.BadRequest(new BaseResponse<ServiceOrder>(null, 404, createOrderResult.Message));
+                    return Results.BadRequest(createOrderResult);
 
                 await hubContext.Clients.All.SendAsync("Atualizar", createOrderResult.Message);
 
@@ -333,7 +333,7 @@ public static class ServiceOrderEndpoints
             catch (Exception ex)
             {
                 var response = EndpointExceptions.Handle<ServiceOrder>(ex);
-                return Results.BadRequest(response ?? new BaseResponse<ServiceOrder>(null, 500, $"Ocorreu um erro desconhecido: {ex.Message}"));
+                return Results.BadRequest(response);
             }
         }).WithTags("ServiceOrder").RequireAuthorization();
 
@@ -345,7 +345,7 @@ public static class ServiceOrderEndpoints
 
                 var createOrderResult = await handler.AddPurchasedPart(command);
                 if (!createOrderResult.IsSuccess)
-                    return Results.BadRequest(new BaseResponse<ServiceOrder>(null, 404, createOrderResult.Message));
+                    return Results.BadRequest(createOrderResult);
 
                 await hubContext.Clients.All.SendAsync("Atualizar", createOrderResult.Message);
 
@@ -354,7 +354,7 @@ public static class ServiceOrderEndpoints
             catch (Exception ex)
             {
                 var response = EndpointExceptions.Handle<ServiceOrder>(ex);
-                return Results.BadRequest(response ?? new BaseResponse<ServiceOrder>(null, 500, $"Ocorreu um erro desconhecido: {ex.Message}"));
+                return Results.BadRequest(response);
             }
         }).WithTags("ServiceOrder").RequireAuthorization();
 
@@ -366,7 +366,7 @@ public static class ServiceOrderEndpoints
 
                 var createOrderResult = await handler.AddServiceOrderRepair(command);
                 if (!createOrderResult.IsSuccess)
-                    return Results.BadRequest(new BaseResponse<ServiceOrder>(null, 404, createOrderResult.Message));
+                    return Results.BadRequest(createOrderResult);
 
                 await hubContext.Clients.All.SendAsync("Atualizar", createOrderResult.Message);
 
@@ -375,7 +375,7 @@ public static class ServiceOrderEndpoints
             catch (Exception ex)
             {
                 var response = EndpointExceptions.Handle<ServiceOrder>(ex);
-                return Results.BadRequest(response ?? new BaseResponse<ServiceOrder>(null, 500, $"Ocorreu um erro desconhecido: {ex.Message}"));
+                return Results.BadRequest(response);
             }
         }).WithTags("ServiceOrder").RequireAuthorization();
 
@@ -387,7 +387,7 @@ public static class ServiceOrderEndpoints
 
                 var createOrderResult = await handler.AddServiceOrderDeliveryAndReturnPdfAsync(command);
                 if (!createOrderResult.IsSuccess)
-                    return Results.BadRequest(new BaseResponse<ServiceOrder>(null, 404, createOrderResult.Message));
+                    return Results.BadRequest(createOrderResult);
 
                 await hubContext.Clients.All.SendAsync("Atualizar", createOrderResult.Message);
 
@@ -396,7 +396,7 @@ public static class ServiceOrderEndpoints
             catch (Exception ex)
             {
                 var response = EndpointExceptions.Handle<ServiceOrder>(ex);
-                return Results.BadRequest(response ?? new BaseResponse<ServiceOrder>(null, 500, $"Ocorreu um erro desconhecido: {ex.Message}"));
+                return Results.BadRequest(response);
             }
         }).WithTags("ServiceOrder").RequireAuthorization();
 
@@ -408,14 +408,14 @@ public static class ServiceOrderEndpoints
 
                 var createOrderResult = await handler.RegenerateAndReturnPdfAsync(command);
                 if (!createOrderResult.IsSuccess)
-                    return Results.BadRequest(new BaseResponse<ServiceOrder>(null, 404, createOrderResult.Message));
+                    return Results.BadRequest(createOrderResult);
 
                 return Results.File(createOrderResult.Data!, "application/pdf", "ordem_servico.pdf");
             }
             catch (Exception ex)
             {
                 var response = EndpointExceptions.Handle<ServiceOrder>(ex);
-                return Results.BadRequest(response ?? new BaseResponse<ServiceOrder>(null, 500, $"Ocorreu um erro desconhecido: {ex.Message}"));
+                return Results.BadRequest(response);
             }
         }).WithTags("ServiceOrder").RequireAuthorization();
     }

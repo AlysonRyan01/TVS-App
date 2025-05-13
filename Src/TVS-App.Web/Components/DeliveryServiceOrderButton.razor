@@ -1,0 +1,34 @@
+@using TVS_App.Application.Commands.ServiceOrderCommands
+@using TVS_App.Web.Handlers
+
+<MudButton @onclick="Delivery"
+           Variant="Variant.Text"
+           Color="Color.Primary"
+           FullWidth="false">Entregar</MudButton>
+
+
+@code {
+    [Parameter] public GetServiceOrderByIdCommand Command { get; set; } = null!;
+
+    [Inject] public ServiceOrderHandler Handler { get; set; } = null!;
+    [Inject] public ISnackbar Snackbar { get; set; } = null!;
+    [Inject] public IJSRuntime Js { get; set; } = null!;
+
+
+    public async Task Delivery()
+    {
+        Command.Validate();
+
+        var result = await Handler.AddServiceOrderDeliveryAndReturnPdfAsync(Command);
+        if (!result.IsSuccess || result.Data is null)
+        {
+            Snackbar.Add(result.Message ?? "Erro ao criar a ordem de serviço", Severity.Error);
+            return;
+        }
+
+        var base64 = Convert.ToBase64String(result.Data);
+        await Js.InvokeVoidAsync("GeneratePdf", base64, "ordem_servico.pdf");
+
+        Snackbar.Add("Ordem de serviço entregue com sucesso!", Severity.Success);
+    }
+}

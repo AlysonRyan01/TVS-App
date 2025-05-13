@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
-using TVS_App.Api.Requests.AuthRequests;
+using TVS_App.Application.Requests.AuthRequests;
 using TVS_App.Web.Services;
 
 namespace TVS_App.Web.Pages.Auth;

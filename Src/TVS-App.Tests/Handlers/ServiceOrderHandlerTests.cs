@@ -110,7 +110,7 @@ public class ServiceOrderHandlerTests
     {
         try
         {
-            var getAllServiceOrdersResult = await _serviceOrderHandler.GetAllServiceOrdersAsync(new PaginationCommand{ pageNumber = 1, pageSize = 25});
+            var getAllServiceOrdersResult = await _serviceOrderHandler.GetAllServiceOrdersAsync(new PaginationCommand{ PageNumber = 1, PageSize = 25});
 
             if (!getAllServiceOrdersResult.IsSuccess)
                 Assert.Fail("Falha ao buscar todas as ordens de servico");
@@ -131,7 +131,7 @@ public class ServiceOrderHandlerTests
     {
         try
         {
-            var allServiceOrderResponse = await _serviceOrderHandler.GetAllServiceOrdersAsync(new PaginationCommand{ pageNumber = 1, pageSize = 25});
+            var allServiceOrderResponse = await _serviceOrderHandler.GetAllServiceOrdersAsync(new PaginationCommand{ PageNumber = 1, PageSize = 25});
 
             var allserviceOrder = allServiceOrderResponse.Data?.Items.ToList();
             if (allserviceOrder == null || !allserviceOrder.Any())
@@ -175,27 +175,27 @@ public class ServiceOrderHandlerTests
                 await _serviceOrderHandler.UpdateServiceOrderAsync(new UpdateServiceOrderCommand { ServiceOrderId = allserviceOrder!.ToList()[i]!.Id });
             }
 
-            var estimatedServiceOrders = await _serviceOrderHandler.GetWaitingResponseAsync(new PaginationCommand{ pageNumber = 1, pageSize = 25});
+            var estimatedServiceOrders = await _serviceOrderHandler.GetWaitingResponseAsync(new PaginationCommand{ PageNumber = 1, PageSize = 25});
             var expectedEstimatedIds = new HashSet<long> { 1L, 2L };
             var actualEstimatedIds = estimatedServiceOrders?.Data?.Items.Select(x => x!.Id).ToHashSet();
             Assert.IsTrue(actualEstimatedIds?.SetEquals(expectedEstimatedIds));
 
-            var awaitingPartServiceOrders = await _serviceOrderHandler.GetWaitingPartsAsync(new PaginationCommand{ pageNumber = 1, pageSize = 25});
+            var awaitingPartServiceOrders = await _serviceOrderHandler.GetWaitingPartsAsync(new PaginationCommand{ PageNumber = 1, PageSize = 25});
             var expectedAwaitingPartIds = new HashSet<long> { 3L, 4L };
             var actualAwaitingPartIds = awaitingPartServiceOrders?.Data?.Items.Select(x => x!.Id).ToHashSet();
             Assert.IsTrue(actualAwaitingPartIds?.SetEquals(expectedAwaitingPartIds));
 
-            var awaitingPickUpServiceOrders = await _serviceOrderHandler.GetWaitingPickupAsync(new PaginationCommand{ pageNumber = 1, pageSize = 25});
+            var awaitingPickUpServiceOrders = await _serviceOrderHandler.GetWaitingPickupAsync(new PaginationCommand{ PageNumber = 1, PageSize = 25});
             var expectedPickUpIds = new HashSet<long> { 5L, 6L, 7L, 8L };
             var actualAwaitingPickUpIds = awaitingPickUpServiceOrders?.Data?.Items.Select(x => x!.Id).ToHashSet();
             Assert.IsTrue(actualAwaitingPickUpIds?.SetEquals(expectedPickUpIds));
 
-            var getDeliveredServiceOrders = await _serviceOrderHandler.GetDeliveredAsync(new PaginationCommand{ pageNumber = 1, pageSize = 25});
+            var getDeliveredServiceOrders = await _serviceOrderHandler.GetDeliveredAsync(new PaginationCommand{ PageNumber = 1, PageSize = 25});
             var expectedDeliveredIds = new HashSet<long> { 9L, 10L };
             var actualDeliveredIds = getDeliveredServiceOrders?.Data?.Items.Select(x => x!.Id).ToHashSet();
             Assert.IsTrue(actualDeliveredIds?.SetEquals(expectedDeliveredIds));
 
-            var getPendingEstimatesServiceOrders = await _serviceOrderHandler.GetPendingEstimatesAsync(new PaginationCommand{ pageNumber = 1, pageSize = 25});
+            var getPendingEstimatesServiceOrders = await _serviceOrderHandler.GetPendingEstimatesAsync(new PaginationCommand{ PageNumber = 1, PageSize = 25});
             var expectedPendingEstimatesIds = new HashSet<long> { 11L, 12L, 13L };
             var actualPendingEstimatesIds = getPendingEstimatesServiceOrders?.Data?.Items.Select(x => x!.Id).ToHashSet();
             Assert.IsTrue(actualPendingEstimatesIds?.SetEquals(expectedPendingEstimatesIds));

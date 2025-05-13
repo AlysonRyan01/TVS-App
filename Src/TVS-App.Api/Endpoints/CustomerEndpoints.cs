@@ -1,10 +1,9 @@
-using AutomatizarOs.Api.Hubs;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using TVS_App.Api.Exceptions;
+using TVS_App.Api.SignalR;
 using TVS_App.Application.Commands;
 using TVS_App.Application.Commands.CustomerCommands;
-using TVS_App.Application.DTOs;
 using TVS_App.Application.Handlers;
 using TVS_App.Domain.Entities;
 
@@ -22,16 +21,16 @@ public static class CustomerEndpoints
 
                 var createResult = await handler.CreateCustomerAsync(command);
                 if (!createResult.IsSuccess)
-                    return Results.Problem(createResult.Message);
+                    return Results.BadRequest(createResult);
 
                 await hubContext.Clients.All.SendAsync("Atualizar", createResult.Message);
 
-                return Results.Ok(new BaseResponse<Customer>(createResult.Data, 200, createResult.Message));
+                return Results.Ok(createResult);
             }
             catch (Exception ex)
             {
                 var response = EndpointExceptions.Handle<Customer>(ex);
-                return Results.BadRequest(response ?? new BaseResponse<Customer>(null, 500, $"Ocorreu um erro desconhecido: {ex.Message}"));
+                return Results.BadRequest(response);
             }
         }).WithTags("Customer").RequireAuthorization();
 
@@ -43,16 +42,16 @@ public static class CustomerEndpoints
 
                 var createResult = await handler.UpdateCustomerAsync(command);
                 if (!createResult.IsSuccess)
-                    return Results.Problem(createResult.Message);
+                    return Results.BadRequest(createResult);
 
                 await hubContext.Clients.All.SendAsync("Atualizar", createResult.Message);
 
-                return Results.Ok(new BaseResponse<Customer>(createResult.Data, 200, createResult.Message));
+                return Results.Ok(createResult);
             }
             catch (Exception ex)
             {
                 var response = EndpointExceptions.Handle<Customer>(ex);
-                return Results.BadRequest(response ?? new BaseResponse<Customer>(null, 500, $"Ocorreu um erro desconhecido: {ex.Message}"));
+                return Results.BadRequest(response);
             }
         }).WithTags("Customer").RequireAuthorization();
 
@@ -65,14 +64,14 @@ public static class CustomerEndpoints
 
                 var createResult = await handler.GetCustomerByIdAsync(command);
                 if (!createResult.IsSuccess)
-                    return Results.Problem(createResult.Message);
+                    return Results.BadRequest(createResult);
 
-                return Results.Ok(new BaseResponse<Customer>(createResult.Data, 200, createResult.Message));
+                return Results.Ok(createResult);
             }
             catch (Exception ex)
             {
                 var response = EndpointExceptions.Handle<Customer>(ex);
-                return Results.BadRequest(response ?? new BaseResponse<Customer>(null, 500, $"Ocorreu um erro desconhecido: {ex.Message}"));
+                return Results.BadRequest(response);
             }
         }).WithTags("Customer").RequireAuthorization();
         
@@ -83,19 +82,19 @@ public static class CustomerEndpoints
         {
             try
             {
-                var command = new PaginationCommand{pageNumber = pageNumber,  pageSize = pageSize};
+                var command = new PaginationCommand{PageNumber = pageNumber,  PageSize = pageSize};
                 command.Validate();
 
                 var createResult = await handler.GetAllCustomersAsync(command);
                 if (!createResult.IsSuccess)
-                    return Results.Problem(createResult.Message);
+                    return Results.BadRequest(createResult);
 
-                return Results.Ok(new BaseResponse<PaginatedResult<Customer?>>(createResult.Data, 200, createResult.Message));
+                return Results.Ok(createResult);
             }
             catch (Exception ex)
             {
                 var response = EndpointExceptions.Handle<Customer>(ex);
-                return Results.BadRequest(response ?? new BaseResponse<Customer>(null, 500, $"Ocorreu um erro desconhecido: {ex.Message}"));
+                return Results.BadRequest(response);
             }
         }).WithTags("Customer").RequireAuthorization();
     }
