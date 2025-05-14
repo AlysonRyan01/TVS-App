@@ -83,6 +83,11 @@ public class FakeCustomerRepository : ICustomerRepository
         return Task.FromResult(new BaseResponse<Customer?>(customer, 200, "Cliente obtido com sucesso!"));
     }
 
+    public Task<BaseResponse<List<Customer>>> GetCustomerByName(string name)
+    {
+        throw new NotImplementedException();
+    }
+
     public Task<BaseResponse<PaginatedResult<Customer?>>> GetAllAsync(int pageNumber, int pageSize)
     {
         int totalCount = _customers.Count;
