@@ -41,6 +41,23 @@ public class CustomerRepository : ICustomerRepository
         }
     }
 
+    public async Task<BaseResponse<List<Customer>>> GetCustomerByName(string name)
+    {
+        try
+        {
+            var customers = await _context.Customers
+                .Where(c => c.Name.CustomerName.Contains(name))
+                .OrderBy(c => c.Name.CustomerName)
+                .ToListAsync();
+
+            return new BaseResponse<List<Customer>>(customers, 200, "Clients obtidos com sucesso!");
+        }
+        catch (Exception ex)
+        {
+            return DbExceptionHandler.Handle<List<Customer>>(ex);
+        }
+    }
+
     public async Task<BaseResponse<PaginatedResult<Customer?>>> GetAllAsync(int pageNumber, int pageSize)
     {
         try

@@ -75,6 +75,23 @@ public static class CustomerEndpoints
             }
         }).WithTags("Customer").RequireAuthorization();
         
+        app.MapGet("/get-customer-by-name", async (CustomerHandler handler, string name) =>
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(name))
+                    return Results.BadRequest();
+                
+                var customers = await handler.GetCustomerByNameAsync(name);
+                return Results.Ok(customers);
+            }
+            catch (Exception ex)
+            {
+                var response = EndpointExceptions.Handle<List<Customer>>(ex);
+                return Results.BadRequest(response);
+            }
+        }).WithTags("Customer").RequireAuthorization();
+        
         app.MapGet("/get-all-customers/{pageSize}/{pageNumber}", async (
             CustomerHandler handler,
             [FromRoute] int pageSize,

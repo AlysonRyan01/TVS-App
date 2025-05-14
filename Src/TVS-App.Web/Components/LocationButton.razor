@@ -9,12 +9,20 @@
                   FullWidth="false"
                   Class="max-w-[100px]"/>
     
-    <MudButton @onclick="AdicionarPrateleira"
-               Variant="Variant.Text"
-               Color="Color.Primary"
-               FullWidth="false">
-        <p class="font-sans p-0 text-base font-bold">Adicionar</p>
-    </MudButton>
+    @if (_isProcessing)
+    {
+        <MudProgressCircular Color="Color.Primary" Size="Size.Medium" Indeterminate="true" />
+    }
+    else
+    {
+        <MudButton @onclick="AdicionarPrateleira"
+                   Disabled="_isProcessing"
+                   Variant="Variant.Text"
+                   Color="Color.Primary"
+                   FullWidth="false">
+            <p class="font-sans p-0 text-base font-bold">Adicionar</p>
+        </MudButton>
+    }
 </div>
 
 @code {
@@ -24,10 +32,12 @@
     [Inject] public ServiceOrderHandler ServiceOrderHandler { get; set; } = null!;
     [Inject] public ISnackbar Snackbar { get; set; } = null!;
 
+    private bool _isProcessing;
     public async Task AdicionarPrateleira()
     {
         try
         {
+            _isProcessing = true;
             Request.ServiceOrderId = ServiceOrder.Id;
             var result = await ServiceOrderHandler.AddProductLocation(Request);
             if (result.IsSuccess)
@@ -38,12 +48,16 @@
             }
             else
             {
-                Snackbar.Add(result.Message?? "Erro ao adicionar a prateleira", Severity.Error);
+                Snackbar.Add(result.Message ?? "Erro ao adicionar a prateleira", Severity.Error);
             }
         }
         catch (Exception e)
         {
             Snackbar.Add(e.Message, Severity.Error);
+        }
+        finally
+        {
+            _isProcessing = false;
         }
     }
 }

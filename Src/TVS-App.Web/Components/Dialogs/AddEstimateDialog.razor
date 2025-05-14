@@ -13,9 +13,9 @@
         <div class="flex flex-col w-full gap-3 border-b border-[#dfdfdf] my-4">
             <h2 class="font-bold text-lg font-sans text-[#750303] mt-3">DADOS DO CLIENTE</h2>
             <p class="font-normal uppercase font-sans"><span class="font-bold font-sans text-[#750303]">NOME:</span> @ServiceOrder.Customer.Name.CustomerName</p>
-            <p class="font-normal uppercase font-sans"><span class="font-bold font-sans text-[#750303]">ENDEREÇO:</span> @ServiceOrder.Customer.Address.Street, @ServiceOrder.Customer.Address.Number, @ServiceOrder.Customer.Address.Neighborhood</p>
-            <p class="font-normal uppercase font-sans"><span class="font-bold font-sans text-[#750303]">FONE 1:</span> @ServiceOrder.Customer.Phone</p>
-            <p class="font-normal uppercase font-sans mb-3"><span class="font-bold font-sans text-[#750303]">FONE 2:</span> @ServiceOrder.Customer.Phone2</p>
+            <p class="font-normal uppercase font-sans"><span class="font-bold font-sans text-[#750303]">ENDEREÇO:</span> @ServiceOrder.Customer.Address.ToString().ToUpper()</p>
+            <p class="font-normal uppercase font-sans"><span class="font-bold font-sans text-[#750303]">FONE 1:</span> @ServiceOrder.Customer.Phone.CustomerPhone</p>
+            <p class="font-normal uppercase font-sans mb-3"><span class="font-bold font-sans text-[#750303]">FONE 2:</span> @ServiceOrder.Customer.Phone2.CustomerPhone</p>
         </div>
         <div class="flex flex-col w-full gap-3 border-b border-[#dfdfdf] my-4">
             <h2 class="font-bold text-lg font-sans text-[#750303] mt-3">DADOS DO PRODUTO</h2>
@@ -66,13 +66,20 @@
                         <MudSelectItem Value="@value">@GetPortugueseLabel(value)</MudSelectItem>
                     }
                 </MudSelect>
-
-                <MudButton @onclick="AdicionarOrcamento"
-                           Variant="Variant.Filled"
-                           Color="Color.Primary"
-                           Class="text-white text-lg font-semibold py-2 px-5 rounded-lg transition">
-                    Adicionar
-                </MudButton>
+                @if (_isProcessing)
+                {
+                    <MudProgressCircular Color="Color.Primary" Size="Size.Medium" Indeterminate="true" />
+                }
+                else
+                {
+                    <MudButton @onclick="AdicionarOrcamento"
+                               Disabled="_isProcessing"
+                               Variant="Variant.Filled"
+                               Color="Color.Primary"
+                               Class="text-white text-lg font-semibold py-2 px-5 rounded-lg transition">
+                        Adicionar
+                    </MudButton>
+                }
             </MudForm>
         </div>
     </DialogContent>
@@ -81,6 +88,7 @@
 @code {
     private MudForm _form = null!;
     public AddServiceOrderEstimateCommand Request { get; set; } = new();
+    private bool _isProcessing = false;
 
     [CascadingParameter] IMudDialogInstance MudDialog { get; set; } = null!;
     [Parameter] public ServiceOrder ServiceOrder { get; set; } = null!;
@@ -106,6 +114,7 @@
                 return;
             }
 
+            _isProcessing = true;
             Request.ServiceOrderId = ServiceOrder.Id;
             var result = await ServiceOrderHandler.AddServiceOrderEstimate(Request);
 
@@ -121,6 +130,10 @@
         catch (Exception e)
         {
             Snackbar.Add(e.Message, Severity.Error);
+        }
+        finally
+        {
+            _isProcessing = false;
         }
     }
 

@@ -93,7 +93,7 @@ public class GenerateCheckInDocument : QuestPdf
                                     .FontSize(10)
                                     .SemiBold();
 
-                                col.Item().Text($"Endereço:  {_serviceOrder.Customer.Address.Street.ToUpper()}, {_serviceOrder.Customer.Address.Number}, {_serviceOrder.Customer.Address.Neighborhood.ToUpper()}")
+                                col.Item().Text($"Endereço:  {_serviceOrder.Customer.Address.ToString().ToUpper()}")
                                     .FontSize(10)
                                     .SemiBold();
 

@@ -903,6 +903,10 @@ video {
   min-width: 400px;
 }
 
+.min-w-full {
+  min-width: 100%;
+}
+
 .max-w-\[100px\] {
   max-width: 100px;
 }

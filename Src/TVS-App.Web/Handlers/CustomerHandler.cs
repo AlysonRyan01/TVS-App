@@ -85,6 +85,27 @@ public class CustomerHandler
             return ExceptionHandler.Handle<Customer?>(ex);
         }
     }
+    
+    public async Task<BaseResponse<List<Customer>>> GetCustomerByNameAsync(string name)
+    {
+        try
+        {
+            if (string.IsNullOrEmpty(name))
+                return new BaseResponse<List<Customer>>(null, 400, "A nome não pode ser vazio");
+            
+            var response = await _httpClient.GetFromJsonAsync<BaseResponse<List<Customer>>>(
+                $"get-customer-by-name?name={Uri.EscapeDataString(name)}");
+            
+            if (response == null || !response.IsSuccess)
+                return new BaseResponse<List<Customer>>(null, 500, response?.Message);
+            
+            return response;
+        }
+        catch (Exception ex)
+        {
+            return ExceptionHandler.Handle<List<Customer>>(ex);
+        }
+    }
 
     public async Task<BaseResponse<PaginatedResult<Customer?>>> GetAllCustomersAsync(PaginationCommand command)
     {

@@ -133,7 +133,7 @@ public class ServiceOrder : Entity
     public void UpdateCustomer(Customer customer)
     {
         if (customer.Id == 0 || string.IsNullOrEmpty(customer.Name.CustomerName))
-            throw new EntityException<ServiceOrder>("O campo ID e name do customer estão vazios");
+            throw new EntityException<ServiceOrder>("O campo ID e nome do cliente estão vazios");
 
         Customer = customer;
     }

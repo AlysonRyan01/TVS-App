@@ -11,7 +11,7 @@ public class Name : ValueObject
     public Name(string customerName)
     {
         if (string.IsNullOrEmpty(customerName))
-            throw new ValueObjectException<Name>("O nome do cliente não pode ser vazio");
+            throw new ValueObjectException<Name>("O nome do cliente não pode estar vazio");
 
         CustomerName = customerName;
     }

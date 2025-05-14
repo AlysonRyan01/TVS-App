@@ -208,4 +208,76 @@ public partial class Home : ComponentBase
             await UpdateServiceOrdersAsync();
         }
     }
+    
+    private async Task OpenAddResponseDialog(ServiceOrder order)
+    {
+        var parameters = new DialogParameters
+        {
+            ["ServiceOrder"] = order,
+            ["OnResponseAdded"] = EventCallback.Factory.Create(this, UpdateServiceOrdersAsync)
+        };
+
+        var options = new DialogOptions
+        {
+            CloseButton = true,
+            FullWidth = true,
+            MaxWidth = MaxWidth.Large
+        };
+
+        var dialog = await DialogService.ShowAsync<AddResponseDialog>("Atualizar Ordem de Serviço", parameters, options);
+        var result = await dialog.Result;
+    
+        if (result!.Canceled)
+        {
+            await UpdateServiceOrdersAsync();
+        }
+    }
+    
+    private async Task OpenAddRepairDialog(ServiceOrder order)
+    {
+        var parameters = new DialogParameters
+        {
+            ["ServiceOrder"] = order,
+            ["OnRepairAdded"] = EventCallback.Factory.Create(this, UpdateServiceOrdersAsync)
+        };
+
+        var options = new DialogOptions
+        {
+            CloseButton = true,
+            FullWidth = true,
+            MaxWidth = MaxWidth.Large
+        };
+
+        var dialog = await DialogService.ShowAsync<AddRepairDialog>("Atualizar Ordem de Serviço", parameters, options);
+        var result = await dialog.Result;
+    
+        if (result!.Canceled)
+        {
+            await UpdateServiceOrdersAsync();
+        }
+    }
+    
+    private async Task OpenAddDeliveryDialog(ServiceOrder order)
+    {
+        var parameters = new DialogParameters
+        {
+            ["ServiceOrder"] = order,
+            ["OnDeliveryAdded"] = EventCallback.Factory.Create(this, UpdateServiceOrdersAsync)
+        };
+
+        var options = new DialogOptions
+        {
+            CloseButton = true,
+            FullWidth = true,
+            MaxWidth = MaxWidth.Large
+        };
+
+        var dialog = await DialogService.ShowAsync<AddDeliveryDialog>("Atualizar Ordem de Serviço", parameters, options);
+        var result = await dialog.Result;
+    
+        if (result!.Canceled)
+        {
+            await UpdateServiceOrdersAsync();
+        }
+    }
 }

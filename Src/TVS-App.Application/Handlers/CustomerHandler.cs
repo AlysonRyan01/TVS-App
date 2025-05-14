@@ -103,6 +103,18 @@ public class CustomerHandler
             return new BaseResponse<Customer?>(null, 500, $"Ocorreu um erro desconhecido ao buscar o cliente: {ex.Message}");
         }
     }
+    
+    public async Task<BaseResponse<List<Customer>>> GetCustomerByNameAsync(string name)
+    {
+        try
+        {
+            return await _customerRepository.GetCustomerByName(name);
+        }
+        catch (Exception ex)
+        {
+            return new BaseResponse<List<Customer>>(null, 500, ex.Message);
+        }
+    }
 
     public async Task<BaseResponse<PaginatedResult<Customer?>>> GetAllCustomersAsync(PaginationCommand command)
     {

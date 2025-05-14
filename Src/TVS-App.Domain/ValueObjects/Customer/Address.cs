@@ -16,7 +16,7 @@ public class Address : ValueObject
         string state)
     {
         if (state.Length > 2)
-            throw new ValueObjectException<Address>("O state não pode ser maior que 2 caracteres");
+            throw new ValueObjectException<Address>("O estado não pode ser maior que 2 caracteres");
 
         Street = street;
         Neighborhood = neighborhood;
@@ -38,4 +38,9 @@ public class Address : ValueObject
     public string ZipCode { get; private set; } = string.Empty;
     [JsonPropertyName("state")]
     public string State { get; private set; } = string.Empty;
+    
+    public override string ToString()
+    {
+        return $"{Street}, {Number}, {Neighborhood}, {City}, {State}, {ZipCode}";
+    }
 }

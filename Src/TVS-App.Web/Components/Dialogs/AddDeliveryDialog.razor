@@ -1,0 +1,103 @@
+@using TVS_App.Application.Commands.ServiceOrderCommands
+@using TVS_App.Domain.Entities
+@using TVS_App.Domain.Enums
+@using TVS_App.Web.Handlers
+<MudDialog>
+    <TitleContent>
+        <h2 class="font-extrabold text-lg lg:text-2xl font-sans text-[#750303]">ADICIONAR ENTREGA OS: @ServiceOrder.Id</h2>
+    </TitleContent>
+    <DialogContent>
+        <div class="flex flex-col w-full gap-3 border-t border-b border-[#dfdfdf] my-4">
+            <h2 class="font-bold uppercase text-lg font-sans text-[#750303] mt-3 mb-3">EMPRESA: @ServiceOrder.Enterprise</h2>
+        </div>
+        <div class="flex flex-col w-full gap-3 border-b border-[#dfdfdf] my-4">
+            <h2 class="font-bold uppercase text-lg font-sans text-[#750303] mt-3">DADOS DO CLIENTE</h2>
+            <p class="font-normal uppercase font-sans"><span class="font-bold font-sans text-[#750303]">NOME:</span> @ServiceOrder.Customer.Name.CustomerName</p>
+            <p class="font-normal uppercase font-sans"><span class="font-bold font-sans text-[#750303]">ENDEREÇO:</span> @ServiceOrder.Customer.Address.ToString().ToUpper()</p>
+            <p class="font-normal uppercase font-sans"><span class="font-bold font-sans text-[#750303]">TELEFONE 1:</span> @ServiceOrder.Customer.Phone.CustomerPhone</p>
+            <p class="font-normal uppercase font-sans mb-3"><span class="font-bold font-sans text-[#750303]">TELEFONE 2:</span> @ServiceOrder.Customer.Phone2.CustomerPhone</p>
+        </div>
+        <div class="flex flex-col w-full gap-3 border-b border-[#dfdfdf] my-4">
+            <h2 class="font-bold uppercase text-lg font-sans text-[#750303] mt-3">DADOS DO PRODUTO</h2>
+            <p class="font-normal uppercase font-sans"><span class="font-bold font-sans text-[#750303]">TIPO:</span> @ServiceOrder.Product.Type</p>
+            <p class="font-normal uppercase font-sans"><span class="font-bold font-sans text-[#750303]">MARCA:</span> @ServiceOrder.Product.Brand</p>
+            <p class="font-normal uppercase font-sans"><span class="font-bold font-sans text-[#750303]">MODELO:</span> @ServiceOrder.Product.Model</p>
+            <p class="font-normal uppercase font-sans"><span class="font-bold font-sans text-[#750303]">SÉRIE:</span> @ServiceOrder.Product.SerialNumber</p>
+            <p class="font-normal uppercase font-sans"><span class="font-bold font-sans text-[#750303]">DEFEITO:</span> @ServiceOrder.Product.Defect</p>
+            <p class="font-normal uppercase font-sans"><span class="font-bold font-sans text-[#750303]">DATA DE ENTRADA:</span> @ServiceOrder.EntryDate.ToString("dd/MM/yyyy")</p>
+            <p class="font-normal uppercase font-sans mt-3"><span class="font-bold font-sans text-[#750303]">PRATELEIRA:</span> @ServiceOrder.Product.Location</p>
+            <LocationButton ServiceOrder="ServiceOrder" OnLocationChanged="UpdateLocation"></LocationButton>
+        </div>
+        <div class="flex flex-col w-full gap-3 border-b border-[#dfdfdf] my-4">
+            <h2 class="font-bold uppercase text-lg font-sans text-[#750303] mt-3">INFORMAÇÕES SOBRE O ORÇAMENTO</h2>
+            <p class="font-normal uppercase font-sans"><span class="font-bold font-sans text-[#750303]">SOLUÇÃO:</span> @ServiceOrder.Solution</p>
+            <p class="font-normal uppercase font-sans"><span class="font-bold font-sans text-[#750303]">VALOR:</span> @ServiceOrder.TotalAmount</p>
+            <p class="font-normal uppercase font-sans mb-3"><span class="font-bold font-sans text-[#750303]">CONSERTO FEITO EM:</span> @ServiceOrder.RepairDate?.ToString("dd/MM/yyyy")</p>
+            <p class="font-normal uppercase font-sans"><span class="font-bold font-sans text-[#750303]">SITUAÇÃO:</span> @Situacao</p>
+            <p class="font-normal uppercase font-sans"><span class="font-bold font-sans text-[#750303]">TEM CONSERTO?</span> @TemConserto</p>
+            <p class="font-normal uppercase font-sans"><span class="font-bold font-sans text-[#750303]">RESPOSTA DO CLIENTE:</span> @Resposta</p>
+        </div>
+        <div class="flex flex-row w-full gap-3 mb-[50px]">
+            <DeliveryServiceOrderButton OnDeliveryAdded="OnDeliveryAdded" Command="Command"></DeliveryServiceOrderButton>
+        </div>
+    </DialogContent>
+</MudDialog>
+
+@code {
+    [CascadingParameter] IMudDialogInstance MudDialog { get; set; } = null!;
+    [Parameter] public ServiceOrder ServiceOrder { get; set; } = null!;
+    [Parameter] public EventCallback OnDeliveryAdded { get; set; }
+    [Inject] public ServiceOrderHandler ServiceOrderHandler { get; set; } = null!;
+    [Inject] public ISnackbar Snackbar { get; set; } = null!;
+
+    private GetServiceOrderByIdCommand Command => new GetServiceOrderByIdCommand{ Id = ServiceOrder.Id };
+
+    public string Situacao =>
+        ServiceOrder.ServiceOrderStatus switch
+        {
+            EServiceOrderStatus.Entered => "Avaliação pendente",
+            EServiceOrderStatus.Evaluated => "Avaliado",
+            EServiceOrderStatus.OrderPart => "Aguardando peça",
+            EServiceOrderStatus.Repaired => "Consertado",
+            EServiceOrderStatus.Delivered => "Entregue",
+            _ => "Desconhecido"
+        };
+
+    public string TemConserto =>
+        ServiceOrder.RepairResult switch
+        {
+            ERepairResult.Repair => "Sim",
+            ERepairResult.Unrepaired => "Não",
+            ERepairResult.NoDefectFound => "Não apresentou defeito",
+            _ => "Desconhecido"
+        };
+
+    public string Resposta =>
+        ServiceOrder.RepairStatus switch
+        {
+            ERepairStatus.Entered => "Sem orçamento ainda",
+            ERepairStatus.Waiting => "Aguardando resposta",
+            ERepairStatus.Approved => "Aprovado",
+            ERepairStatus.Disapproved => "Não aprovou",
+            _ => "Desconhecido"
+        };
+
+    private async Task UpdateLocation()
+    {
+        var command = new GetServiceOrderByIdCommand { Id = ServiceOrder.Id };
+        
+        var result = await ServiceOrderHandler.GetServiceOrderById(command);
+        if (result.IsSuccess)
+        {
+            if (result.Data != null)
+            {
+                ServiceOrder.Product.AddLocation(result.Data.Product.Location);
+                StateHasChanged();
+            }
+            else
+            {
+                Snackbar.Add("Ocorreu um erro ao obter a ordem de serviço", Severity.Error);
+            }
+        }
+    }
+}

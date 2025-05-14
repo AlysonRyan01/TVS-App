@@ -1,10 +1,18 @@
 @using TVS_App.Application.Commands.ServiceOrderCommands
 @using TVS_App.Web.Handlers
 
-<MudButton @onclick="Reprint"
-           Variant="Variant.Text"
-           Color="Color.Primary"
-           FullWidth="false">Reimprimir</MudButton>
+@if (_isProcessing)
+{
+    <MudProgressCircular Color="Color.Primary" Size="Size.Medium" Indeterminate="true" />
+}
+else
+{
+    <MudButton @onclick="Reprint"
+               Disabled="_isProcessing"
+               Variant="Variant.Text"
+               Color="Color.Primary"
+               FullWidth="false">Reimprimir</MudButton>
+}
 
 
 @code {
@@ -14,21 +22,33 @@
     [Inject] public ISnackbar Snackbar { get; set; } = null!;
     [Inject] public IJSRuntime Js { get; set; } = null!;
 
-
+    private bool _isProcessing;
     public async Task Reprint()
     {
-        Command.Validate();
-
-        var result = await Handler.RegenerateAndReturnPdfAsync(Command);
-        if (!result.IsSuccess || result.Data is null)
+        try
         {
-            Snackbar.Add(result.Message ?? "Erro ao tentar reimprimir a ordem de serviço", Severity.Error);
-            return;
+            _isProcessing = true;
+            Command.Validate();
+
+            var result = await Handler.RegenerateAndReturnPdfAsync(Command);
+            if (!result.IsSuccess || result.Data is null)
+            {
+                Snackbar.Add(result.Message ?? "Erro ao tentar reimprimir a ordem de serviço", Severity.Error);
+                return;
+            }
+
+            var base64 = Convert.ToBase64String(result.Data);
+            await Js.InvokeVoidAsync("GeneratePdf", base64, "ordem_servico.pdf");
+
+            Snackbar.Add("Ordem de serviço reimpressa com sucesso!", Severity.Success);
         }
-
-        var base64 = Convert.ToBase64String(result.Data);
-        await Js.InvokeVoidAsync("GeneratePdf", base64, "ordem_servico.pdf");
-
-        Snackbar.Add("Ordem de serviço reimpressa com sucesso!", Severity.Success);
+        catch (Exception e)
+        {
+            Snackbar.Add(e.Message, Severity.Error);
+        }
+        finally
+        {
+            _isProcessing = false;
+        }
     }
 }
