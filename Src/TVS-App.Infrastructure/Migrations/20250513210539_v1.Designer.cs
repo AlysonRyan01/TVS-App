@@ -12,7 +12,7 @@ using TVS_App.Infrastructure.Data;
 namespace TVS_App.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDataContext))]
-    [Migration("20250512163347_v1")]
+    [Migration("20250513210539_v1")]
     partial class v1
     {
         /// <inheritdoc />

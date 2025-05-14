@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using TVS_App.Domain.Exceptions;
 
 namespace TVS_App.Domain.ValueObjects.ServiceOrder;
@@ -6,12 +7,13 @@ public class PartCost : ValueObject
 {
     protected PartCost() { }
 
-    public PartCost(decimal amount)
+    [JsonConstructor]
+    public PartCost(decimal serviceOrderPartCost)
     {
-        if (amount < 0)
+        if (serviceOrderPartCost < 0)
             throw new ValueObjectException<PartCost>("O valor da peça não pode ser menor que 0");
 
-        ServiceOrderPartCost = amount;
+        ServiceOrderPartCost = serviceOrderPartCost;
     }
 
     public decimal ServiceOrderPartCost { get; private set; }

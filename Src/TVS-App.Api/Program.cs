@@ -5,6 +5,7 @@ using TVS_App.Api.SignalR;
 var builder = WebApplication.CreateBuilder(args);
 
 QuestPDF.Settings.License = LicenseType.Community;
+builder.AddCorsConfiguration();
 builder.AddSqlServer();
 builder.AddIdentity();
 builder.AddAuthentication();
@@ -16,11 +17,10 @@ builder.Services.AddSignalR();
 
 var app = builder.Build();
 
+app.UseCors(builder.Configuration["Cors:PolicyName"]??"");
+
 app.MapHub<ServiceOrderHub>("/osHub");
-
-app.UseAuthentication();
-app.UseAuthorization();
-
+app.AddAuthorization();
 app.AddEndpoints();
 app.AddSwagger();
 

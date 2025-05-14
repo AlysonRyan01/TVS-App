@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.SignalR.Client;
 using MudBlazor;
 using TVS_App.Application.Commands;
 using TVS_App.Domain.Entities;
+using TVS_App.Web.Components.Dialogs;
 using TVS_App.Web.Handlers;
 
 namespace TVS_App.Web.Pages;
@@ -19,6 +20,7 @@ public partial class Home : ComponentBase
     [Inject] public ServiceOrderHandler Handler { get; set; } = null!;
     [Inject] public ISnackbar Snackbar { get; set; } = null!;
     [Inject] public HubConnection HubConnection { get; set; } = null!;
+    [Inject] public IDialogService DialogService { get; set; } = null!;
     
     protected override async Task OnInitializedAsync()
     {
@@ -171,6 +173,7 @@ public partial class Home : ComponentBase
             await LoadWaitingPartsAsync();
             await LoadWaitingPickupAsync();
             await LoadDeliveredAsync();
+            StateHasChanged();
         }
         catch (Exception e)
         {
@@ -179,6 +182,30 @@ public partial class Home : ComponentBase
         finally
         {
             _updateSemaphore.Release();
+        }
+    }
+    
+    private async Task OpenAddEstimateDialog(ServiceOrder order)
+    {
+        var parameters = new DialogParameters
+        {
+            ["ServiceOrder"] = order,
+            ["OnEstimateAdded"] = EventCallback.Factory.Create(this, UpdateServiceOrdersAsync)
+        };
+
+        var options = new DialogOptions
+        {
+            CloseButton = true,
+            FullWidth = true,
+            MaxWidth = MaxWidth.Large
+        };
+
+        var dialog = await DialogService.ShowAsync<AddEstimateDialog>("Atualizar Ordem de Serviço", parameters, options);
+        var result = await dialog.Result;
+    
+        if (result!.Canceled)
+        {
+            await UpdateServiceOrdersAsync();
         }
     }
 }

@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using TVS_App.Domain.Enums;
 using TVS_App.Domain.Exceptions;
 using TVS_App.Domain.ValueObjects.ServiceOrder;
@@ -8,6 +9,7 @@ public class ServiceOrder : Entity
 {
     protected ServiceOrder() { }
 
+    [JsonConstructor]
     public ServiceOrder(EEnterprise enterprise, long customerId, Product product)
     {
         EntryDate = DateTime.UtcNow;
@@ -21,7 +23,11 @@ public class ServiceOrder : Entity
 
     public string SecurityCode { get; private set; } = null!;
     public long CustomerId { get; private set; }
+    [JsonPropertyName("customer")]
+    [JsonInclude]
     public Customer Customer { get; private set; } = null!;
+    [JsonPropertyName("product")]
+    [JsonInclude]
     public Product Product { get; private set; } = null!;
     public EEnterprise Enterprise { get; private set; }
     public DateTime EntryDate { get; set; }
@@ -30,19 +36,32 @@ public class ServiceOrder : Entity
     public DateTime? RepairDate { get; set; }
     public DateTime? PurchasePartDate { get; set; }
     public DateTime? DeliveryDate { get; set; }
+    [JsonPropertyName("solution")]
+    [JsonInclude]
     public Solution? Solution { get; private set; }
+    [JsonPropertyName("guarantee")]
+    [JsonInclude]
     public Guarantee? Guarantee { get; private set; }
+    [JsonPropertyName("partCost")]
+    [JsonInclude]
     public PartCost PartCost { get; private set; } = new(0);
+    [JsonPropertyName("laborCost")]
+    [JsonInclude]
     public LaborCost LaborCost { get; private set; } = new(0);
+    [JsonPropertyName("totalAmount")]
+    [JsonInclude]
     public decimal TotalAmount => PartCost.ServiceOrderPartCost + LaborCost.ServiceOrderLaborCost;
+    [JsonInclude]
     public EServiceOrderStatus ServiceOrderStatus { get; private set; }
+    [JsonInclude]
     public ERepairStatus RepairStatus { get; private set; }
+    [JsonInclude]
     public ERepairResult? RepairResult { get; set; }
 
-    public void AddEstimate(string solution, string guarantee, decimal partCost, decimal laborCost, ERepairResult repairResult)
+    public void AddEstimate(string solution, string? guarantee, decimal partCost, decimal laborCost, ERepairResult repairResult)
     {
         Solution = new Solution(solution);
-        Guarantee = new Guarantee(guarantee);
+        Guarantee = new Guarantee(guarantee ?? "");
         PartCost = new PartCost(partCost);
         LaborCost = new LaborCost(laborCost);
         ServiceOrderStatus = EServiceOrderStatus.Evaluated;

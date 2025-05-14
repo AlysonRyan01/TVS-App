@@ -15,7 +15,7 @@ public class CustomAuthStateProvider : AuthenticationStateProvider
     private readonly HttpClient _httpClient;
     private readonly ISyncLocalStorageService _localStorage;
 
-    public CustomAuthStateProvider(HttpClient httpClient, IHttpClientFactory httpClientFactory, ISyncLocalStorageService localStorageService)
+    public CustomAuthStateProvider(IHttpClientFactory httpClientFactory, ISyncLocalStorageService localStorageService)
     {
         _httpClient = httpClientFactory.CreateClient("api");
         _localStorage = localStorageService;
@@ -33,7 +33,9 @@ public class CustomAuthStateProvider : AuthenticationStateProvider
 
         if (!string.IsNullOrEmpty(token))
         {
-            user = new ClaimsPrincipal(new ClaimsIdentity(new List<Claim>(), "Bearer"));
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            
+            user = new ClaimsPrincipal(new ClaimsIdentity(new[] { new Claim("token", token) }, "Bearer"));
         }
 
         return new AuthenticationState(user);
@@ -43,7 +45,7 @@ public class CustomAuthStateProvider : AuthenticationStateProvider
     {
         try
         {
-            var response = await _httpClient.PostAsJsonAsync("Identity/login", request);
+            var response = await _httpClient.PostAsJsonAsync("/login", request);
 
             if (!response.IsSuccessStatusCode)
             {

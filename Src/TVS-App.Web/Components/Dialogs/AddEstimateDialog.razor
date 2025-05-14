@@ -1,0 +1,167 @@
+@using TVS_App.Application.Commands.ServiceOrderCommands
+@using TVS_App.Domain.Entities
+@using TVS_App.Domain.Enums
+@using TVS_App.Web.Handlers
+<MudDialog>
+    <TitleContent>
+        <h2 class="font-extrabold text-lg lg:text-2xl font-sans text-[#750303]">ADICIONAR ORÇAMENTO OS: @ServiceOrder.Id</h2>
+    </TitleContent>
+    <DialogContent>
+        <div class="flex flex-col w-full gap-3 border-t border-b border-[#dfdfdf] my-4">
+            <h2 class="font-bold uppercase text-lg font-sans text-[#750303] mt-3 mb-3">EMPRESA: @ServiceOrder.Enterprise</h2>
+        </div>
+        <div class="flex flex-col w-full gap-3 border-b border-[#dfdfdf] my-4">
+            <h2 class="font-bold text-lg font-sans text-[#750303] mt-3">DADOS DO CLIENTE</h2>
+            <p class="font-normal uppercase font-sans"><span class="font-bold font-sans text-[#750303]">NOME:</span> @ServiceOrder.Customer.Name.CustomerName</p>
+            <p class="font-normal uppercase font-sans"><span class="font-bold font-sans text-[#750303]">ENDEREÇO:</span> @ServiceOrder.Customer.Address.Street, @ServiceOrder.Customer.Address.Number, @ServiceOrder.Customer.Address.Neighborhood</p>
+            <p class="font-normal uppercase font-sans"><span class="font-bold font-sans text-[#750303]">FONE 1:</span> @ServiceOrder.Customer.Phone</p>
+            <p class="font-normal uppercase font-sans mb-3"><span class="font-bold font-sans text-[#750303]">FONE 2:</span> @ServiceOrder.Customer.Phone2</p>
+        </div>
+        <div class="flex flex-col w-full gap-3 border-b border-[#dfdfdf] my-4">
+            <h2 class="font-bold text-lg font-sans text-[#750303] mt-3">DADOS DO PRODUTO</h2>
+            <p class="font-normal uppercase font-sans"><span class="font-bold font-sans text-[#750303]">TIPO:</span> @ServiceOrder.Product.Type</p>
+            <p class="font-normal uppercase font-sans"><span class="font-bold font-sans text-[#750303]">MARCA:</span> @ServiceOrder.Product.Brand</p>
+            <p class="font-normal uppercase font-sans"><span class="font-bold font-sans text-[#750303]">MODELO:</span> @ServiceOrder.Product.Model</p>
+            <p class="font-normal uppercase font-sans"><span class="font-bold font-sans text-[#750303]">SÉRIE:</span> @ServiceOrder.Product.SerialNumber</p>
+            <p class="font-normal uppercase font-sans"><span class="font-bold font-sans text-[#750303]">DEFEITO:</span> @ServiceOrder.Product.Defect</p>
+            <p class="font-normal uppercase font-sans"><span class="font-bold font-sans text-[#750303]">DATA DE ENTRADA:</span> @ServiceOrder.EntryDate.ToString("dd/MM/yyyy")</p>
+            <p class="font-normal uppercase font-sans"><span class="font-bold font-sans text-[#750303]">SITUAÇÃO:</span> @Situacao</p>
+            <p class="font-normal uppercase font-sans mt-3"><span class="font-bold font-sans text-[#750303]">PRATELEIRA:</span> @ServiceOrder.Product.Location</p>
+            <LocationButton ServiceOrder="ServiceOrder" OnLocationChanged="UpdateLocation"></LocationButton>
+        </div>
+        <div class="flex flex-col w-full gap-3 mb-[50px]">
+            <h2 class="font-bold text-lg font-sans text-[#750303] mt-3">ADICIONAR ORÇAMENTO</h2>
+            <MudForm @ref="_form" Class="flex flex-col items-start w-full gap-3" @onsubmit="AdicionarOrcamento">
+                <MudTextField Label="Solução"
+                              @bind-Value="Request.Solution"
+                              For="@(() => Request.Solution)"
+                              Variant="Variant.Outlined"
+                              Class="min-w-[200px]"/>
+
+                <MudNumericField Label="Valor da peça"
+                                 @bind-Value="Request.PartCost"
+                                 For="@(() => Request.PartCost)"
+                                 Variant="Variant.Outlined"
+                                 Class="min-w-[100px]"/>
+
+                <MudNumericField Label="Valor da mão de obra"
+                                 @bind-Value="Request.LaborCost"
+                                 For="@(() => Request.LaborCost)"
+                                 Variant="Variant.Outlined"
+                                 Class="min-w-[100px]"/>
+
+                <MudTextField Label="Garantia"
+                              @bind-Value="Request.Guarantee"
+                              For="@(() => Request.Guarantee)"
+                              Variant="Variant.Outlined"
+                              Class="min-w-[200px]"/>
+
+                <MudSelect T="ERepairResult"
+                           Label="Situação"
+                           @bind-Value="Request.RepairResult"
+                           Color="Color.Primary"
+                           Class="min-w-[200px]">
+                    @foreach (var value in Enum.GetValues(typeof(ERepairResult)).Cast<ERepairResult>())
+                    {
+                        <MudSelectItem Value="@value">@GetPortugueseLabel(value)</MudSelectItem>
+                    }
+                </MudSelect>
+
+                <MudButton @onclick="AdicionarOrcamento"
+                           Variant="Variant.Filled"
+                           Color="Color.Primary"
+                           Class="text-white text-lg font-semibold py-2 px-5 rounded-lg transition">
+                    Adicionar
+                </MudButton>
+            </MudForm>
+        </div>
+    </DialogContent>
+</MudDialog>
+
+@code {
+    private MudForm _form = null!;
+    public AddServiceOrderEstimateCommand Request { get; set; } = new();
+
+    [CascadingParameter] IMudDialogInstance MudDialog { get; set; } = null!;
+    [Parameter] public ServiceOrder ServiceOrder { get; set; } = null!;
+    [Parameter] public EventCallback OnEstimateAdded { get; set; }
+    [Inject] public ServiceOrderHandler ServiceOrderHandler { get; set; } = null!;
+    [Inject] public ISnackbar Snackbar { get; set; } = null!;
+
+    protected override Task OnInitializedAsync()
+    {
+        Request.RepairResult = ERepairResult.Repair;
+        return Task.CompletedTask;
+    }
+
+    public async Task AdicionarOrcamento()
+    {
+        try
+        {
+            await _form.Validate();
+
+            if (!_form.IsValid)
+            {
+                Snackbar.Add("Preencha os campos obrigatórios corretamente.", Severity.Error);
+                return;
+            }
+
+            Request.ServiceOrderId = ServiceOrder.Id;
+            var result = await ServiceOrderHandler.AddServiceOrderEstimate(Request);
+
+            if (result.IsSuccess)
+            {
+                Snackbar.Add("Orçamento adicionado com sucesso!", Severity.Success);
+                await OnEstimateAdded.InvokeAsync();
+                MudDialog.Close(DialogResult.Ok(true));
+            }
+            else
+                Snackbar.Add(result.Message ?? "Ocorreu um erro ao adicionar o orçamento!", Severity.Error);
+        }
+        catch (Exception e)
+        {
+            Snackbar.Add(e.Message, Severity.Error);
+        }
+    }
+
+    public string Situacao =>
+        ServiceOrder.ServiceOrderStatus switch
+        {
+            EServiceOrderStatus.Entered => "Avaliação pendente",
+            EServiceOrderStatus.Evaluated => "Avaliado",
+            EServiceOrderStatus.OrderPart => "Aguardando peça",
+            EServiceOrderStatus.Repaired => "Consertado",
+            EServiceOrderStatus.Delivered => "Entregue",
+            _ => "Desconhecido"
+        };
+
+    private async Task UpdateLocation()
+    {
+        var command = new GetServiceOrderByIdCommand { Id = ServiceOrder.Id };
+        
+        var result = await ServiceOrderHandler.GetServiceOrderById(command);
+        if (result.IsSuccess)
+        {
+            if (result.Data != null)
+            {
+                ServiceOrder.Product.AddLocation(result.Data.Product.Location);
+                StateHasChanged();
+            }
+            else
+            {
+                Snackbar.Add("Ocorreu um erro ao obter a ordem de serviço", Severity.Error);
+            }
+        }
+    }
+    
+    private string GetPortugueseLabel(ERepairResult value)
+    {
+        return value switch
+        {
+            ERepairResult.Repair => "Tem conserto",
+            ERepairResult.Unrepaired => "Não tem conserto",
+            ERepairResult.NoDefectFound => "Não apresentou defeito",
+            _ => value.ToString()
+        };
+    }
+}

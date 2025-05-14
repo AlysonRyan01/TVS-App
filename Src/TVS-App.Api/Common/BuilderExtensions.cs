@@ -1,4 +1,5 @@
 using System.Text;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http.Json;
@@ -39,6 +40,7 @@ public static class BuilderExtensions
                     ValidateIssuer = false,
                     ValidateAudience = false
                 };
+                x.RequireHttpsMetadata = false;
             });
 
         builder.Services.AddAuthorization();
@@ -69,7 +71,8 @@ public static class BuilderExtensions
     {
         builder.Services.Configure<JsonOptions>(options =>
         {
-            options.SerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
+            options.SerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+            options.SerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
         });
     }
 
@@ -104,6 +107,26 @@ public static class BuilderExtensions
                     },
                     new string[] {}
                 }
+            });
+        });
+    }
+    
+    public static void AddCorsConfiguration(this WebApplicationBuilder builder)
+    {
+        var configuration = builder.Configuration;
+        
+        var policyName = configuration["Cors:PolicyName"];
+        var origins = configuration.GetSection("Cors:Origins").Get<string[]>();
+
+        builder.Services.AddCors(options =>
+        {
+            options.AddPolicy(policyName!, policy =>
+            {
+                policy
+                    .WithOrigins(origins!)
+                    .AllowAnyMethod()
+                    .AllowAnyHeader()
+                    .AllowCredentials();
             });
         });
     }

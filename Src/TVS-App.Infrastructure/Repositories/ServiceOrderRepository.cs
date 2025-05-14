@@ -284,9 +284,9 @@ public class ServiceOrderRepository : IServiceOrderRepository
             var sixMonths = DateTime.UtcNow.AddMonths(-6);
 
             var query = _context.ServiceOrders
-                .Where(x => x.RepairDate >= sixMonths && (x.ServiceOrderStatus == EServiceOrderStatus.Repaired ||
-                                                          (x.ServiceOrderStatus == EServiceOrderStatus.Evaluated &&
-                                                           (x.RepairStatus == ERepairStatus.Disapproved || x.RepairResult == ERepairResult.Unrepaired || x.RepairResult == ERepairResult.NoDefectFound))))
+                .Where(x => (x.RepairDate >= sixMonths || x.RepairDate == null) && (x.ServiceOrderStatus == EServiceOrderStatus.Repaired ||
+                                                            (x.ServiceOrderStatus == EServiceOrderStatus.Evaluated &&
+                                                             (x.RepairStatus == ERepairStatus.Disapproved || x.RepairResult == ERepairResult.Unrepaired || x.RepairResult == ERepairResult.NoDefectFound))))
                 .OrderBy(x => x.Id);
 
             var totalCount = await query.CountAsync();
@@ -323,7 +323,7 @@ public class ServiceOrderRepository : IServiceOrderRepository
 
             var query = _context.ServiceOrders
                 .Where(x => x.ServiceOrderStatus == EServiceOrderStatus.Evaluated &&
-                    x.RepairStatus == ERepairStatus.Waiting && x.InspectionDate >= sixMonthAgo)
+                    x.RepairStatus == ERepairStatus.Waiting && x.InspectionDate >= sixMonthAgo && (x.RepairResult != ERepairResult.Unrepaired || x.RepairResult == ERepairResult.NoDefectFound ))
                 .OrderBy(x => x.Id);
 
             var totalCount = await query.CountAsync();

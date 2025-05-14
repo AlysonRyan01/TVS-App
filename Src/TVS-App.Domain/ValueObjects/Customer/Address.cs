@@ -1,11 +1,13 @@
+using System.Text.Json.Serialization;
 using TVS_App.Domain.Exceptions;
 
 namespace TVS_App.Domain.ValueObjects.Customer;
 
 public class Address : ValueObject
 {
-    protected Address() { }
+    public Address() { }
 
+    [JsonConstructor]
     public Address(string street,
         string neighborhood,
         string city,
@@ -24,10 +26,16 @@ public class Address : ValueObject
         State = state;
     }
 
+    [JsonPropertyName("street")]
     public string Street { get; private set; } = string.Empty;
+    [JsonPropertyName("neighborhood")]
     public string Neighborhood { get; private set; } = string.Empty;
+    [JsonPropertyName("city")]
     public string City { get; private set; } = string.Empty;
+    [JsonPropertyName("number")]
     public string Number { get; private set; } = string.Empty;
+    [JsonPropertyName("zipCode")]
     public string ZipCode { get; private set; } = string.Empty;
+    [JsonPropertyName("state")]
     public string State { get; private set; } = string.Empty;
 }

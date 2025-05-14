@@ -1,15 +1,17 @@
-using TVS_App.Domain.Exceptions;
+using System.Text.Json.Serialization;
 
 namespace TVS_App.Domain.ValueObjects.ServiceOrder;
 
 public class Solution : ValueObject
 {
-    protected Solution() { }
-
-    public Solution(string solution)
+    public Solution() { }
+    
+    [JsonConstructor]
+    public Solution(string serviceOrderSolution)
     {
-        ServiceOrderSolution = solution;
+        ServiceOrderSolution = serviceOrderSolution;
     }
 
+    [JsonPropertyName("serviceOrderSolution")]
     public string ServiceOrderSolution { get; private set; } = string.Empty;
 }

@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using TVS_App.Domain.Exceptions;
 
 namespace TVS_App.Domain.ValueObjects.ServiceOrder;
@@ -6,12 +7,13 @@ public class LaborCost : ValueObject
 {
     protected LaborCost() { }
 
-    public LaborCost(decimal amount)
+    [JsonConstructor]
+    public LaborCost(decimal serviceOrderLaborCost)
     {
-        if (amount < 0)
+        if (serviceOrderLaborCost < 0)
             throw new ValueObjectException<LaborCost>("O valor da mão de obra não pode ser menor que 0");
 
-        ServiceOrderLaborCost = amount;
+        ServiceOrderLaborCost = serviceOrderLaborCost;
     }
 
     public decimal ServiceOrderLaborCost { get; private set; }

@@ -17,9 +17,6 @@ public class AddServiceOrderEstimateCommand : ICommand
         if (string.IsNullOrEmpty(Solution))
             throw new CommandException<AddServiceOrderEstimateCommand>("A solução do AddServiceOrderEstimateCommand não estar ser vazia");
 
-        if (string.IsNullOrEmpty(Guarantee))
-            throw new CommandException<AddServiceOrderEstimateCommand>("A garantia do AddServiceOrderEstimateCommand não estar ser vazia");
-
         if (PartCost < 0)
             throw new CommandException<AddServiceOrderEstimateCommand>("o valor da peça do AddServiceOrderEstimateCommand não pode ser menor que 0");
 
