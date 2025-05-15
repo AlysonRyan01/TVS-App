@@ -23,13 +23,13 @@ public class UpdateCustomerCommand : ICommand
     public void Validate()
     {
         if (Id == 0)
-            throw new CommandException<UpdateCustomerCommand>("O Id do UpdateCustomerCommand não pode ser 0");
+            throw new CommandException<UpdateCustomerCommand>("O Id do cliente não pode ser 0");
 
         if (string.IsNullOrEmpty(Name))
-            throw new CommandException<UpdateCustomerCommand>("O nome do UpdateCustomerCommand não pode estar vazio");
+            throw new CommandException<UpdateCustomerCommand>("O nome do cliente não pode estar vazio");
 
         if (string.IsNullOrEmpty(Phone))
-            throw new CommandException<UpdateCustomerCommand>("O telefone do UpdateCustomerCommand não pode estar vazio");
+            throw new CommandException<UpdateCustomerCommand>("O telefone do cliente não pode estar vazio");
     }
     
     public void Normalize()

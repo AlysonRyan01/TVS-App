@@ -21,10 +21,10 @@ public class CreateCustomerCommand : ICommand
     public void Validate()
     {
         if (string.IsNullOrEmpty(Name))
-            throw new CommandException<CreateCustomerCommand>("O nome do CreateCustomerCommand não pode estar vazio");
+            throw new CommandException<CreateCustomerCommand>("O nome do cliente não pode estar vazio");
 
         if (string.IsNullOrEmpty(Phone))
-            throw new CommandException<CreateCustomerCommand>("O telefone do CreateCustomerCommand não pode estar vazio");
+            throw new CommandException<CreateCustomerCommand>("O telefone do cliente não pode estar vazio");
     }
 
     public void Normalize()

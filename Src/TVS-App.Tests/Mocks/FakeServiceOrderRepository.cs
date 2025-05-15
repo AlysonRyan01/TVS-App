@@ -80,6 +80,26 @@ public class FakeServiceOrderRepository : IServiceOrderRepository
         throw new NotImplementedException();
     }
 
+    public Task<BaseResponse<List<ServiceOrder>>> GetServiceOrdersBySerialNumber(string serialNumber)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<BaseResponse<List<ServiceOrder>>> GetServiceOrdersByModel(string model)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<BaseResponse<List<ServiceOrder>>> GetServiceOrdersByEnterprise(EEnterprise enterprise)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<BaseResponse<List<ServiceOrder>>> GetServiceOrdersByDate(DateTime startDate, DateTime endDate)
+    {
+        throw new NotImplementedException();
+    }
+
     public Task<BaseResponse<ServiceOrder?>> GetById(long id)
     {
         var serviceOrder = _serviceOrders.FirstOrDefault(x => x?.Id == id);

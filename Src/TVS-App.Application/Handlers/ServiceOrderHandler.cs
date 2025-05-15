@@ -5,6 +5,7 @@ using TVS_App.Application.Exceptions;
 using TVS_App.Application.Interfaces;
 using TVS_App.Application.Repositories;
 using TVS_App.Domain.Entities;
+using TVS_App.Domain.Enums;
 using TVS_App.Domain.ValueObjects.ServiceOrder;
 
 namespace TVS_App.Application.Handlers;
@@ -55,7 +56,7 @@ public class ServiceOrderHandler
         }
         catch (Exception ex)
         {
-            return new BaseResponse<byte[]>(null, 500, $"Ocorreu um erro ao criar a ordem de serviço: {ex.Message}");
+            return new BaseResponse<byte[]>(null, 500, $"Ocorreu um erro: {ex.Message}");
         }
     }
 
@@ -95,7 +96,7 @@ public class ServiceOrderHandler
         }
         catch (Exception ex)
         {
-            return new BaseResponse<ServiceOrder?>(null, 500, $"Ocorreu um erro ao atualizar a ordem de serviço: {ex.Message}");
+            return new BaseResponse<ServiceOrder?>(null, 500, $"Ocorreu um erro: {ex.Message}");
         }
     }
 
@@ -124,7 +125,7 @@ public class ServiceOrderHandler
         }
         catch (Exception ex)
         {
-            return new BaseResponse<ServiceOrder?>(null, 500, $"Ocorreu um erro desconhecido ao aprovar o orçamento na ordem de serviço: {ex.Message}");
+            return new BaseResponse<ServiceOrder?>(null, 500, $"Ocorreu um erro: {ex.Message}");
         }
     }
 
@@ -140,7 +141,7 @@ public class ServiceOrderHandler
         }
         catch (Exception ex)
         {
-            return new BaseResponse<List<ServiceOrder>>(null, 500, $"Ocorreu um erro desconhecido ao buscar a ordem de servico: {ex.Message}");
+            return new BaseResponse<List<ServiceOrder>>(null, 500, $"Ocorreu um erro: {ex.Message}");
         }
     }
 
@@ -158,7 +159,69 @@ public class ServiceOrderHandler
         }
         catch (Exception ex)
         {
-            return new BaseResponse<ServiceOrder?>(null, 500, $"Ocorreu um erro desconhecido ao buscar a ordem de servico: {ex.Message}");
+            return new BaseResponse<ServiceOrder?>(null, 500, $"Ocorreu um erro: {ex.Message}");
+        }
+    }
+    
+    public async Task<BaseResponse<List<ServiceOrder>>> GetServiceOrdersBySerialNumberAsync(GetServiceOrdersBySerialNumberCommand command)
+    {
+        try
+        {
+            command.Normalize();
+            command.Validate();
+
+            return await _serviceOrderRepository.GetServiceOrdersBySerialNumber(command.SerialNumber);
+        }
+        catch (CommandException<GetServiceOrderByIdCommand> ex)
+        {
+            return new BaseResponse<List<ServiceOrder>>(null, 400, $"Erro de validação: {ex.Message}");
+        }
+        catch (Exception ex)
+        {
+            return new BaseResponse<List<ServiceOrder>>(null, 500, $"Ocorreu um erro: {ex.Message}");
+        }
+    }
+    
+    public async Task<BaseResponse<List<ServiceOrder>>> GetServiceOrdersByModelAsync(GetServiceOrdersByModelCommand command)
+    {
+        try
+        {
+            command.Normalize();
+            command.Validate();
+
+            return await _serviceOrderRepository.GetServiceOrdersByModel(command.Model);
+        }
+        catch (CommandException<GetServiceOrderByIdCommand> ex)
+        {
+            return new BaseResponse<List<ServiceOrder>>(null, 400, $"Erro de validação: {ex.Message}");
+        }
+        catch (Exception ex)
+        {
+            return new BaseResponse<List<ServiceOrder>>(null, 500, $"Ocorreu um erro: {ex.Message}");
+        }
+    }
+    
+    public async Task<BaseResponse<List<ServiceOrder>>> GetServiceOrdersByEnterpriseAsync(EEnterprise enterprise)
+    {
+        try
+        {
+            return await _serviceOrderRepository.GetServiceOrdersByEnterprise(enterprise);
+        }
+        catch (Exception ex)
+        {
+            return new BaseResponse<List<ServiceOrder>>(null, 500, $"Ocorreu um erro: {ex.Message}");
+        }
+    }
+    
+    public async Task<BaseResponse<List<ServiceOrder>>> GetServiceOrdersByDateAsync(DateTime startDate, DateTime endDate)
+    {
+        try
+        {
+            return await _serviceOrderRepository.GetServiceOrdersByDate(startDate, endDate);
+        }
+        catch (Exception ex)
+        {
+            return new BaseResponse<List<ServiceOrder>>(null, 500, $"Ocorreu um erro: {ex.Message}");
         }
     }
 
@@ -186,7 +249,7 @@ public class ServiceOrderHandler
         }
         catch (Exception ex)
         {
-            return new BaseResponse<ServiceOrder?>(null, 500, $"Ocorreu um erro desconhecido ao buscar a ordem de servico: {ex.Message}");
+            return new BaseResponse<ServiceOrder?>(null, 500, $"Ocorreu um erro: {ex.Message}");
         }
     }
 
@@ -201,7 +264,7 @@ public class ServiceOrderHandler
         catch (Exception ex)
         {
 
-            return new BaseResponse<PaginatedResult<ServiceOrder?>>(null, 500, $"Ocorreu um erro desconhecido ao buscar todas as ordens de servico: {ex.Message}");
+            return new BaseResponse<PaginatedResult<ServiceOrder?>>(null, 500, $"Ocorreu um erro: {ex.Message}");
         }
     }
 
@@ -216,7 +279,7 @@ public class ServiceOrderHandler
         catch (Exception ex)
         {
 
-            return new BaseResponse<PaginatedResult<ServiceOrder?>>(null, 500, $"Ocorreu um erro desconhecido ao buscar as ordens de servico pendentes de orçamento: {ex.Message}");
+            return new BaseResponse<PaginatedResult<ServiceOrder?>>(null, 500, $"Ocorreu um erro: {ex.Message}");
         }
     }
 
@@ -231,7 +294,7 @@ public class ServiceOrderHandler
         catch (Exception ex)
         {
 
-            return new BaseResponse<PaginatedResult<ServiceOrder?>>(null, 500, $"Ocorreu um erro desconhecido ao buscar as ordens de servico que estão aguardando resposta: {ex.Message}");
+            return new BaseResponse<PaginatedResult<ServiceOrder?>>(null, 500, $"Ocorreu um erro: {ex.Message}");
         }
     }
 
@@ -246,7 +309,7 @@ public class ServiceOrderHandler
         catch (Exception ex)
         {
 
-            return new BaseResponse<PaginatedResult<ServiceOrder?>>(null, 500, $"Ocorreu um erro desconhecido ao buscar as ordens de servico: {ex.Message}");
+            return new BaseResponse<PaginatedResult<ServiceOrder?>>(null, 500, $"Ocorreu um erro: {ex.Message}");
         }
     }
 
@@ -261,7 +324,7 @@ public class ServiceOrderHandler
         catch (Exception ex)
         {
 
-            return new BaseResponse<PaginatedResult<ServiceOrder?>>(null, 500, $"Ocorreu um erro desconhecido ao buscar as ordens de servico que estão aguardando peça: {ex.Message}");
+            return new BaseResponse<PaginatedResult<ServiceOrder?>>(null, 500, $"Ocorreu um erro: {ex.Message}");
         }
     }
 
@@ -276,7 +339,7 @@ public class ServiceOrderHandler
         catch (Exception ex)
         {
 
-            return new BaseResponse<PaginatedResult<ServiceOrder?>>(null, 500, $"Ocorreu um erro desconhecido ao buscar as ordens de servico que estão aguardando coleta: {ex.Message}");
+            return new BaseResponse<PaginatedResult<ServiceOrder?>>(null, 500, $"Ocorreu um erro: {ex.Message}");
         }
     }
 
@@ -291,7 +354,7 @@ public class ServiceOrderHandler
         catch (Exception ex)
         {
 
-            return new BaseResponse<PaginatedResult<ServiceOrder?>>(null, 500, $"Ocorreu um erro desconhecido ao buscar as ordens de servico que estão entregues: {ex.Message}");
+            return new BaseResponse<PaginatedResult<ServiceOrder?>>(null, 500, $"Ocorreu um erro: {ex.Message}");
         }
     }
 
@@ -320,7 +383,7 @@ public class ServiceOrderHandler
         }
         catch (Exception ex)
         {
-            return new BaseResponse<ServiceOrder?>(null, 500, $"Ocorreu um erro desconhecido ao adicionar o orçamento na ordem de serviço: {ex.Message}");
+            return new BaseResponse<ServiceOrder?>(null, 500, $"Ocorreu um erro: {ex.Message}");
         }
     }
 
@@ -348,7 +411,7 @@ public class ServiceOrderHandler
         }
         catch (Exception ex)
         {
-            return new BaseResponse<ServiceOrder?>(null, 500, $"Ocorreu um erro desconhecido ao aprovar o orçamento na ordem de serviço: {ex.Message}");
+            return new BaseResponse<ServiceOrder?>(null, 500, $"Ocorreu um erro: {ex.Message}");
         }
     }
 
@@ -376,7 +439,7 @@ public class ServiceOrderHandler
         }
         catch (Exception ex)
         {
-            return new BaseResponse<ServiceOrder?>(null, 500, $"Ocorreu um erro desconhecido ao reprovar o orçamento na ordem de serviço: {ex.Message}");
+            return new BaseResponse<ServiceOrder?>(null, 500, $"Ocorreu um erro: {ex.Message}");
         }
     }
 
@@ -396,7 +459,7 @@ public class ServiceOrderHandler
 
             await _serviceOrderRepository.UpdateAsync(serviceOrder);
 
-            return new BaseResponse<ServiceOrder?>(serviceOrder, 200, "Ordem de serviço marcada como consetada com sucesso!");
+            return new BaseResponse<ServiceOrder?>(serviceOrder, 200, "Compra de peça adicionada com sucesso!");
         }
         catch (CommandException<GetServiceOrderByIdCommand> ex)
         {
@@ -404,7 +467,7 @@ public class ServiceOrderHandler
         }
         catch (Exception ex)
         {
-            return new BaseResponse<ServiceOrder?>(null, 500, $"Ocorreu um erro desconhecido ao marcar peça comprada na ordem de serviço: {ex.Message}");
+            return new BaseResponse<ServiceOrder?>(null, 500, $"Ocorreu um erro: {ex.Message}");
         }
     }
 
@@ -424,7 +487,7 @@ public class ServiceOrderHandler
 
             await _serviceOrderRepository.UpdateAsync(serviceOrder);
 
-            return new BaseResponse<ServiceOrder?>(serviceOrder, 200, "Ordem de serviço marcada como consetada com sucesso!");
+            return new BaseResponse<ServiceOrder?>(serviceOrder, 200, "Ordem de serviço marcada como consertada!");
         }
         catch (CommandException<GetServiceOrderByIdCommand> ex)
         {
@@ -432,7 +495,7 @@ public class ServiceOrderHandler
         }
         catch (Exception ex)
         {
-            return new BaseResponse<ServiceOrder?>(null, 500, $"Ocorreu um erro desconhecido ao marcar o conserto na ordem de serviço: {ex.Message}");
+            return new BaseResponse<ServiceOrder?>(null, 500, $"Ocorreu um erro: {ex.Message}");
         }
     }
 
@@ -464,7 +527,7 @@ public class ServiceOrderHandler
         }
         catch (Exception ex)
         {
-            return new BaseResponse<byte[]>(null, 500, $"Ocorreu um erro desconhecido ao marcar a entrega na ordem de serviço: {ex.Message}");
+            return new BaseResponse<byte[]>(null, 500, $"Ocorreu um erro: {ex.Message}");
         }
     }
     
@@ -492,7 +555,7 @@ public class ServiceOrderHandler
         }
         catch (Exception ex)
         {
-            return new BaseResponse<byte[]>(null, 500, $"Ocorreu um erro desconhecido ao gerar o pdf: {ex.Message}");
+            return new BaseResponse<byte[]>(null, 500, $"Ocorreu um erro: {ex.Message}");
         }
     }
 }

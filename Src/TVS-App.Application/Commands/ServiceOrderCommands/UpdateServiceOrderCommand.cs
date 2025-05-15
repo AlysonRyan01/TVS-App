@@ -20,22 +20,22 @@ public class UpdateServiceOrderCommand : ICommand
     public void Validate()
     {
         if (ServiceOrderId == 0)
-            throw new CommandException<UpdateServiceOrderCommand>("O ServiceOrderId do UpdateServiceOrderCommand não pode ser 0");
+            throw new CommandException<UpdateServiceOrderCommand>("O ServiceOrderId da ordem de serviço não pode ser 0");
 
         if (CustomerId == 0)
-            throw new CommandException<UpdateServiceOrderCommand>("O CustomerId do UpdateServiceOrderCommand não pode ser 0");
+            throw new CommandException<UpdateServiceOrderCommand>("O CustomerId da ordem de serviço não pode ser 0");
 
         if (string.IsNullOrEmpty(ProductModel))
-            throw new CommandException<UpdateServiceOrderCommand>("O ProductModel do UpdateServiceOrderCommand não pode estar vazio");
+            throw new CommandException<UpdateServiceOrderCommand>("O modelo do produto da ordem de serviço não pode estar vazio");
 
         if (string.IsNullOrEmpty(ProductSerialNumber))
-            throw new CommandException<UpdateServiceOrderCommand>("O ProductSerialNumber do UpdateServiceOrderCommand não pode estar vazio");
+            throw new CommandException<UpdateServiceOrderCommand>("O número de série do produto da ordem de serviço não pode estar vazio");
 
         if (!Enum.IsDefined(typeof(EProduct), ProductType))
-            throw new CommandException<UpdateServiceOrderCommand>("O tipo de produto no UpdateServiceOrderCommand é inválido.");
+            throw new CommandException<UpdateServiceOrderCommand>("O tipo de produto da ordem de serviço é inválido.");
 
         if (!Enum.IsDefined(typeof(EEnterprise), Enterprise))
-            throw new CommandException<UpdateServiceOrderCommand>("A empresa informada no UpdateServiceOrderCommand é inválida.");
+            throw new CommandException<UpdateServiceOrderCommand>("A empresa informada da ordem de serviço é inválida.");
 
     }
     

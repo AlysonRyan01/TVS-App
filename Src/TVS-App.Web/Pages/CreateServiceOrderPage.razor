@@ -1,14 +1,16 @@
 @page "/criar-os"
+@using Microsoft.AspNetCore.Authorization
 @using TVS_App.Domain.Entities
 @using TVS_App.Domain.Enums
 @using TVS_App.Web.Components;
 @layout MainLayout
+@attribute [Authorize] 
 
 <div class="flex flex-col lg:flex-row justify-center">
-    <div class="flex w-full lg:max-w-[40%] border border-cinza lg:mt-10  rounded-lg shadow-lg p-6 mb-8 @( _customerSideCompleted ? "blur-sm pointer-events-none opacity-60" : "" )">
+    <div class="flex w-full lg:max-w-[50%] border border-cinza  rounded-lg shadow-lg p-6 mb-8 @( _customerSideCompleted ? "blur-sm pointer-events-none opacity-60" : "" )">
         <div class="flex flex-col w-full p-5 items-start gap-3">
             <div class="flex flex-col w-full mb-12">
-                <h1 class="font-playpen mb-3 font-bold text-3xl text-titlecolor">Selecionar cliente</h1>
+                <h1 class="font-sans mb-3 font-bold text-3xl text-titlecolor">Selecionar cliente</h1>
                 <MudAutocomplete T="Customer"
                                  @bind-Value="SelectedCustomer"
                                  SearchFunc="SearchCustomers"
@@ -28,7 +30,7 @@
             </div>
 
             <div class="flex flex-col w-full mb-10">
-                <p class="font-playpen font-bold text-3xl text-titlecolor">Criar cliente</p>
+                <p class="font-sans font-bold text-3xl text-titlecolor">Criar cliente</p>
 
                 <MudForm>
                     <MudTextField @bind-Value="CreateCustomerCommand.Name"
@@ -92,10 +94,10 @@
             </div>
         </div>
     </div>
-    <div class="flex w-full lg:max-w-[40%] lg:mt-10 border border-cinza  rounded-lg shadow-lg p-6 @( !_serviceOrderTime ? "blur-sm pointer-events-none opacity-60" : "" )">
+    <div class="flex w-full lg:max-w-[50%] border border-cinza  rounded-lg shadow-lg p-6 @( !_serviceOrderTime ? "blur-sm pointer-events-none opacity-60" : "" )">
         <div class="flex flex-col w-full p-5 items-center">
             <div class="flex flex-col w-full mb-10">
-                <p class="font-playpen font-bold text-3xl text-titlecolor mb-6">Nova Ordem de Serviço</p>
+                <p class="font-sans font-bold text-3xl text-titlecolor mb-6">Nova Ordem de Serviço</p>
 
                 <MudForm Class="mt-2">
                     <!-- Seção do Cliente -->

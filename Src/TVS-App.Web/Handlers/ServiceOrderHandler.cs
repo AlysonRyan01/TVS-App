@@ -3,6 +3,7 @@ using TVS_App.Application.Commands;
 using TVS_App.Application.Commands.ServiceOrderCommands;
 using TVS_App.Application.DTOs;
 using TVS_App.Domain.Entities;
+using TVS_App.Domain.Enums;
 using TVS_App.Web.Exceptions;
 
 namespace TVS_App.Web.Handlers;
@@ -70,7 +71,7 @@ public class ServiceOrderHandler
                 $"get-service-order-by-id/{command.Id}");
             
             if (response == null || !response.IsSuccess)
-                return new BaseResponse<ServiceOrder?>(null, 500, response?.Message);
+                return new BaseResponse<ServiceOrder?>(null, 500, response.Message ?? "");
             
             return response;
         }
@@ -87,6 +88,83 @@ public class ServiceOrderHandler
             var encodedName = Uri.EscapeDataString(customerName);
             var response = await _httpClient.GetFromJsonAsync<BaseResponse<List<ServiceOrder>>>(
                 $"get-service-orders-by-customer-name?name={encodedName}");
+            
+            if (response == null || !response.IsSuccess)
+                return new BaseResponse<List<ServiceOrder>>(null, 500, response?.Message);
+            
+            return response;
+        }
+        catch (Exception ex)
+        {
+            return ExceptionHandler.Handle<List<ServiceOrder>>(ex);
+        }
+    }
+    
+    public async Task<BaseResponse<List<ServiceOrder>>> GetServiceOrdersBySerialNumber(string serialNumber)
+    {
+        try
+        {
+            var encodedName = Uri.EscapeDataString(serialNumber);
+            var response = await _httpClient.GetFromJsonAsync<BaseResponse<List<ServiceOrder>>>(
+                $"get-service-orders-by-serial-number?serialNumber={encodedName}");
+            
+            if (response == null || !response.IsSuccess)
+                return new BaseResponse<List<ServiceOrder>>(null, 500, response?.Message);
+            
+            return response;
+        }
+        catch (Exception ex)
+        {
+            return ExceptionHandler.Handle<List<ServiceOrder>>(ex);
+        }
+    }
+    
+    public async Task<BaseResponse<List<ServiceOrder>>> GetServiceOrdersByModel(string model)
+    {
+        try
+        {
+            var encodedName = Uri.EscapeDataString(model);
+            var response = await _httpClient.GetFromJsonAsync<BaseResponse<List<ServiceOrder>>>(
+                $"get-service-orders-by-model?model={encodedName}");
+            
+            if (response == null || !response.IsSuccess)
+                return new BaseResponse<List<ServiceOrder>>(null, 500, response?.Message);
+            
+            return response;
+        }
+        catch (Exception ex)
+        {
+            return ExceptionHandler.Handle<List<ServiceOrder>>(ex);
+        }
+    }
+    
+    public async Task<BaseResponse<List<ServiceOrder>>> GetServiceOrdersByEnterprise(EEnterprise enterprise)
+    {
+        try
+        {
+            var response = await _httpClient.GetFromJsonAsync<BaseResponse<List<ServiceOrder>>>(
+                $"get-service-orders-by-enterprise?enterprise={enterprise}");
+            
+            if (response == null || !response.IsSuccess)
+                return new BaseResponse<List<ServiceOrder>>(null, 500, response?.Message);
+            
+            return response;
+        }
+        catch (Exception ex)
+        {
+            return ExceptionHandler.Handle<List<ServiceOrder>>(ex);
+        }
+    }
+    
+    public async Task<BaseResponse<List<ServiceOrder>>> GetServiceOrdersByDate(DateTime startDate, DateTime endDate)
+    {
+        try
+        {
+            var start = Uri.EscapeDataString(startDate.ToString("yyyy-MM-dd"));
+            var end = Uri.EscapeDataString(endDate.ToString("yyyy-MM-dd"));
+            
+            var response = await _httpClient.GetFromJsonAsync<BaseResponse<List<ServiceOrder>>>(
+                $"get-service-orders-by-date?startDate={start}&endDate={end}");
             
             if (response == null || !response.IsSuccess)
                 return new BaseResponse<List<ServiceOrder>>(null, 500, response?.Message);

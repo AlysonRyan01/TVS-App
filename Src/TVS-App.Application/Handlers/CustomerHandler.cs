@@ -46,7 +46,7 @@ public class CustomerHandler
         }
         catch (Exception ex)
         {
-            return new BaseResponse<Customer?>(null, 500, $"Ocorreu um erro desconhecido ao criar o cliente: {ex.Message}");
+            return new BaseResponse<Customer?>(null, 500, $"Ocorreu um erro ao criar o cliente: {ex.Message}");
         }
     }
 
@@ -82,7 +82,7 @@ public class CustomerHandler
         }
         catch (Exception ex)
         {
-            return new BaseResponse<Customer?>(null, 500, $"Ocorreu um erro desconhecido ao atualizar o cliente: {ex.Message}");
+            return new BaseResponse<Customer?>(null, 500, $"Ocorreu um erro ao atualizar o cliente: {ex.Message}");
         }
     }
 
@@ -100,7 +100,7 @@ public class CustomerHandler
         }
         catch (Exception ex)
         {
-            return new BaseResponse<Customer?>(null, 500, $"Ocorreu um erro desconhecido ao buscar o cliente: {ex.Message}");
+            return new BaseResponse<Customer?>(null, 500, $"Ocorreu um erro ao buscar o cliente: {ex.Message}");
         }
     }
     
@@ -126,7 +126,7 @@ public class CustomerHandler
         }
         catch (Exception ex)
         {
-            return new BaseResponse<PaginatedResult<Customer?>>(null, 500, $"Ocorreu um erro desconhecido ao buscar todos os clientes: {ex.Message}");
+            return new BaseResponse<PaginatedResult<Customer?>>(null, 500, $"Ocorreu um erro ao buscar todos os clientes: {ex.Message}");
         }
     }
 }

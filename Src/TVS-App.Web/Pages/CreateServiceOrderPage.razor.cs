@@ -16,9 +16,9 @@ public partial class CreateServiceOrderPage : ComponentBase
     public CreateCustomerCommand CreateCustomerCommand { get; set; } = new();
     public CreateServiceOrderCommand CreateServiceOrderCommand { get; set; } = new();
     public Customer SelectedCustomer { get; set; } = new();
-    private bool _isLoading = false;
-    private bool _customerSideCompleted = false;
-    private bool _serviceOrderTime = false;
+    private bool _isLoading;
+    private bool _customerSideCompleted;
+    private bool _serviceOrderTime;
 
     [Inject] public CustomerHandler CustomerHandler { get; set; } = null!;
     [Inject] public ISnackbar Snackbar { get; set; } = null!;

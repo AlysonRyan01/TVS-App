@@ -9,6 +9,6 @@ public class GetCustomerByIdCommand : ICommand
     public void Validate()
     {
         if (Id == 0)
-            throw new CommandException<GetCustomerByIdCommand>("O Id do GetCustomerById não pode ser 0");
+            throw new CommandException<GetCustomerByIdCommand>("O Id do cliente não pode ser 0");
     }
 }

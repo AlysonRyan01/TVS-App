@@ -15,16 +15,16 @@ public class AddServiceOrderEstimateCommand : ICommand
     public void Validate()
     {
         if (string.IsNullOrEmpty(Solution))
-            throw new CommandException<AddServiceOrderEstimateCommand>("A solução do AddServiceOrderEstimateCommand não estar ser vazia");
+            throw new CommandException<AddServiceOrderEstimateCommand>("A solução da ordem de serviço não estar ser vazia");
 
         if (PartCost < 0)
-            throw new CommandException<AddServiceOrderEstimateCommand>("o valor da peça do AddServiceOrderEstimateCommand não pode ser menor que 0");
+            throw new CommandException<AddServiceOrderEstimateCommand>("o valor da peça da ordem de serviço não pode ser menor que 0");
 
         if (LaborCost < 0)
-            throw new CommandException<AddServiceOrderEstimateCommand>("o valor da mão de obra do AddServiceOrderEstimateCommand não pode ser menor que 0");
+            throw new CommandException<AddServiceOrderEstimateCommand>("o valor da mão de obra da ordem de serviço não pode ser menor que 0");
 
         if (!Enum.IsDefined(RepairResult))
-            throw new CommandException<AddServiceOrderEstimateCommand>("o resultado do orçamento do AddServiceOrderEstimateCommand não pode ser nulo");
+            throw new CommandException<AddServiceOrderEstimateCommand>("o resultado do orçamento da ordem de serviço não pode ser nulo");
     }
 
     public void Normalize()

@@ -92,7 +92,7 @@ public class ServiceOrderRepository : IServiceOrderRepository
                 .Include(x => x.Customer)
                 .AsNoTracking()
                 .FirstOrDefaultAsync(x => x.Id == id);
-            if (serviceOrder == null)
+            if (serviceOrder == null || serviceOrder.Id == 0)
                 return new BaseResponse<ServiceOrder?>(null, 404, $"A ordem de serviço com ID:{id} não existe");
 
             return new BaseResponse<ServiceOrder?>(serviceOrder, 200, "Ordem de serviço recuperada com sucesso!");
@@ -110,9 +110,97 @@ public class ServiceOrderRepository : IServiceOrderRepository
             var serviceOrders = await _context.ServiceOrders
                 .Include(so => so.Customer)
                 .Where(so => so.Customer.Name.CustomerName.Contains(customerName))
+                .OrderByDescending(so => so.Id)
                 .ToListAsync();
+            
+            if (!serviceOrders.Any())
+                return new BaseResponse<List<ServiceOrder>>(serviceOrders, 401, "Nenhuma ordem de serviço foi encontrada.");
 
-            return new BaseResponse<List<ServiceOrder>>(serviceOrders, 200, "Ordens obtidas com sucesso!");
+            return new BaseResponse<List<ServiceOrder>>(serviceOrders, 200, $"{serviceOrders.Count} ordens obtidas com sucesso!");
+        }
+        catch (Exception ex)
+        {
+            return DbExceptionHandler.Handle<List<ServiceOrder>>(ex);
+        }
+    }
+
+    public async Task<BaseResponse<List<ServiceOrder>>> GetServiceOrdersBySerialNumber(string serialNumber)
+    {
+        try
+        {
+            var serviceOrders = await _context.ServiceOrders
+                .Include(so => so.Customer)
+                .Where(so => so.Product.SerialNumber.Contains(serialNumber))
+                .OrderByDescending(so => so.Id)
+                .ToListAsync();
+            
+            if (!serviceOrders.Any())
+                return new BaseResponse<List<ServiceOrder>>(serviceOrders, 401, "Nenhuma ordem de serviço foi encontrada.");
+            
+            return new BaseResponse<List<ServiceOrder>>(serviceOrders, 200, $"{serviceOrders.Count} ordens obtidas com sucesso!");
+        }
+        catch (Exception ex)
+        {
+            return DbExceptionHandler.Handle<List<ServiceOrder>>(ex);
+        }
+    }
+
+    public async Task<BaseResponse<List<ServiceOrder>>> GetServiceOrdersByModel(string model)
+    {
+        try
+        {
+            var serviceOrders = await _context.ServiceOrders
+                .Include(so => so.Customer)
+                .Where(so => so.Product.Model.Contains(model))
+                .OrderByDescending(so => so.Id)
+                .ToListAsync();
+            
+            if (!serviceOrders.Any())
+                return new BaseResponse<List<ServiceOrder>>(serviceOrders, 401, "Nenhuma ordem de serviço foi encontrada.");
+            
+            return new BaseResponse<List<ServiceOrder>>(serviceOrders, 200, $"{serviceOrders.Count} ordens obtidas com sucesso!");
+        }
+        catch (Exception ex)
+        {
+            return DbExceptionHandler.Handle<List<ServiceOrder>>(ex);
+        }
+    }
+
+    public async Task<BaseResponse<List<ServiceOrder>>> GetServiceOrdersByEnterprise(EEnterprise enterprise)
+    {
+        try
+        {
+            var serviceOrders = await _context.ServiceOrders
+                .Include(so => so.Customer)
+                .Where(so => so.Enterprise == enterprise)
+                .OrderByDescending(so => so.Id)
+                .ToListAsync();
+            
+            if (!serviceOrders.Any())
+                return new BaseResponse<List<ServiceOrder>>(serviceOrders, 401, "Nenhuma ordem de serviço foi encontrada.");
+            
+            return new BaseResponse<List<ServiceOrder>>(serviceOrders, 200, $"{serviceOrders.Count} ordens obtidas com sucesso!");
+        }
+        catch (Exception ex)
+        {
+            return DbExceptionHandler.Handle<List<ServiceOrder>>(ex);
+        }
+    }
+
+    public async Task<BaseResponse<List<ServiceOrder>>> GetServiceOrdersByDate(DateTime startDate, DateTime endDate)
+    {
+        try
+        {
+            var serviceOrders = await _context.ServiceOrders
+                    .Include(so => so.Customer)
+                    .Where(so => so.EntryDate >= startDate && so.EntryDate <= endDate)
+                    .OrderBy(so => so.Id)
+                    .ToListAsync();
+            
+            if (!serviceOrders.Any())
+                return new BaseResponse<List<ServiceOrder>>(serviceOrders, 401, "Nenhuma ordem de serviço foi encontrada.");
+            
+            return new BaseResponse<List<ServiceOrder>>(serviceOrders, 200, $"{serviceOrders.Count} ordens obtidas com sucesso!");
         }
         catch (Exception ex)
         {

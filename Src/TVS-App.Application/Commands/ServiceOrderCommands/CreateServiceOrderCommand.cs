@@ -19,19 +19,19 @@ public class CreateServiceOrderCommand : ICommand
     public void Validate()
     {
         if (CustomerId == 0)
-            throw new CommandException<CreateServiceOrderCommand>("O CustomerId do CreateServiceOrderCommand não pode ser 0");
+            throw new CommandException<CreateServiceOrderCommand>("O CustomerId da ordem de serviço não pode ser 0");
 
         if (string.IsNullOrEmpty(ProductModel))
-            throw new CommandException<CreateServiceOrderCommand>("O ProductModel do CreateServiceOrderCommand não pode estar vazio");
+            throw new CommandException<CreateServiceOrderCommand>("O modelo da ordem de serviço não pode estar vazio");
 
         if (string.IsNullOrEmpty(ProductSerialNumber))
-            throw new CommandException<CreateServiceOrderCommand>("O ProductSerialNumber do CreateServiceOrderCommand não pode estar vazio");
+            throw new CommandException<CreateServiceOrderCommand>("O número de série da ordem de serviço não pode estar vazio");
 
         if (!Enum.IsDefined(typeof(EProduct), ProductType))
-            throw new CommandException<CreateServiceOrderCommand>("O ProductType do CreateServiceOrderCommand não tem um valor válido");
+            throw new CommandException<CreateServiceOrderCommand>("O tipo do produto da ordem de serviço não tem um valor válido");
 
         if (!Enum.IsDefined(typeof(EEnterprise), Enterprise))
-            throw new CommandException<CreateServiceOrderCommand>("O Enterprise do CreateServiceOrderCommand não tem um valor válido");
+            throw new CommandException<CreateServiceOrderCommand>("A empresa da ordem de serviço não tem um valor válido");
 
     }
 

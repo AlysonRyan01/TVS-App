@@ -18,7 +18,7 @@ public class AddProductLocationCommand : ICommand
             throw new CommandException<AddProductLocationCommand>("O ID da ordem de serviço não pode ser 0");
 
         if (string.IsNullOrEmpty(Location))
-            throw new CommandException<AddProductLocationCommand>("O Location não pode estar vazio");
+            throw new CommandException<AddProductLocationCommand>("A localização não pode estar vazia");
 
     }
 }

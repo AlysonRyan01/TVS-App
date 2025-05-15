@@ -9,6 +9,8 @@ public class GetServiceOrderByIdCommand : ICommand
     public void Validate()
     {
         if (Id == 0)
-            throw new CommandException<GetServiceOrderByIdCommand>("O Id do GetServiceOrderByIdCommand não pode ser 0");
+            throw new CommandException<GetServiceOrderByIdCommand>("O Id da ordem de serviço não pode ser 0");
     }
+    
+    
 }

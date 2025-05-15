@@ -21,7 +21,7 @@ public static class CustomerEndpoints
 
                 var createResult = await handler.CreateCustomerAsync(command);
                 if (!createResult.IsSuccess)
-                    return Results.BadRequest(createResult);
+                    return Results.Ok(createResult);
 
                 await hubContext.Clients.All.SendAsync("Atualizar", createResult.Message);
 
@@ -30,7 +30,7 @@ public static class CustomerEndpoints
             catch (Exception ex)
             {
                 var response = EndpointExceptions.Handle<Customer>(ex);
-                return Results.BadRequest(response);
+                return Results.Ok(response);
             }
         }).WithTags("Customer").RequireAuthorization();
 
@@ -42,7 +42,7 @@ public static class CustomerEndpoints
 
                 var createResult = await handler.UpdateCustomerAsync(command);
                 if (!createResult.IsSuccess)
-                    return Results.BadRequest(createResult);
+                    return Results.Ok(createResult);
 
                 await hubContext.Clients.All.SendAsync("Atualizar", createResult.Message);
 
@@ -51,7 +51,7 @@ public static class CustomerEndpoints
             catch (Exception ex)
             {
                 var response = EndpointExceptions.Handle<Customer>(ex);
-                return Results.BadRequest(response);
+                return Results.Ok(response);
             }
         }).WithTags("Customer").RequireAuthorization();
 
@@ -64,14 +64,14 @@ public static class CustomerEndpoints
 
                 var createResult = await handler.GetCustomerByIdAsync(command);
                 if (!createResult.IsSuccess)
-                    return Results.BadRequest(createResult);
+                    return Results.Ok(createResult);
 
                 return Results.Ok(createResult);
             }
             catch (Exception ex)
             {
                 var response = EndpointExceptions.Handle<Customer>(ex);
-                return Results.BadRequest(response);
+                return Results.Ok(response);
             }
         }).WithTags("Customer").RequireAuthorization();
         
@@ -80,7 +80,7 @@ public static class CustomerEndpoints
             try
             {
                 if (string.IsNullOrEmpty(name))
-                    return Results.BadRequest();
+                    return Results.Ok();
                 
                 var customers = await handler.GetCustomerByNameAsync(name);
                 return Results.Ok(customers);
@@ -88,7 +88,7 @@ public static class CustomerEndpoints
             catch (Exception ex)
             {
                 var response = EndpointExceptions.Handle<List<Customer>>(ex);
-                return Results.BadRequest(response);
+                return Results.Ok(response);
             }
         }).WithTags("Customer").RequireAuthorization();
         
@@ -104,14 +104,14 @@ public static class CustomerEndpoints
 
                 var createResult = await handler.GetAllCustomersAsync(command);
                 if (!createResult.IsSuccess)
-                    return Results.BadRequest(createResult);
+                    return Results.Ok(createResult);
 
                 return Results.Ok(createResult);
             }
             catch (Exception ex)
             {
                 var response = EndpointExceptions.Handle<Customer>(ex);
-                return Results.BadRequest(response);
+                return Results.Ok(response);
             }
         }).WithTags("Customer").RequireAuthorization();
     }

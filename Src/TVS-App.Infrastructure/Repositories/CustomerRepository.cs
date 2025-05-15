@@ -50,7 +50,7 @@ public class CustomerRepository : ICustomerRepository
                 .OrderBy(c => c.Name.CustomerName)
                 .ToListAsync();
 
-            return new BaseResponse<List<Customer>>(customers, 200, "Clients obtidos com sucesso!");
+            return new BaseResponse<List<Customer>>(customers, 200, "Clientes obtidos com sucesso!");
         }
         catch (Exception ex)
         {
