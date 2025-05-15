@@ -405,7 +405,7 @@ public class ServiceOrderHandler
     {
         try
         {
-            var response = await _httpClient.PostAsJsonAsync("add-service-order-delivery", command);
+            var response = await _httpClient.PutAsJsonAsync("add-service-order-delivery", command);
             if (!response.IsSuccessStatusCode)
             {
                 var error = await response.Content.ReadAsStringAsync();

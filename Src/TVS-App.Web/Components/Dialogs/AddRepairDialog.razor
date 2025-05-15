@@ -29,7 +29,7 @@
         </div>
         <div class="flex flex-col w-full gap-3 border-b border-[#dfdfdf] my-4">
             <h2 class="font-bold text-lg font-sans text-[#750303] mt-3">INFORMAÇÕES SOBRE O ORÇAMENTO</h2>
-            <p class="font-normal uppercase font-sans"><span class="font-bold font-sans text-[#750303]">SOLUÇÃO:</span> @ServiceOrder.Solution</p>
+            <p class="font-normal uppercase font-sans"><span class="font-bold font-sans text-[#750303]">SOLUÇÃO:</span> @ServiceOrder.Solution?.ServiceOrderSolution</p>
             <p class="font-normal uppercase font-sans"><span class="font-bold font-sans text-[#750303]">VALOR:</span> @ServiceOrder.TotalAmount</p>
             <p class="font-normal uppercase font-sans mb-3"><span class="font-bold font-sans text-[#750303]">DATA DA APROVAÇÃO:</span> @ServiceOrder.ResponseDate?.ToString("dd/MM/yyyy")</p>
             <p class="font-normal uppercase font-sans"><span class="font-bold font-sans text-[#750303]">SITUAÇÃO:</span> @Situacao</p>

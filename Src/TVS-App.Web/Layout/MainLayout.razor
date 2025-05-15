@@ -1,4 +1,5 @@
 ﻿@using TVS_App.Web.Themes
+@inject IBrowserViewportService BrowserViewportService
 @inherits LayoutComponentBase
 <MudThemeProvider Theme="MudThemes.MyThemes"/>
 <MudPopoverProvider />
@@ -35,7 +36,26 @@
 
 @code
 {
-    private bool _drawer  = false;
+    private bool _drawer  = true;
+    private bool _isInitialized = false;
+    
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender && !_isInitialized)
+        {
+            _isInitialized = true;
+            var isSmallScreen = await BrowserViewportService.IsBreakpointWithinReferenceSizeAsync(Breakpoint.Md, Breakpoint.Xs);
+            _drawer = !isSmallScreen;
+            StateHasChanged();
+        }
+    }
+
+    private async void OnResized(object sender, BrowserViewportEventArgs e)
+    {
+        var isSmallScreen = await BrowserViewportService.IsBreakpointWithinReferenceSizeAsync(Breakpoint.Md, Breakpoint.Xs);
+        _drawer = !isSmallScreen;
+        StateHasChanged();
+    }
 
     private void ToggleDrawer()
     {

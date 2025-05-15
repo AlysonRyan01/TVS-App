@@ -9,8 +9,9 @@ else
 {
     <MudButton @onclick="Create"
                Disabled="_isProcessing"
-               Variant="Variant.Text"
+               Variant="Variant.Filled"
                Color="Color.Primary"
+               Class="min-w-[150px]"
                FullWidth="false">Criar</MudButton>
 }
 
@@ -20,6 +21,7 @@ else
     [Inject] public ServiceOrderHandler Handler { get; set; } = null!;
     [Inject] public ISnackbar Snackbar { get; set; } = null!;
     [Inject] public IJSRuntime Js { get; set; } = null!;
+    [Inject] public NavigationManager NavigationManager { get; set; } = null!;
 
     private bool _isProcessing = false;
     public async Task Create()
@@ -40,6 +42,7 @@ else
             await Js.InvokeVoidAsync("GeneratePdf", base64, "ordem_servico.pdf");
 
             Snackbar.Add("Ordem de serviço criada com sucesso!", Severity.Success);
+            NavigationManager.NavigateTo("/");
         }
         catch (Exception e)
         {

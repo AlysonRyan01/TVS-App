@@ -1,8 +1,12 @@
+using System.Globalization;
+using System.Text;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 using TVS_App.Application.Commands.CustomerCommands;
 using TVS_App.Application.Commands.ServiceOrderCommands;
+using TVS_App.Application.Exceptions;
 using TVS_App.Domain.Entities;
+using TVS_App.Web.Components.Dialogs;
 using TVS_App.Web.Handlers;
 
 namespace TVS_App.Web.Pages;
@@ -13,12 +17,15 @@ public partial class CreateServiceOrderPage : ComponentBase
     public CreateServiceOrderCommand CreateServiceOrderCommand { get; set; } = new();
     public Customer SelectedCustomer { get; set; } = new();
     private bool _isLoading = false;
+    private bool _customerSideCompleted = false;
+    private bool _serviceOrderTime = false;
 
     [Inject] public CustomerHandler CustomerHandler { get; set; } = null!;
     [Inject] public ISnackbar Snackbar { get; set; } = null!;
     [Inject] public NavigationManager NavigationManager { get; set; } = null!;
+    [Inject] public IDialogService DialogService { get; set; } = null!;
 
-    private async Task<IEnumerable<Customer>> SearchCustomers(string searchTerm)
+    private async Task<IEnumerable<Customer>> SearchCustomers(string? searchTerm, CancellationToken cancellationToken)
     {
         if (string.IsNullOrWhiteSpace(searchTerm) || searchTerm.Length < 3)
             return Enumerable.Empty<Customer>();
@@ -34,7 +41,11 @@ public partial class CreateServiceOrderPage : ComponentBase
                 return Enumerable.Empty<Customer>();
             }
 
-            return result.Data.Take(20);
+            var normalizedTerm = Normalize(searchTerm);
+
+            return result.Data
+                .Where(c => Normalize(c.Name.CustomerName).Contains(normalizedTerm))
+                .Take(20);
         }
         catch (Exception e)
         {
@@ -46,10 +57,93 @@ public partial class CreateServiceOrderPage : ComponentBase
             _isLoading = false;
         }
     }
-
-    private void SelectCustomer(Customer customer)
+    
+    public async Task OnCustomerSelected()
     {
-        SelectedCustomer = customer;
-        CreateServiceOrderCommand.CustomerId = customer.Id;
+        if (SelectedCustomer.Id == 0)
+        {
+            Snackbar.Add("Nenhum cliente foi selecionado", Severity.Error);
+            return;
+        }
+
+        await OpenConfirmCustomerDialog(SelectedCustomer.Id);
+    }
+
+    public async Task CreateCustomer()
+    {
+        try
+        {
+            CreateCustomerCommand.Normalize();
+            CreateCustomerCommand.Validate();
+            
+            var createResult = await CustomerHandler.CreateCustomerAsync(CreateCustomerCommand);
+            if (createResult.IsSuccess || createResult.Data != null)
+            {
+                SelectedCustomer = createResult.Data!;
+                _customerSideCompleted = true;
+                _serviceOrderTime = true;
+                CreateServiceOrderCommand.CustomerId = createResult.Data!.Id;
+                Snackbar.Add("Cliente criado com sucesso!", Severity.Success);
+            }
+            else
+            {
+                Snackbar.Add($"Erro: {createResult.Message}", Severity.Error);
+            }
+        }
+        catch (CommandException<CreateCustomerCommand> ex)
+        {
+            Snackbar.Add($"Validação: {ex.Message}", Severity.Warning);
+        }
+        catch (Exception e)
+        {
+            Snackbar.Add($"Erro: {e.Message}", Severity.Error);
+        }
+    }
+
+    public void CancelOrder()
+    {
+        _customerSideCompleted = false;
+        _serviceOrderTime = false;
+    }
+    
+    private static string Normalize(string text)
+    {
+        return string.Concat(text.Normalize(NormalizationForm.FormD)
+                .Where(c => CharUnicodeInfo.GetUnicodeCategory(c) != UnicodeCategory.NonSpacingMark))
+            .ToLowerInvariant();
+    }
+    
+    private async Task OpenConfirmCustomerDialog(long customerId)
+    {
+        var parameters = new DialogParameters
+        {
+            ["CustomerId"] = customerId
+        };
+
+        var options = new DialogOptions
+        {
+            CloseButton = true,
+            FullWidth = true,
+            MaxWidth = MaxWidth.Medium
+        };
+
+        var dialog = await DialogService.ShowAsync<ConfirmCustomerDialog>("Confirmar cliente", parameters, options);
+        var result = await dialog.Result;
+    
+        if (!result!.Canceled)
+        {
+            var confirmed = (bool)result.Data!;
+        
+            if (confirmed)
+            {
+                CreateServiceOrderCommand.CustomerId = SelectedCustomer.Id;
+                _serviceOrderTime = true;
+                _customerSideCompleted = true;
+            }
+            else
+            {
+                Snackbar.Add("Ocorreu um erro ao confirmar o cliente", Severity.Error);
+            }
+        }
     }
 }

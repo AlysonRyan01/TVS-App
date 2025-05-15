@@ -8,10 +8,10 @@ public class CreateCustomerCommand : ICommand
 
     public string Street { get; set; } = string.Empty;
     public string Neighborhood { get; set; } = string.Empty;
-    public string City { get; set; } = string.Empty;
+    public string City { get; set; } = "Campo Largo";
     public string Number { get; set; } = string.Empty;
     public string ZipCode { get; set; } = string.Empty;
-    public string State { get; set; } = string.Empty;
+    public string State { get; set; } = "PR";
 
     public string Phone { get; set; } = string.Empty;
     public string Phone2 { get; set; } = string.Empty;
@@ -38,6 +38,6 @@ public class CreateCustomerCommand : ICommand
         State = State.Trim().ToUpper();
         Phone = Phone.Trim();
         Phone2 = Phone2.Trim();
-        Email = Email.Trim().ToLower(); // E-mails geralmente são salvos em minúsculo
+        Email = Email.Trim().ToLower();
     }
 }
