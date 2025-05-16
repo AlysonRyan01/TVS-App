@@ -506,7 +506,7 @@ public class ServiceOrderHandler
         }
     }
 
-    public async Task<BaseResponse<byte[]>> AddServiceOrderDeliveryAndReturnPdfAsync(GetServiceOrderByIdCommand command)
+    public async Task<BaseResponse<byte[]?>> AddServiceOrderDeliveryAndReturnPdfAsync(GetServiceOrderByIdCommand command)
     {
         try
         {
@@ -514,15 +514,18 @@ public class ServiceOrderHandler
             if (!response.IsSuccessStatusCode)
             {
                 var error = await response.Content.ReadAsStringAsync();
-                return new BaseResponse<byte[]>(null, (int)response.StatusCode, $"Erro: {error}");
+                return new BaseResponse<byte[]?>(null, (int)response.StatusCode, $"Erro: {error}");
             }
 
             var pdfBytes = await response.Content.ReadAsByteArrayAsync();
-            return new BaseResponse<byte[]>(pdfBytes, 200, "PDF gerado com sucesso");
+            if (pdfBytes.Length > 0)
+                return new BaseResponse<byte[]?>(pdfBytes, 200, "PDF gerado com sucesso");
+
+            return new BaseResponse<byte[]?>(null, 200, "Ordem de serviço entregue com sucesso");
         }
         catch (Exception e)
         {
-            return ExceptionHandler.Handle<byte[]>(e);
+            return ExceptionHandler.Handle<byte[]?>(e);
         }
     }
 
@@ -530,7 +533,7 @@ public class ServiceOrderHandler
     {
         try
         {
-            var response = await _httpClient.PostAsJsonAsync("regenerate-service-order-pdf", command);
+            var response = await _httpClient.PutAsJsonAsync("regenerate-service-order-pdf", command);
             if (!response.IsSuccessStatusCode)
             {
                 var error = await response.Content.ReadAsStringAsync();

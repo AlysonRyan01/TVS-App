@@ -390,7 +390,7 @@ public class ServiceOrderHandler
 
             var serviceOrder = result.Data;
 
-            serviceOrder.AddEstimate(command.Solution, command.Guarantee, command.PartCost, command.LaborCost, command.RepairResult);
+            serviceOrder.AddEstimate(command.Solution, command.Guarantee, command.PartCost, command.LaborCost, command.RepairResult, command.EstimateMessage);
 
             await _serviceOrderRepository.UpdateAsync(serviceOrder);
 
@@ -534,11 +534,17 @@ public class ServiceOrderHandler
 
             await _serviceOrderRepository.UpdateAsync(serviceOrder);
 
-            var createPdf = await _generateServiceOrderPdf.GenerateCheckOutDocumentAsync(serviceOrder);
-            if (!createPdf.IsSuccess)
-                return new BaseResponse<byte[]>(null, 500, createPdf.Message);
+            if (serviceOrder.RepairStatus == ERepairStatus.Approved &&
+                serviceOrder.RepairResult == ERepairResult.Repair)
+            {
+                var createPdf = await _generateServiceOrderPdf.GenerateCheckOutDocumentAsync(serviceOrder);
+                if (!createPdf.IsSuccess)
+                    return new BaseResponse<byte[]>(null, 500, createPdf.Message);
 
-            return createPdf;
+                return createPdf;
+            }
+
+            return new BaseResponse<byte[]>(null, 200, "Ordem de serviço entregue com sucesso!");
         }
         catch (CommandException<GetServiceOrderByIdCommand> ex)
         {

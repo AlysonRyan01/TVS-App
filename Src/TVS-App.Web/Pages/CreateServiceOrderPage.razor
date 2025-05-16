@@ -3,6 +3,7 @@
 @using TVS_App.Domain.Entities
 @using TVS_App.Domain.Enums
 @using TVS_App.Web.Components;
+@using TVS_App.Web.Extensions
 @layout MainLayout
 @attribute [Authorize] 
 
@@ -18,7 +19,6 @@
                                  MinCharacters="2"
                                  ResetValueOnEmptyText="true"
                                  Clearable="true"
-                                 Loading="@_isLoading"
                                  AdornmentIcon="@Icons.Material.Filled.Person2"
                                  IconSize="Size.Large"
                                  AdornmentColor="Color.Primary"
@@ -123,7 +123,7 @@
                                    Class="flex-grow">
                             @foreach (EProduct productType in Enum.GetValues(typeof(EProduct)))
                             {
-                                <MudSelectItem T="EProduct" Value="productType">@productType.ToString()</MudSelectItem>
+                                <MudSelectItem T="EProduct" Value="productType">@productType.GetDisplayName()</MudSelectItem>
                             }
                         </MudSelect>
                     </div>
@@ -181,7 +181,7 @@
                                    Class="flex-grow">
                             @foreach (EEnterprise enterprise in Enum.GetValues(typeof(EEnterprise)))
                             {
-                                <MudSelectItem T="EEnterprise" Value="enterprise">@enterprise.ToString()</MudSelectItem>
+                                <MudSelectItem T="EEnterprise" Value="enterprise">@enterprise.GetDisplayName()</MudSelectItem>
                             }
                         </MudSelect>
                     </div>

@@ -1,5 +1,6 @@
 @using TVS_App.Domain.Entities
 @using TVS_App.Domain.Enums
+@using TVS_App.Web.Extensions
 
 <MudDialog>
     <TitleContent>
@@ -12,17 +13,17 @@
         <!-- EMPRESA -->
         <section class="border-b border-[#dfdfdf] py-4">
             <h2 class="text-[#750303] text-lg font-bold uppercase mb-2">Empresa</h2>
-            <p class="text-base font-semibold">@ServiceOrder.Enterprise</p>
+            <p class="text-base font-semibold">@ServiceOrder.Enterprise.GetDisplayName()</p>
         </section>
 
         <!-- DADOS DO CLIENTE -->
         <section class="border-b border-[#dfdfdf] py-4">
             <h2 class="text-[#750303] text-lg font-bold uppercase mb-4">Dados do Cliente</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <p><span class="font-bold text-[#750303]">Nome:</span> @ServiceOrder.Customer.Name.CustomerName</p>
-                <p><span class="font-bold text-[#750303]">Telefone 1:</span> @ServiceOrder.Customer.Phone.CustomerPhone</p>
-                <p><span class="font-bold text-[#750303]">Endereço:</span> @ServiceOrder.Customer.Address.ToString().ToUpper()</p>
-                <p><span class="font-bold text-[#750303]">Telefone 2:</span> @ServiceOrder.Customer.Phone2.CustomerPhone</p>
+                <p class="text-base font-semibold"><span class="font-bold text-[#750303]">Nome:</span> @ServiceOrder.Customer.Name.CustomerName</p>
+                <p class="text-base font-semibold"><span class="font-bold text-[#750303]">Telefone 1:</span> @ServiceOrder.Customer.Phone.CustomerPhone</p>
+                <p class="text-base font-semibold"><span class="font-bold text-[#750303]">Endereço:</span> @ServiceOrder.Customer.Address.ToString().ToUpper()</p>
+                <p class="text-base font-semibold"><span class="font-bold text-[#750303]">Telefone 2:</span> @ServiceOrder.Customer.Phone2.CustomerPhone</p>
             </div>
         </section>
 
@@ -30,14 +31,15 @@
         <section class="border-b border-[#dfdfdf] py-4">
             <h2 class="text-[#750303] text-lg font-bold uppercase mb-4">Dados do Produto</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <p><span class="font-bold text-[#750303]">Tipo:</span> @ServiceOrder.Product.Type</p>
-                <p><span class="font-bold text-[#750303]">Marca:</span> @ServiceOrder.Product.Brand</p>
-                <p><span class="font-bold text-[#750303]">Modelo:</span> @ServiceOrder.Product.Model</p>
-                <p><span class="font-bold text-[#750303]">Série:</span> @ServiceOrder.Product.SerialNumber</p>
-                <p class="md:col-span-2"><span class="font-bold text-[#750303]">Defeito:</span> @ServiceOrder.Product.Defect</p>
-                <p><span class="font-bold text-[#750303]">Data de Entrada:</span> @ServiceOrder.EntryDate.ToString("dd/MM/yyyy")</p>
-                <p><span class="font-bold text-[#750303]">Data da compra:</span> @ServiceOrder.PurchasePartDate?.ToString("dd/MM/yyyy")</p>
-                <p><span class="font-bold text-[#750303]">Prateleira:</span> @ServiceOrder.Product.Location</p>
+                <p class="text-base font-semibold"><span class="font-bold text-[#750303]">Tipo:</span> @ServiceOrder.Product.Type.GetDisplayName()</p>
+                <p class="text-base font-semibold"><span class="font-bold text-[#750303]">Marca:</span> @ServiceOrder.Product.Brand</p>
+                <p class="text-base font-semibold"><span class="font-bold text-[#750303]">Modelo:</span> @ServiceOrder.Product.Model</p>
+                <p class="text-base font-semibold"><span class="font-bold text-[#750303]">Série:</span> @ServiceOrder.Product.SerialNumber</p>
+                <p class="md:col-span-2 text-base font-semibold"><span class="font-bold text-[#750303]">Defeito:</span> @ServiceOrder.Product.Defect</p>
+                <p class="text-base font-semibold"><span class="font-bold text-[#750303]">Data de Entrada:</span> @ServiceOrder.EntryDate.ToString("dd/MM/yyyy")</p>
+                <p class="text-base font-semibold"><span class="font-bold text-[#750303]">Data da compra:</span> @ServiceOrder.PurchasePartDate?.ToString("dd/MM/yyyy")</p>
+                <p class="text-base font-semibold"><span class="font-bold text-[#750303]">Prateleira:</span> @ServiceOrder.Product.Location</p>
+                <p class="text-base font-semibold"><span class="font-bold text-[#750303]">Acessórios:</span> @ServiceOrder.Product.Accessories</p>
             </div>
         </section>
 
@@ -45,12 +47,15 @@
         <section class=" py-4 mb-10">
             <h2 class="text-[#750303] text-lg font-bold uppercase mb-4">Informações do Orçamento</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <p><span class="font-bold text-[#750303]">Solução:</span> @ServiceOrder.Solution?.ServiceOrderSolution</p>
-                <p><span class="font-bold text-[#750303]">Valor:</span> @ServiceOrder.TotalAmount.ToString("C")</p>
-                <p><span class="font-bold text-[#750303]">Data da Aprovação:</span> @ServiceOrder.ResponseDate?.ToString("dd/MM/yyyy")</p>
-                <p><span class="font-bold text-[#750303]">Situação:</span> @Situacao</p>
-                <p><span class="font-bold text-[#750303]">Tem Conserto:</span> @TemConserto</p>
-                <p><span class="font-bold text-[#750303]">Resposta do Cliente:</span> @Resposta</p>
+                <p class="text-base font-semibold"><span class="font-bold text-[#750303]">Solução:</span> @ServiceOrder.Solution?.ServiceOrderSolution</p>
+                <p class="text-base font-semibold"><span class="font-bold text-[#750303]">Valor:</span> @ServiceOrder.TotalAmount.ToString("C")</p>
+                <p class="text-base font-semibold"><span class="font-bold text-[#750303]">Data da Aprovação:</span> @ServiceOrder.ResponseDate?.ToString("dd/MM/yyyy")</p>
+                <p class="text-base font-semibold"><span class="font-bold text-[#750303]">Data do Conserto:</span> @ServiceOrder.RepairDate?.ToString("dd/MM/yyyy")</p>
+                <p class="text-base font-semibold"><span class="font-bold text-[#750303]">Data da Entrega:</span> @ServiceOrder.DeliveryDate?.ToString("dd/MM/yyyy")</p>
+                <p class="text-base font-semibold"><span class="font-bold text-[#750303]">Situação:</span> @Situacao</p>
+                <p class="text-base font-semibold"><span class="font-bold text-[#750303]">Resultado:</span> @TemConserto</p>
+                <p class="text-base font-semibold"><span class="font-bold text-[#750303]">Resposta do Cliente:</span> @Resposta</p>
+                <p class="text-base font-semibold"><span class="font-bold text-[#750303]">Mensagem de orçamento:</span> @ServiceOrder.EstimateMessage</p>
             </div>
         </section>
     </DialogContent>
@@ -74,8 +79,8 @@
     public string TemConserto =>
         ServiceOrder.RepairResult switch
         {
-            ERepairResult.Repair => "Sim",
-            ERepairResult.Unrepaired => "Não",
+            ERepairResult.Repair => "Pode ser consertado",
+            ERepairResult.Unrepaired => "Não tem conserto",
             ERepairResult.NoDefectFound => "Não apresentou defeito",
             _ => "Desconhecido"
         };

@@ -11,11 +11,15 @@ public class AddServiceOrderEstimateCommand : ICommand
     public decimal PartCost { get; set; }
     public decimal LaborCost { get; set; }
     public ERepairResult RepairResult { get; set; }
+    public string EstimateMessage { get; set; } = null!;
 
     public void Validate()
     {
         if (string.IsNullOrEmpty(Solution))
             throw new CommandException<AddServiceOrderEstimateCommand>("A solução da ordem de serviço não estar ser vazia");
+        
+        if (string.IsNullOrEmpty(EstimateMessage))
+            throw new CommandException<AddServiceOrderEstimateCommand>("A mensagem de orçamento não estar ser vazia");
 
         if (PartCost < 0)
             throw new CommandException<AddServiceOrderEstimateCommand>("o valor da peça da ordem de serviço não pode ser menor que 0");

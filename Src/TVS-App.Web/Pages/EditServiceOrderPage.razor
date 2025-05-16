@@ -1,18 +1,58 @@
-@page "/alterar-os"
+@page "/geral"
 @using Microsoft.AspNetCore.Authorization
+@using TVS_App.Domain.Entities
+@using TVS_App.Web.Components
 @layout MainLayout
 @attribute [Authorize]
 
-<div class="flex flex-row items-center justify-center gap-3 w-full min-h-[80vh]">
-    <MudTextField @bind-Value="_serviceOrderId"
-                  Label="Ordem de serviço"
-                  Variant="Variant.Outlined"
-                  Required="true"
-                  Class="max-w-[300px]"
-                  FullWidth="false" />
+<div class="flex w-full min-h-[80vh]">
+    <div class="flex flex-col gap-3 p-5">
+        <h1 class="text-3xl font-sans text-titlecolor font-extrabold mb-10">Funções gerais</h1>
+        <div class="mb-5">
+            <p class="text-lg font-sans font-bold">Alterar Ordem</p>
+            <MudTextField @bind-Value="_serviceOrderId"
+                          Label="Ordem de serviço"
+                          Variant="Variant.Outlined"
+                          Required="true"
+                          Class="max-w-[300px]"
+                          FullWidth="false"/>
 
-    <MudButton OnClick="OpenEditServiceOrderDialog"
-               Variant="Variant.Filled"
-               Color="Color.Primary"
-               Size="Size.Large">Buscar</MudButton>
+            <MudButton OnClick="OpenEditServiceOrderDialog"
+                       Variant="Variant.Filled"
+                       Color="Color.Primary"
+                       Size="Size.Medium">Alterar</MudButton>
+        </div>
+        <div class="mb-5">
+            <p class="text-lg font-sans font-bold">Reimprimir Ordem</p>
+            <MudTextField @bind-Value="_printCommand.Id"
+                          Label="Ordem de serviço"
+                          Variant="Variant.Outlined"
+                          Required="true"
+                          Class="max-w-[300px]"
+                          AdornmentIcon="@Icons.Material.Filled.Print"
+                          IconSize="Size.Large"
+                          AdornmentColor="Color.Primary"
+                          FullWidth="false"/>
+
+            <ReprintServiceOrder Command="_printCommand"/>
+        </div>
+        <div class="mb-5">
+            <p class="text-lg font-sans font-bold">Editar cliente</p>
+            <MudAutocomplete T="Customer"
+                             @bind-Value="SelectedCustomer"
+                             SearchFunc="SearchCustomers"
+                             ToStringFunc="@(c => c?.Name?.CustomerName ?? "")"
+                             MinCharacters="2"
+                             ResetValueOnEmptyText="true"
+                             Clearable="true"
+                             AdornmentIcon="@Icons.Material.Filled.Person2"
+                             IconSize="Size.Large"
+                             AdornmentColor="Color.Primary"
+                             FullWidth="true"
+                             Variant="Variant.Outlined"
+                             Placeholder="Digite o nome do cliente"/>
+
+            <MudButton OnClick="OnCustomerSelected" Class="self-start mt-1" Variant="Variant.Filled" Color="Color.Primary">Editar</MudButton>
+        </div>
+    </div>
 </div>

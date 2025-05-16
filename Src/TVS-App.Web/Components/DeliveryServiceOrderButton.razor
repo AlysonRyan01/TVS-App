@@ -34,16 +34,19 @@ else
 
             _isProcessing = true;
             var result = await Handler.AddServiceOrderDeliveryAndReturnPdfAsync(Command);
-            if (!result.IsSuccess || result.Data is null)
+            if (!result.IsSuccess)
             {
                 Snackbar.Add(result.Message ?? "Erro ao criar a ordem de serviço", Severity.Error);
                 return;
             }
 
-            var base64 = Convert.ToBase64String(result.Data);
-            await Js.InvokeVoidAsync("GeneratePdf", base64, "ordem_servico.pdf");
+            if (result.Data != null)
+            {
+                var base64 = Convert.ToBase64String(result.Data);
+                await Js.InvokeVoidAsync("GeneratePdf", base64, "ordem_servico.pdf");
             
-            await OnDeliveryAdded.InvokeAsync();
+                await OnDeliveryAdded.InvokeAsync();
+            }
             
             Snackbar.Add("Ordem de serviço entregue com sucesso!", Severity.Success);
         }

@@ -468,7 +468,10 @@ public static class ServiceOrderEndpoints
 
                 await hubContext.Clients.All.SendAsync("Atualizar", createOrderResult.Message);
 
-                return Results.File(createOrderResult.Data!, "application/pdf", "ordem_servico.pdf");
+                if (createOrderResult.Data != null)
+                    return Results.File(createOrderResult.Data, "application/pdf", "ordem_servico.pdf");
+                
+                return Results.Ok();
             }
             catch (Exception ex)
             {

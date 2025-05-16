@@ -39,6 +39,8 @@ public class ServiceOrder : Entity
     [JsonPropertyName("solution")]
     [JsonInclude]
     public Solution? Solution { get; private set; }
+    [JsonInclude]
+    public string? EstimateMessage { get; private set; }
     [JsonPropertyName("guarantee")]
     [JsonInclude]
     public Guarantee? Guarantee { get; private set; }
@@ -58,7 +60,7 @@ public class ServiceOrder : Entity
     [JsonInclude]
     public ERepairResult? RepairResult { get; set; }
 
-    public void AddEstimate(string solution, string? guarantee, decimal partCost, decimal laborCost, ERepairResult repairResult)
+    public void AddEstimate(string solution, string? guarantee, decimal partCost, decimal laborCost, ERepairResult repairResult, string estimateMessage)
     {
         Solution = new Solution(solution);
         Guarantee = new Guarantee(guarantee ?? "");
@@ -68,6 +70,10 @@ public class ServiceOrder : Entity
         RepairStatus = ERepairStatus.Waiting;
         RepairResult = repairResult;
         InspectionDate = DateTime.UtcNow;
+        EstimateMessage = estimateMessage;
+
+        if (RepairResult == ERepairResult.Unrepaired || RepairResult == ERepairResult.NoDefectFound)
+            RepairStatus = ERepairStatus.Approved;
     }
 
     public void ApproveEstimate()
@@ -211,5 +217,15 @@ public class ServiceOrder : Entity
     public void EditRepairResult(ERepairResult repairResult)
     {
         RepairResult = repairResult;
+    }
+
+    public void EditDeliveryDate(DateTime? deliveryDate)
+    {
+        DeliveryDate = deliveryDate;
+    }
+
+    public void EditEstimateMessage(string message)
+    {
+        EstimateMessage = message;
     }
 }

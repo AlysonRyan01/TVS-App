@@ -1,6 +1,7 @@
 @using TVS_App.Application.Commands.ServiceOrderCommands
 @using TVS_App.Domain.Entities
 @using TVS_App.Domain.Enums
+@using TVS_App.Web.Extensions
 @using TVS_App.Web.Handlers
 
 <MudDialog>
@@ -12,17 +13,17 @@
         <!-- EMPRESA -->
         <section class="border-b border-[#dfdfdf] py-4">
             <h2 class="text-[#750303] text-lg font-bold uppercase mb-2">Empresa</h2>
-            <p class="text-base font-semibold">@ServiceOrder.Enterprise</p>
+            <p class="lg:text-lg font-semibold">@ServiceOrder.Enterprise.GetDisplayName()</p>
         </section>
 
         <!-- DADOS DO CLIENTE -->
         <section class="border-b border-[#dfdfdf] py-4">
             <h2 class="text-[#750303] text-lg font-bold uppercase mb-4">Dados do Cliente</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <p><span class="font-bold text-[#750303]">Nome:</span> @ServiceOrder.Customer.Name.CustomerName</p>
-                <p><span class="font-bold text-[#750303]">Telefone 1:</span> @ServiceOrder.Customer.Phone.CustomerPhone</p>
-                <p><span class="font-bold text-[#750303]">Endereço:</span> @ServiceOrder.Customer.Address.ToString().ToUpper()</p>
-                <p><span class="font-bold text-[#750303]">Telefone 2:</span> @ServiceOrder.Customer.Phone2.CustomerPhone</p>
+                <p class="text-base font-semibold"><span class="font-bold text-[#750303]">Nome:</span> @ServiceOrder.Customer.Name.CustomerName</p>
+                <p class="lg:text-base font-semibold"><span class="font-bold text-[#750303]">Telefone 1:</span> @ServiceOrder.Customer.Phone.CustomerPhone</p>
+                <p class="lg:text-base font-semibold"><span class="font-bold text-[#750303]">Endereço:</span> @ServiceOrder.Customer.Address.ToString().ToUpper()</p>
+                <p class="lg:text-base font-semibold"><span class="font-bold text-[#750303]">Telefone 2:</span> @ServiceOrder.Customer.Phone2.CustomerPhone</p>
             </div>
         </section>
 
@@ -30,14 +31,14 @@
         <section class="border-b border-[#dfdfdf] py-4">
             <h2 class="text-[#750303] text-lg font-bold uppercase mb-4">Dados do Produto</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <p><span class="font-bold text-[#750303]">Tipo:</span> @ServiceOrder.Product.Type</p>
-                <p><span class="font-bold text-[#750303]">Marca:</span> @ServiceOrder.Product.Brand</p>
-                <p><span class="font-bold text-[#750303]">Modelo:</span> @ServiceOrder.Product.Model</p>
-                <p><span class="font-bold text-[#750303]">Série:</span> @ServiceOrder.Product.SerialNumber</p>
-                <p><span class="font-bold text-[#750303]">Defeito:</span> @ServiceOrder.Product.Defect</p>
-                <p><span class="font-bold text-[#750303]">Data de Entrada:</span> @ServiceOrder.EntryDate.ToString("dd/MM/yyyy")</p>
-                <p><span class="font-bold text-[#750303]">Situação:</span> @Situacao</p>
-                <p><span class="font-bold text-[#750303]">Prateleira:</span> @ServiceOrder.Product.Location</p>
+                <p class="text-base font-semibold"><span class="font-bold text-[#750303]">Tipo:</span> @ServiceOrder.Product.Type.GetDisplayName()</p>
+                <p class="text-base font-semibold"><span class="font-bold text-[#750303]">Marca:</span> @ServiceOrder.Product.Brand</p>
+                <p class="text-base font-semibold"><span class="font-bold text-[#750303]">Modelo:</span> @ServiceOrder.Product.Model</p>
+                <p class="text-base font-semibold"><span class="font-bold text-[#750303]">Série:</span> @ServiceOrder.Product.SerialNumber</p>
+                <p class="text-base font-semibold"><span class="font-bold text-[#750303]">Defeito:</span> @ServiceOrder.Product.Defect</p>
+                <p class="text-base font-semibold"><span class="font-bold text-[#750303]">Data de Entrada:</span> @ServiceOrder.EntryDate.ToString("dd/MM/yyyy")</p>
+                <p class="text-base font-semibold"><span class="font-bold text-[#750303]">Situação:</span> @Situacao</p>
+                <p class="text-base font-semibold"><span class="font-bold text-[#750303]">Prateleira:</span> @ServiceOrder.Product.Location</p>
             </div>
             <div class="mt-3">
                 <LocationButton ServiceOrder="ServiceOrder" OnLocationChanged="UpdateLocation" />
@@ -50,6 +51,7 @@
             <MudForm @ref="_form" @onsubmit="AdicionarOrcamento">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <MudTextField Label="Solução" @bind-Value="Request.Solution" For="@(() => Request.Solution)" Variant="Variant.Outlined" />
+                    <MudTextField Lines="4" Label="Mensagem de orçamento" @bind-Value="Request.EstimateMessage" For="@(() => Request.EstimateMessage)" Variant="Variant.Outlined" />
                     <MudTextField Label="Valor da peça" @bind-Value="Request.PartCost" For="@(() => Request.PartCost)" Variant="Variant.Outlined" />
                     <MudTextField Label="Valor da mão de obra" @bind-Value="Request.LaborCost" For="@(() => Request.LaborCost)" Variant="Variant.Outlined" />
                     <MudTextField Label="Garantia" @bind-Value="Request.Guarantee" For="@(() => Request.Guarantee)" Variant="Variant.Outlined" />

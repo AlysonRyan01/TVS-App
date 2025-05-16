@@ -1,6 +1,7 @@
 ﻿@page "/"
 @using Microsoft.AspNetCore.Authorization
 @using TVS_App.Web.Components
+@using TVS_App.Web.Extensions
 @layout MainLayout
 @attribute [Authorize]
 
@@ -115,19 +116,19 @@
                     <HeaderContent>
                         <MudTh><p class="text-xl text-[#750303] font-bold">Número</p></MudTh>
                         <MudTh><p class="text-xl text-[#750303] font-bold">Cliente</p></MudTh>
-                        <MudTh><p class="text-xl text-[#750303] font-bold">Modelo</p></MudTh>
-                        <MudTh><p class="text-xl text-[#750303] font-bold">Defeito</p></MudTh>
                         <MudTh><p class="text-xl text-[#750303] font-bold">Solução</p></MudTh>
                         <MudTh><p class="text-xl text-[#750303] font-bold">Data do Conserto</p></MudTh>
+                        <MudTh><p class="text-xl text-[#750303] font-bold">Situação</p></MudTh>
+                        <MudTh><p class="text-xl text-[#750303] font-bold">Resposta</p></MudTh>
                         <MudTh><p class="text-xl text-[#750303] font-bold">Ação</p></MudTh>
                     </HeaderContent>
                     <RowTemplate>
                         <MudTd DataLabel="Número"><p class="font-sans font-bold text-lg">@context.Id</p></MudTd>
                         <MudTd DataLabel="Cliente"><p class="text-sm font-sans font-normal uppercase">@context.Customer.Name.CustomerName</p></MudTd>
-                        <MudTd DataLabel="Modelo"><p class="text-sm font-sans font-normal uppercase">@context.Product.Model</p></MudTd>
-                        <MudTd DataLabel="Defeito"><p class="text-sm font-sans font-normal uppercase">@context.Product.Defect</p></MudTd>
                         <MudTd DataLabel="Solução"><p class="text-sm font-sans font-normal uppercase">@context.Solution?.ServiceOrderSolution</p></MudTd>
                         <MudTd DataLabel="Data do Conserto"><p class="text-sm font-sans font-normal uppercase">@context.RepairDate?.ToString("dd/MM/yyyy")</p></MudTd>
+                        <MudTd DataLabel="Situação"><p class="text-sm font-sans font-normal uppercase">@context?.RepairResult?.GetDisplayName()</p></MudTd>
+                        <MudTd DataLabel="Resposta"><p class="text-sm font-sans font-normal uppercase">@context.RepairStatus.GetDisplayName()</p></MudTd>
                         <MudTd DataLabel="Ação"><MudButton OnClick="() => OpenAddDeliveryDialog(context)" EndIcon="@Icons.Material.Filled.Done" Variant="Variant.Filled" Color="Color.Primary">
                                 <p class="text-base">Entregue</p>
                             </MudButton></MudTd>

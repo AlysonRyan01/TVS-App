@@ -139,27 +139,27 @@ public class ServiceOrderHandlerTests
 
             for (int i = 0; i < 2; i++)
             {
-                allserviceOrder[i]?.AddEstimate("placa", "3 meses", 200m, 300m, Domain.Enums.ERepairResult.Repair);
+                allserviceOrder[i]?.AddEstimate("placa", "3 meses", 200m, 300m, Domain.Enums.ERepairResult.Repair, "");
                 await _serviceOrderHandler.UpdateServiceOrderAsync(new UpdateServiceOrderCommand { ServiceOrderId = allserviceOrder!.ToList()[i]!.Id });
             }
 
             for (int i = 2; i < 4; i++)
             {
-                allserviceOrder[i]?.AddEstimate("placa", "3 meses", 200m, 300m, Domain.Enums.ERepairResult.Repair);
+                allserviceOrder[i]?.AddEstimate("placa", "3 meses", 200m, 300m, Domain.Enums.ERepairResult.Repair, "");
                 allserviceOrder[i]?.ApproveEstimate();
                 await _serviceOrderHandler.UpdateServiceOrderAsync(new UpdateServiceOrderCommand { ServiceOrderId = allserviceOrder!.ToList()[i]!.Id });
             }
 
             for (int i = 4; i < 6; i++)
             {
-                allserviceOrder[i]?.AddEstimate("placa", "3 meses", 200m, 300m, Domain.Enums.ERepairResult.Repair);
+                allserviceOrder[i]?.AddEstimate("placa", "3 meses", 200m, 300m, Domain.Enums.ERepairResult.Repair, "");
                 allserviceOrder[i]?.RejectEstimate();
                 await _serviceOrderHandler.UpdateServiceOrderAsync(new UpdateServiceOrderCommand { ServiceOrderId = allserviceOrder!.ToList()[i]!.Id });
             }
 
             for (int i = 6; i < 8; i++)
             {
-                allserviceOrder[i]?.AddEstimate("placa","3 meses", 200m, 300m, Domain.Enums.ERepairResult.Repair);
+                allserviceOrder[i]?.AddEstimate("placa","3 meses", 200m, 300m, Domain.Enums.ERepairResult.Repair, "");
                 allserviceOrder[i]?.ApproveEstimate();
                 allserviceOrder[i]?.ExecuteRepair();
                 await _serviceOrderHandler.UpdateServiceOrderAsync(new UpdateServiceOrderCommand { ServiceOrderId = allserviceOrder!.ToList()[i]!.Id });
@@ -168,7 +168,7 @@ public class ServiceOrderHandlerTests
 
             for (int i = 8; i < 10; i++)
             {
-                allserviceOrder[i]?.AddEstimate("placa","3 meses", 200m, 300m, Domain.Enums.ERepairResult.Repair);
+                allserviceOrder[i]?.AddEstimate("placa","3 meses", 200m, 300m, Domain.Enums.ERepairResult.Repair, "");
                 allserviceOrder[i]?.ApproveEstimate();
                 allserviceOrder[i]?.ExecuteRepair();
                 allserviceOrder[i]?.AddDelivery();

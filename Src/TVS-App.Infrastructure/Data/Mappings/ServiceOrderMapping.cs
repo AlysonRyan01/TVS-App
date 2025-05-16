@@ -106,5 +106,9 @@ public class ServiceOrderMapping : IEntityTypeConfiguration<ServiceOrder>
                 .HasColumnName("LaborCost")
                 .HasPrecision(18, 2);
         });
+
+        builder.Property(x => x.EstimateMessage)
+            .HasColumnName("EstimateMessage")
+            .IsRequired(false);
     }
 }

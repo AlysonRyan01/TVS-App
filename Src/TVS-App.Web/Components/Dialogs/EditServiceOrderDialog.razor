@@ -103,6 +103,12 @@
                     }
                 </MudSelect>
 
+                <MudTextField Label="Acessórios"
+                              @bind-Value="_command.Accessories"
+                              Variant="Variant.Outlined"
+                              Class="w-full"
+                              Immediate="true" />
+
                 <div class="col-span-2">
                     <p class="text-sm text-gray-500 font-medium">PRATELEIRA</p>
                     <div class="flex items-center gap-2">
@@ -170,6 +176,12 @@
                                @bind-Date="_command.DeliveryDate"
                                Variant="Variant.Outlined"
                                Class="w-full" />
+
+                <MudTextField Label="Mensagem do orçamento"
+                              @bind-Value="_command.EstimateMessage"
+                              Variant="Variant.Outlined"
+                              Class="w-full"
+                              Lines="3"/>
             </div>
 
             <div class="flex justify-end pt-4 gap-3">
@@ -223,7 +235,7 @@
                 RepairStatus = ServiceOrder.RepairStatus,
                 RepairResult = ServiceOrder.RepairResult ?? new ERepairResult(),
                 PartCost = ServiceOrder.PartCost.ServiceOrderPartCost,
-                
+                EstimateMessage = ServiceOrder.EstimateMessage
             };
         }
         catch (Exception e)
@@ -244,6 +256,26 @@
         ServiceOrder.EditRepairResult(_command.RepairResult);
         ServiceOrder.EditRepairStatus(_command.RepairStatus);
         ServiceOrder.EditServiceOrderStatus(_command.ServiceOrderStatus);
+        ServiceOrder.EditDeliveryDate(_command.DeliveryDate);
+        ServiceOrder.EditEstimateMessage(_command.EstimateMessage ?? "");
+        
+        if (_command.RepairStatus == ERepairStatus.Waiting)
+            ServiceOrder.AddEstimate(_command.Solution ?? "", _command.Guarantee, _command.PartCost, _command.LaborCost, _command.RepairResult, _command.EstimateMessage ?? "");
+        
+        if (_command.RepairStatus == ERepairStatus.Approved)
+            ServiceOrder.ApproveEstimate();
+        
+        if (_command.RepairStatus == ERepairStatus.Disapproved)
+            ServiceOrder.RejectEstimate();
+        
+        if (_command.ServiceOrderStatus == EServiceOrderStatus.OrderPart)
+            ServiceOrder.AddPurchasedPart();
+        
+        if (_command.ServiceOrderStatus == EServiceOrderStatus.Repaired)
+            ServiceOrder.ExecuteRepair();
+        
+        if (_command.ServiceOrderStatus == EServiceOrderStatus.Delivered)
+            ServiceOrder.AddDelivery();
         
         var result = await ServiceOrderHandler.EditServiceOrderAsync(ServiceOrder);
         if (result.IsSuccess)

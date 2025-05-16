@@ -229,7 +229,7 @@ public class FakeServiceOrderRepository : IServiceOrderRepository
         var serviceOrders = _serviceOrders.Where(x => x != null && x.Id >= 2 && x.Id <= 4).ToList();
 
         foreach (var serviceOrder in serviceOrders)
-            serviceOrder?.AddEstimate("placa", "3 meses", 200m, 300m, ERepairResult.Repair);
+            serviceOrder?.AddEstimate("placa", "3 meses", 200m, 300m, ERepairResult.Repair, "");
 
         return Task.CompletedTask;
     }

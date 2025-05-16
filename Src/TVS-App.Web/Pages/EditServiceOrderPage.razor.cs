@@ -1,19 +1,26 @@
+using System.Globalization;
+using System.Text;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 using TVS_App.Application.Commands.ServiceOrderCommands;
 using TVS_App.Domain.Entities;
 using TVS_App.Web.Components.Dialogs;
 using TVS_App.Web.Handlers;
+using TVS_App.Web.Components.Dialogs;
 
 namespace TVS_App.Web.Pages;
 
 public partial class EditServiceOrderPage : ComponentBase
 {
+    [Inject] public CustomerHandler CustomerHandler { get; set; } = null!;
+    public Customer SelectedCustomer { get; set; } = new();
     private string _serviceOrderId = string.Empty;
+    private GetServiceOrderByIdCommand _printCommand = new();
     
     [Inject] public ISnackbar Snackbar { get; set; } = null!;
     [Inject] public IDialogService DialogService { get; set; } = null!;
     [Inject] public ServiceOrderHandler ServiceOrderHandler { get; set; } = null!;
+    
 
     public async Task OpenEditServiceOrderDialog()
     {
@@ -60,4 +67,67 @@ public partial class EditServiceOrderPage : ComponentBase
         await DialogService.ShowAsync<EditServiceOrderDialog>("Editar ordem de serviço", parameters, options);
     }
     
+    private async Task<IEnumerable<Customer>> SearchCustomers(string? searchTerm, CancellationToken cancellationToken)
+    {
+        if (string.IsNullOrWhiteSpace(searchTerm) || searchTerm.Length < 3)
+            return Enumerable.Empty<Customer>();
+
+        try
+        {
+            var result = await CustomerHandler.GetCustomerByNameAsync(searchTerm);
+
+            if (!result.IsSuccess || result.Data == null)
+            {
+                Snackbar.Add(result.Message ?? "Erro ao buscar clientes", Severity.Error);
+                return Enumerable.Empty<Customer>();
+            }
+
+            var normalizedTerm = Normalize(searchTerm);
+
+            return result.Data
+                .Where(c => Normalize(c.Name.CustomerName).Contains(normalizedTerm))
+                .Take(20);
+        }
+        catch (Exception e)
+        {
+            Snackbar.Add($"Erro: {e.Message}", Severity.Error);
+            return Enumerable.Empty<Customer>();
+        }
+    }
+    
+    public async Task OnCustomerSelected()
+    {
+        if (SelectedCustomer.Id == 0)
+        {
+            Snackbar.Add("Nenhum cliente foi selecionado", Severity.Error);
+            return;
+        }
+        
+        await OpenConfirmCustomerDialog(SelectedCustomer.Id);
+    }
+    
+    private static string Normalize(string text)
+    {
+        return string.Concat(text.Normalize(NormalizationForm.FormD)
+                .Where(c => CharUnicodeInfo.GetUnicodeCategory(c) != UnicodeCategory.NonSpacingMark))
+            .ToLowerInvariant();
+    }
+    
+    private async Task OpenConfirmCustomerDialog(long customerId)
+    {
+        var parameters = new DialogParameters
+        {
+            ["CustomerId"] = customerId
+        };
+
+        var options = new DialogOptions
+        {
+            CloseButton = true,
+            FullWidth = true,
+            MaxWidth = MaxWidth.Medium
+        };
+
+        var dialog = await DialogService.ShowAsync<ConfirmCustomerDialog>("Confirmar cliente", parameters, options);
+        var result = await dialog.Result;
+    }
 }

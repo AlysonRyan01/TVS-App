@@ -88,7 +88,7 @@ public class AccessToSqlMigrator
         {
             var order = new ServiceOrder(EEnterprise.Particular, 1, new Product("NÃO TEM", "NÃO TEM", "NÃO TEM", "NÃO TEM", "NÃO TEM", EProduct.Tv));
             order.EntryDate = new DateTime(2009, 1, 1);
-            order.AddEstimate("NAO TEM", "NAO TEM", 0M, 0M, ERepairResult.NoDefectFound);
+            order.AddEstimate("NAO TEM", "NAO TEM", 0M, 0M, ERepairResult.NoDefectFound, "");
             order.InspectionDate = new DateTime(2009, 1, 1);
             order.AddDelivery();
             order.DeliveryDate = new DateTime(2009, 1, 1);
@@ -172,7 +172,7 @@ public class AccessToSqlMigrator
                         ? ERepairResult.Repair
                         : unrepaired ? ERepairResult.Unrepaired : ERepairResult.Unrepaired;
 
-                    serviceOrder.AddEstimate(solution, "3 MESES", partCost, laborCost, repairResult);
+                    serviceOrder.AddEstimate(solution, "3 MESES", partCost, laborCost, repairResult, "");
                     serviceOrder.InspectionDate = Convert.ToDateTime(reader["inspectionDate"]);
                 }
 
@@ -183,7 +183,7 @@ public class AccessToSqlMigrator
                 if (status == EServiceOrderStatus.Repaired || repairDate.HasValue)
                 {
                     if (serviceOrder.Solution == null || string.IsNullOrEmpty(serviceOrder.Solution.ServiceOrderSolution))
-                        serviceOrder.AddEstimate("Não tem", "3 MESES", serviceOrder.PartCost.ServiceOrderPartCost, serviceOrder.LaborCost.ServiceOrderLaborCost, serviceOrder.RepairResult ?? ERepairResult.Repair);
+                        serviceOrder.AddEstimate("Não tem", "3 MESES", serviceOrder.PartCost.ServiceOrderPartCost, serviceOrder.LaborCost.ServiceOrderLaborCost, serviceOrder.RepairResult ?? ERepairResult.Repair, "");
                     serviceOrder.ApproveEstimate();
                     serviceOrder.ResponseDate = serviceOrder.EntryDate;
                     serviceOrder.AddPurchasedPart();

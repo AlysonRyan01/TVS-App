@@ -25,6 +25,8 @@ public class EditServiceOrderCommand : ICommand
     
     public string? Guarantee { get; set; }
     
+    public string? EstimateMessage { get; set; }
+    
     public decimal PartCost { get; set; }
     
     public decimal LaborCost { get; set; }
