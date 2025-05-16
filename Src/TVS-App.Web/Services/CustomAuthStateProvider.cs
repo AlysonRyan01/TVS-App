@@ -1,3 +1,4 @@
+using System.IdentityModel.Tokens.Jwt;
 using System.Net;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
@@ -19,24 +20,32 @@ public class CustomAuthStateProvider : AuthenticationStateProvider
     {
         _httpClient = httpClientFactory.CreateClient("api");
         _localStorage = localStorageService;
-        
+
         var token = _localStorage.GetItem<string>("jwtToken");
-        if (!string.IsNullOrEmpty(token))
+        if (!string.IsNullOrEmpty(token) && !IsTokenExpired(token))
+        {
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        }
     }
-    
+
     public override async Task<AuthenticationState> GetAuthenticationStateAsync()
     {
         var token = _localStorage.GetItem<string>("jwtToken");
+        
+        var anonymous = new ClaimsPrincipal(new ClaimsIdentity());
 
-        var user = new ClaimsPrincipal(new ClaimsIdentity());
-
-        if (!string.IsNullOrEmpty(token))
+        if (string.IsNullOrEmpty(token) || IsTokenExpired(token))
         {
-            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            
-            user = new ClaimsPrincipal(new ClaimsIdentity(new[] { new Claim("token", token) }, "Bearer"));
+            _localStorage.RemoveItem("jwtToken");
+            _httpClient.DefaultRequestHeaders.Authorization = null;
+            return new AuthenticationState(anonymous);
         }
+        
+        var handler = new JwtSecurityTokenHandler();
+        var jwtToken = handler.ReadJwtToken(token);
+
+        var identity = new ClaimsIdentity(jwtToken.Claims, "jwt");
+        var user = new ClaimsPrincipal(identity);
 
         return new AuthenticationState(user);
     }
@@ -53,18 +62,16 @@ public class CustomAuthStateProvider : AuthenticationStateProvider
                 var errorMessage = errorResponse?.Message ?? "Falha no login";
                 return new BaseResponse<string>(errorMessage, (int)response.StatusCode, errorMessage);
             }
-            
+
             var baseResponse = await response.Content.ReadFromJsonAsync<BaseResponse<string>>();
-            
-            if (baseResponse == null)
+            if (baseResponse == null || string.IsNullOrWhiteSpace(baseResponse.Data))
                 return new BaseResponse<string>("Token inválido", 500, "Resposta de login inválida");
 
-            var jwtToken = baseResponse.Data ?? "";
+            var jwtToken = baseResponse.Data;
             
             _localStorage.SetItem("jwtToken", jwtToken);
-            
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", jwtToken);
-            
+
             NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
 
             return new BaseResponse<string>("Login realizado", 200, "Autenticação bem-sucedida");
@@ -92,6 +99,20 @@ public class CustomAuthStateProvider : AuthenticationStateProvider
         catch (Exception ex)
         {
             return new BaseResponse<string>("Falha no login", 500, $"Erro durante o login: {ex.Message}");
+        }
+    }
+
+    private static bool IsTokenExpired(string token)
+    {
+        try
+        {
+            var handler = new JwtSecurityTokenHandler();
+            var jwt = handler.ReadJwtToken(token);
+            return jwt.ValidTo < DateTime.UtcNow;
+        }
+        catch
+        {
+            return true;
         }
     }
 }

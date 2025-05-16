@@ -3,6 +3,7 @@ using QuestPDF.Fluent;
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
 using TVS_App.Domain.Entities;
+using TVS_App.Infrastructure.Extensions;
 
 namespace TVS_App.Infrastructure.Services.QuestPDFs;
 
@@ -85,7 +86,7 @@ public class RegenerateDocument : QuestPdf
                                     .ExtraBold()
                                     .FontColor(Colors.Red.Darken2);
 
-                                col.Item().Text($"EMPRESA:  {_serviceOrder.Enterprise.ToString().ToUpper() ?? ""}")
+                                col.Item().Text($"EMPRESA:  {_serviceOrder.Enterprise.GetDisplayName() ?? ""}")
                                     .FontSize(10)
                                     .ExtraBold()
                                     .FontColor(Colors.Red.Darken2);
@@ -120,7 +121,7 @@ public class RegenerateDocument : QuestPdf
                                     .ExtraBold()
                                     .FontColor(Colors.Red.Darken2);
 
-                                col.Item().Text($"Aparelho:  {_serviceOrder.Product?.Type.ToString().ToUpper() ?? ""}")
+                                col.Item().Text($"Aparelho:  {_serviceOrder.Product?.Type.GetDisplayName() ?? ""}")
                                     .FontSize(10)
                                     .SemiBold();
 
@@ -219,7 +220,7 @@ public class RegenerateDocument : QuestPdf
                                     .ExtraBold()
                                     .FontColor(Colors.Red.Darken2);
 
-                                col.Item().Text($"EMPRESA:  {_serviceOrder.Enterprise.ToString().ToUpper() ?? ""}")
+                                col.Item().Text($"EMPRESA:  {_serviceOrder.Enterprise.GetDisplayName() ?? ""}")
                                     .FontSize(10)
                                     .ExtraBold()
                                     .FontColor(Colors.Red.Darken2);
@@ -255,7 +256,7 @@ public class RegenerateDocument : QuestPdf
                                     .ExtraBold()
                                     .FontColor(Colors.Red.Darken2);
 
-                                col.Item().Text($"Aparelho:  {_serviceOrder.Product?.Type.ToString().ToUpper() ?? ""}")
+                                col.Item().Text($"Aparelho:  {_serviceOrder.Product?.Type.GetDisplayName() ?? ""}")
                                     .FontSize(10)
                                     .SemiBold();
 

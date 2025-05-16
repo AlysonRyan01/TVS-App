@@ -2,9 +2,11 @@ using System.Globalization;
 using System.Text;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
+using TVS_App.Application.Commands;
 using TVS_App.Application.Commands.ServiceOrderCommands;
 using TVS_App.Domain.Entities;
 using TVS_App.Domain.Enums;
+using TVS_App.Web.Components.Dialogs;
 using TVS_App.Web.Handlers;
 
 namespace TVS_App.Web.Pages;
@@ -12,21 +14,40 @@ namespace TVS_App.Web.Pages;
 public partial class SearchPage : ComponentBase
 {
     public List<ServiceOrder> FilteredServiceOrders { get; set; } = new();
-    private int _filteredServiceOrderCount => FilteredServiceOrders.Count;
-    private Customer _customerFilter;
-    private string _numberFilter;
-    private string _serialNumberFilter;
-    private string _modelFilter;
-    private EEnterprise _enterpriseFilter;
+    private Customer _customerFilter = new ();
+    private string _numberFilter = String.Empty;
+    private string _serialNumberFilter = String.Empty;
+    private string _modelFilter = String.Empty;
+    private EEnterprise _enterpriseFilter = EEnterprise.Particular;
     private DateTime? _startDateFilter;
     private DateTime? _endDateFilter;
-    private bool _isLoading = false;
+    private bool _isLoading;
     
     [Inject] public CustomerHandler CustomerHandler { get; set; } = null!;
     [Inject] public ServiceOrderHandler ServiceOrderHandler { get; set; } = null!;
     [Inject] public ISnackbar Snackbar { get; set; } = null!;
     [Inject] public IDialogService DialogService { get; set; } = null!;
-    
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            var allOrdersResult =
+                await ServiceOrderHandler.GetAllServiceOrdersAsync(new PaginationCommand { PageNumber = 1, PageSize = 300 });
+            if (allOrdersResult.IsSuccess && allOrdersResult.Data?.Items?.Any() == true)
+            {
+                FilteredServiceOrders = allOrdersResult.Data.Items
+                    .Where(x => x is not null)
+                    .Select(x => x!)
+                    .ToList();
+            }
+        }
+        catch (Exception e)
+        {
+            Snackbar.Add($"Erro: {e.Message}", Severity.Error);
+        }
+    }
+
     private async Task<IEnumerable<Customer>> SearchCustomers(string? searchTerm, CancellationToken cancellationToken)
     {
         if (string.IsNullOrWhiteSpace(searchTerm) || searchTerm.Length < 3)
@@ -202,38 +223,6 @@ public partial class SearchPage : ComponentBase
         }
     }
     
-    public async Task SearchByEnterpriseAsync()
-    {
-        try
-        {
-            FilteredServiceOrders = new();
-            
-            if (!Enum.IsDefined(_enterpriseFilter))
-            {
-                Snackbar.Add("Voce precisa selecionar a empresa", Severity.Error);
-                return;
-            }
-               
-            var searchResult = await ServiceOrderHandler.
-                GetServiceOrdersByEnterprise(_enterpriseFilter);
-
-            if (searchResult.IsSuccess)
-            {
-                FilteredServiceOrders = searchResult.Data!;
-                StateHasChanged();
-                Snackbar.Add(searchResult.Message ?? "Ordens de serviço filtradas com sucesso!", Severity.Success);
-            }
-            else
-            {
-                Snackbar.Add($"Erro: {searchResult.Message}", Severity.Error);
-            }
-        }
-        catch (Exception e)
-        {
-            Snackbar.Add($"Erro: {e.Message}", Severity.Error);
-        }
-    }
-    
     public async Task SearchByDateAsync()
     {
         try
@@ -270,6 +259,23 @@ public partial class SearchPage : ComponentBase
         {
             Snackbar.Add($"Erro: {e.Message}", Severity.Error);
         }
+    }
+
+    public async Task OnSelectOrder(ServiceOrder order)
+    {
+        var parameters = new DialogParameters
+        {
+            ["ServiceOrder"] = order
+        };
+
+        var options = new DialogOptions
+        {
+            CloseButton = true,
+            FullWidth = true,
+            MaxWidth = MaxWidth.Large
+        };
+
+        await DialogService.ShowAsync<InspectServiceOrderDialog>("Inspecionar ordem de serviço", parameters, options);
     }
     
     private static string Normalize(string text)

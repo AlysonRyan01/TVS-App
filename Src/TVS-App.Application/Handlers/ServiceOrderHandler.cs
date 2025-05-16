@@ -99,6 +99,25 @@ public class ServiceOrderHandler
             return new BaseResponse<ServiceOrder?>(null, 500, $"Ocorreu um erro: {ex.Message}");
         }
     }
+    
+    public async Task<BaseResponse<ServiceOrder?>> EditServiceOrderAsync(ServiceOrder serviceOrder)
+    {
+        try
+        {
+            if (serviceOrder.Id == 0)
+                return new BaseResponse<ServiceOrder?>(null, 401, "O ID da ordem de serviço não pode ser 0");
+            
+            return await _serviceOrderRepository.UpdateAsync(serviceOrder);
+        }
+        catch (CommandException<UpdateServiceOrderCommand> ex)
+        {
+            return new BaseResponse<ServiceOrder?>(null, 400, $"Erro de validação: {ex.Message}");
+        }
+        catch (Exception ex)
+        {
+            return new BaseResponse<ServiceOrder?>(null, 500, $"Ocorreu um erro: {ex.Message}");
+        }
+    }
 
     public async Task<BaseResponse<ServiceOrder?>> AddProductLocation(AddProductLocationCommand command)
     {

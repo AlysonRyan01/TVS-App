@@ -152,4 +152,64 @@ public class ServiceOrder : Entity
 
         return $"{letter1}{digit1}{letter2}{digit2}".ToUpper();
     }
+
+    public void EditCustomer(Customer customer)
+    {
+        if (customer.Id == 0 || string.IsNullOrEmpty(customer.Name.CustomerName))
+            throw new EntityException<ServiceOrder>("O campo ID e nome do cliente estão vazios");
+        
+        Customer = customer;
+    }
+
+    public void EditProduct(Product product)
+    {
+        Product.UpdateProduct(
+            product.Brand, product.Model, product.SerialNumber, product.Defect ?? "",
+            product.Accessories ?? "", product.Type);
+    }
+
+    public void EditEnterprise(EEnterprise enterprise)
+    {
+        Enterprise = enterprise;
+    }
+    
+    public void EditEnterprise(DateTime deliveryDate)
+    {
+        DeliveryDate = deliveryDate;
+    }
+
+    public void EditSolution(Solution solution)
+    {
+        Solution = solution;
+    }
+
+    public void EditGuarantee(Guarantee guarantee)
+    {
+        Guarantee = guarantee;
+    }
+
+    public void EditPartCost(PartCost partCost)
+    {
+        PartCost = partCost;
+    }
+
+    public void EditLaborCost(LaborCost laborCost)
+    {
+        LaborCost = laborCost;
+    }
+
+    public void EditServiceOrderStatus(EServiceOrderStatus serviceOrderStatus)
+    {
+        ServiceOrderStatus = serviceOrderStatus;
+    }
+
+    public void EditRepairStatus(ERepairStatus repairStatus)
+    {
+        RepairStatus = repairStatus;
+    }
+
+    public void EditRepairResult(ERepairResult repairResult)
+    {
+        RepairResult = repairResult;
+    }
 }

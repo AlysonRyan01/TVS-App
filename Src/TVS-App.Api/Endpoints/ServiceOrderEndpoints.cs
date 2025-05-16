@@ -36,13 +36,11 @@ public static class ServiceOrderEndpoints
             }
         }).WithTags("ServiceOrder").RequireAuthorization();
 
-        app.MapPut("/update-service-order-by-id", async (ServiceOrderHandler handler, UpdateServiceOrderCommand command, IHubContext<ServiceOrderHub> hubContext) =>
+        app.MapPut("/edit-service-order", async ([FromServices]ServiceOrderHandler handler, [FromBody]ServiceOrder serviceOrder, [FromServices]IHubContext<ServiceOrderHub> hubContext) =>
         {
             try
             {
-                command.Validate();
-
-                var createOrderResult = await handler.UpdateServiceOrderAsync(command);
+                var createOrderResult = await handler.EditServiceOrderAsync(serviceOrder);
                 if (!createOrderResult.IsSuccess)
                     return Results.Ok(createOrderResult);
 

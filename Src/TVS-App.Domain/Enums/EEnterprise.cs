@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace TVS_App.Domain.Enums;
 
 public enum EEnterprise
@@ -17,6 +19,7 @@ public enum EEnterprise
     GarantiaAssurant = 13,
     Romera = 14,
     Sis = 15,
+    [Display(Name = "Philco/Britania")]
     PhilcoBritania = 16,
     Cardif = 17,
     MapFre = 18,

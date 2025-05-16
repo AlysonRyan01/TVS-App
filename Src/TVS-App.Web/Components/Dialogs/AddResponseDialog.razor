@@ -5,40 +5,59 @@
 
 <MudDialog>
     <TitleContent>
-        <h2 class="font-extrabold text-lg lg:text-2xl font-sans text-[#750303]">ADICIONAR RESPOSTA OS: @ServiceOrder.Id</h2>
+        <h2 class="font-extrabold text-xl lg:text-3xl font-sans text-[#750303] text-center">ADICIONAR RESPOSTA - OS @ServiceOrder.Id</h2>
     </TitleContent>
+
     <DialogContent>
-        <div class="flex flex-col w-full gap-3 border-t border-b border-[#dfdfdf] my-4">
-            <h2 class="font-bold text-lg font-sans text-[#750303] mt-3 mb-3 uppercase">EMPRESA: @ServiceOrder.Enterprise</h2>
-        </div>
-        <div class="flex flex-col w-full gap-3 border-b border-[#dfdfdf] my-4">
-            <h2 class="font-bold uppercase text-lg font-sans text-[#750303] mt-3">DADOS DO CLIENTE</h2>
-            <p class="font-normal uppercase font-sans"><span class="font-bold font-sans text-[#750303]">NOME:</span> @ServiceOrder.Customer.Name.CustomerName</p>
-            <p class="font-normal uppercase font-sans"><span class="font-bold font-sans text-[#750303]">ENDEREÇO:</span> @ServiceOrder.Customer.Address.ToString().ToUpper()</p>
-            <p class="font-normal uppercase font-sans mb-3"><span class="font-bold font-sans text-[#750303]">TELEFONE 1:</span> @ServiceOrder.Customer.Phone.CustomerPhone</p>
-            <p class="font-normal uppercase font-sans mb-3"><span class="font-bold font-sans text-[#750303]">TELEFONE 2:</span> @ServiceOrder.Customer.Phone2.CustomerPhone</p>
-        </div>
-        <div class="flex flex-col w-full gap-3 border-b border-[#dfdfdf] my-4">
-            <h2 class="font-bold text-lg font-sans text-[#750303] mt-3">DADOS DO PRODUTO</h2>
-            <p class="font-normal uppercase font-sans"><span class="font-bold font-sans text-[#750303]">TIPO:</span> @ServiceOrder.Product.Type</p>
-            <p class="font-normal uppercase font-sans"><span class="font-bold font-sans text-[#750303]">MARCA:</span> @ServiceOrder.Product.Brand</p>
-            <p class="font-normal uppercase font-sans"><span class="font-bold font-sans text-[#750303]">MODELO:</span> @ServiceOrder.Product.Model</p>
-            <p class="font-normal uppercase font-sans"><span class="font-bold font-sans text-[#750303]">SÉRIE:</span> @ServiceOrder.Product.SerialNumber</p>
-            <p class="font-normal uppercase font-sans"><span class="font-bold font-sans text-[#750303]">DEFEITO:</span> @ServiceOrder.Product.Defect</p>
-            <p class="font-normal uppercase font-sans"><span class="font-bold font-sans text-[#750303]">DATA DE ENTRADA:</span> @ServiceOrder.EntryDate.ToString("dd/MM/yyyy")</p>
-            <p class="font-normal uppercase font-sans mt-3"><span class="font-bold font-sans text-[#750303]">PRATELEIRA:</span> @ServiceOrder.Product.Location</p>
-            <LocationButton ServiceOrder="ServiceOrder" OnLocationChanged="AtualizarPrateleira"></LocationButton>
-        </div>
-        <div class="flex flex-col w-full gap-3 border-b border-[#dfdfdf] my-4">
-            <h2 class="font-bold uppercase text-lg font-sans text-[#750303] mt-3">INFORMAÇÕES SOBRE O ORÇAMENTO</h2>
-            <p class="font-normal uppercase font-sans"><span class="font-bold font-sans text-[#750303]">SOLUÇÃO:</span> @ServiceOrder.Solution?.ServiceOrderSolution</p>
-            <p class="font-normal uppercase font-sans"><span class="font-bold font-sans text-[#750303]">VALOR:</span> @ServiceOrder.TotalAmount</p>
-            <p class="font-normal uppercase font-sans mb-3"><span class="font-bold font-sans text-[#750303]">ORÇAMENTO FEITO EM:</span> @ServiceOrder.InspectionDate?.ToString("dd/MM/yyyy")</p>
-            <p class="font-normal uppercase font-sans"><span class="font-bold font-sans text-[#750303]">SITUAÇÃO:</span> @Situacao</p>
-            <p class="font-normal uppercase font-sans"><span class="font-bold font-sans text-[#750303]">TEM CONSERTO?</span> @TemConserto</p>
-            <p class="font-normal uppercase font-sans"><span class="font-bold font-sans text-[#750303]">RESPOSTA DO CLIENTE:</span> @Resposta</p>
-        </div>
-        <div class="flex flex-row w-full gap-3 mb-[50px]">
+        <!-- EMPRESA -->
+        <section class="border-b border-[#dfdfdf] py-4">
+            <h2 class="text-[#750303] text-lg font-bold uppercase mb-2">Empresa</h2>
+            <p class="text-base font-semibold">@ServiceOrder.Enterprise</p>
+        </section>
+
+        <!-- DADOS DO CLIENTE -->
+        <section class="border-b border-[#dfdfdf] py-4">
+            <h2 class="text-[#750303] text-lg font-bold uppercase mb-4">Dados do Cliente</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <p><span class="font-bold text-[#750303]">Nome:</span> @ServiceOrder.Customer.Name.CustomerName</p>
+                <p><span class="font-bold text-[#750303]">Telefone 1:</span> @ServiceOrder.Customer.Phone.CustomerPhone</p>
+                <p><span class="font-bold text-[#750303]">Endereço:</span> @ServiceOrder.Customer.Address.ToString().ToUpper()</p>
+                <p><span class="font-bold text-[#750303]">Telefone 2:</span> @ServiceOrder.Customer.Phone2.CustomerPhone</p>
+            </div>
+        </section>
+
+        <!-- DADOS DO PRODUTO -->
+        <section class="border-b border-[#dfdfdf] py-4">
+            <h2 class="text-[#750303] text-lg font-bold uppercase mb-4">Dados do Produto</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <p><span class="font-bold text-[#750303]">Tipo:</span> @ServiceOrder.Product.Type</p>
+                <p><span class="font-bold text-[#750303]">Marca:</span> @ServiceOrder.Product.Brand</p>
+                <p><span class="font-bold text-[#750303]">Modelo:</span> @ServiceOrder.Product.Model</p>
+                <p><span class="font-bold text-[#750303]">Série:</span> @ServiceOrder.Product.SerialNumber</p>
+                <p><span class="font-bold text-[#750303]">Defeito:</span> @ServiceOrder.Product.Defect</p>
+                <p><span class="font-bold text-[#750303]">Data de Entrada:</span> @ServiceOrder.EntryDate.ToString("dd/MM/yyyy")</p>
+                <p><span class="font-bold text-[#750303]">Prateleira:</span> @ServiceOrder.Product.Location</p>
+            </div>
+            <div class="mt-3">
+                <LocationButton ServiceOrder="ServiceOrder" OnLocationChanged="AtualizarPrateleira" />
+            </div>
+        </section>
+
+        <!-- INFORMAÇÕES DO ORÇAMENTO -->
+        <section class="border-b border-[#dfdfdf] py-4">
+            <h2 class="text-[#750303] text-lg font-bold uppercase mb-4">Informações do Orçamento</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <p><span class="font-bold text-[#750303]">Solução:</span> @ServiceOrder.Solution?.ServiceOrderSolution</p>
+                <p><span class="font-bold text-[#750303]">Valor:</span> @ServiceOrder.TotalAmount</p>
+                <p><span class="font-bold text-[#750303]">Orçamento feito em:</span> @ServiceOrder.InspectionDate?.ToString("dd/MM/yyyy")</p>
+                <p><span class="font-bold text-[#750303]">Situação:</span> @Situacao</p>
+                <p><span class="font-bold text-[#750303]">Tem conserto?</span> @TemConserto</p>
+                <p><span class="font-bold text-[#750303]">Resposta do Cliente:</span> @Resposta</p>
+            </div>
+        </section>
+
+        <!-- BOTÕES -->
+        <section class="py-6 flex justify-end gap-4">
             @if (_isProcessing)
             {
                 <MudProgressCircular Color="Color.Primary" Size="Size.Medium" Indeterminate="true" />
@@ -48,19 +67,20 @@
                 <MudButton @onclick="Aprovado"
                            Disabled="_isProcessing"
                            Variant="Variant.Filled"
-                           Color="Color.Info"
-                           Class="text-white text-lg font-semibold py-2 px-5 rounded-lg transition">
+                           Color="Color.Success"
+                           Class="text-white text-lg font-semibold px-6 py-2 rounded-lg shadow-md transition">
                     Aprovado
                 </MudButton>
+
                 <MudButton @onclick="Reprovado"
                            Disabled="_isProcessing"
                            Variant="Variant.Filled"
-                           Color="Color.Primary"
-                           Class="text-white text-lg font-semibold py-2 px-5 rounded-lg transition">
+                           Color="Color.Error"
+                           Class="text-white text-lg font-semibold px-6 py-2 rounded-lg shadow-md transition">
                     Reprovado
                 </MudButton>
             }
-        </div>
+        </section>
     </DialogContent>
 </MudDialog>
 

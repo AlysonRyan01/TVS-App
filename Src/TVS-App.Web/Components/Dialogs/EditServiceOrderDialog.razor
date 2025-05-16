@@ -1,0 +1,312 @@
+@using System.Globalization
+@using System.Text
+@using TVS_App.Application.Commands.ServiceOrderCommands
+@using TVS_App.Domain.Entities
+@using TVS_App.Domain.Enums
+@using TVS_App.Domain.ValueObjects.ServiceOrder
+@using TVS_App.Web.Extensions
+@using TVS_App.Web.Handlers
+
+<MudDialog>
+    <TitleContent>
+        <div class="bg-red-700 p-4 rounded-t-lg">
+            <h2 class="font-bold text-xl lg:text-2xl text-titlecolor tracking-tight">
+                EDITAR ORDEM DE SERVIÇO: @ServiceOrder.Id
+            </h2>
+        </div>
+    </TitleContent>
+
+    <DialogContent>
+        <!-- Seção Empresa -->
+        <div class="px-6 pt-4 pb-2 border-b border-gray-200">
+            <MudSelect T="EEnterprise"
+                       Label="Empresa"
+                       @bind-Value="_command.Enterprise"
+                       Variant="Variant.Outlined"
+                       Class="w-full">
+                @foreach (var enterprise in Enum.GetValues(typeof(EEnterprise)).Cast<EEnterprise>())
+                {
+                    <MudSelectItem Value="@enterprise">@enterprise.GetDisplayName()</MudSelectItem>
+                }
+            </MudSelect>
+        </div>
+
+        <!-- Seção Cliente -->
+        <div class="px-6 py-4 border-b border-gray-200 bg-gray-50">
+            <h3 class="font-bold text-lg text-red-700 mb-3">CLIENTE</h3>
+
+            <MudAutocomplete T="Customer"
+                             @bind-Value="_command.Customer"
+                             SearchFunc="SearchCustomers"
+                             ToStringFunc="@(c => c?.Name?.CustomerName ?? "")"
+                             MinCharacters="2"
+                             ResetValueOnEmptyText="true"
+                             Clearable="true"
+                             Variant="Variant.Outlined"
+                             Class="max-w-[300px]"
+                             Placeholder="Digite o nome do cliente" />
+            
+        </div>
+
+        <!-- Seção Produto -->
+        <div class="px-6 py-4 border-b border-gray-200">
+            <h3 class="font-bold text-lg text-red-700 mb-3">DADOS DO PRODUTO</h3>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <MudSelect T="EProduct"
+                           Label="Tipo"
+                           @bind-Value="_command.Type"
+                           Variant="Variant.Outlined"
+                           Class="w-full">
+                    @foreach (var type in Enum.GetValues(typeof(EProduct)).Cast<EProduct>())
+                    {
+                        <MudSelectItem Value="@type">@type.GetDisplayName()</MudSelectItem>
+                    }
+                </MudSelect>
+
+                <MudTextField Label="Marca"
+                              @bind-Value="_command.Brand"
+                              Variant="Variant.Outlined"
+                              Class="w-full"
+                              Immediate="true" />
+
+                <MudTextField Label="Modelo"
+                              @bind-Value="_command.Model"
+                              Variant="Variant.Outlined"
+                              Class="w-full"
+                              Immediate="true" />
+
+                <MudTextField Label="Série"
+                              @bind-Value="_command.SerialNumber"
+                              Variant="Variant.Outlined"
+                              Class="w-full"
+                              Immediate="true" />
+
+                <div class="col-span-2">
+                    <MudTextField Label="Defeito"
+                                  @bind-Value="_command.Defect"
+                                  Variant="Variant.Outlined"
+                                  Class="w-full"
+                                  Lines="3"
+                                  Multiline="true"
+                                  Immediate="true" />
+                </div>
+
+                <MudSelect T="EServiceOrderStatus"
+                           Label="Status da OS"
+                           @bind-Value="_command.ServiceOrderStatus"
+                           Variant="Variant.Outlined"
+                           Class="w-full">
+                    @foreach (var status in Enum.GetValues(typeof(EServiceOrderStatus)).Cast<EServiceOrderStatus>())
+                    {
+                        <MudSelectItem Value="@status">@status.GetDisplayName()</MudSelectItem>
+                    }
+                </MudSelect>
+
+                <div class="col-span-2">
+                    <p class="text-sm text-gray-500 font-medium">PRATELEIRA</p>
+                    <div class="flex items-center gap-2">
+                        <LocationButton ServiceOrder="ServiceOrder" OnLocationChanged="UpdateLocation"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Seção Orçamento -->
+        <div class="px-6 py-4 bg-gray-50">
+            <h3 class="font-bold text-lg text-red-700 mb-4">DADOS DO ORÇAMENTO</h3>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <MudTextField Label="Solução"
+                              @bind-Value="_command.Solution"
+                              Variant="Variant.Outlined"
+                              Class="w-full"
+                              Lines="3"/>
+
+                <div class="space-y-4">
+                    <MudNumericField Label="Valor da peça"
+                                     @bind-Value="_command.PartCost"
+                                     Variant="Variant.Outlined"
+                                     Class="w-full"
+                                     InputMode="InputMode.text"
+                                     Immediate="true" />
+
+                    <MudNumericField Label="Valor da mão de obra"
+                                     @bind-Value="_command.LaborCost"
+                                     Variant="Variant.Outlined"
+                                     Class="w-full"
+                                     InputMode="InputMode.text"
+                                     Immediate="true" />
+                </div>
+
+                <MudTextField Label="Garantia"
+                              @bind-Value="_command.Guarantee"
+                              Variant="Variant.Outlined"
+                              Class="w-full" />
+
+                <MudSelect T="ERepairResult"
+                           Label="Resultado do Reparo"
+                           @bind-Value="_command.RepairResult"
+                           Variant="Variant.Outlined"
+                           Class="w-full">
+                    @foreach (var result in Enum.GetValues(typeof(ERepairResult)).Cast<ERepairResult>())
+                    {
+                        <MudSelectItem Value="@result">@result.GetDisplayName()</MudSelectItem>
+                    }
+                </MudSelect>
+
+                <MudSelect T="ERepairStatus"
+                           Label="Status do Reparo"
+                           @bind-Value="_command.RepairStatus"
+                           Variant="Variant.Outlined"
+                           Class="w-full">
+                    @foreach (var status in Enum.GetValues(typeof(ERepairStatus)).Cast<ERepairStatus>())
+                    {
+                        <MudSelectItem Value="@status">@status.GetDisplayName()</MudSelectItem>
+                    }
+                </MudSelect>
+
+                <MudDatePicker Label="Data de Entrega"
+                               @bind-Date="_command.DeliveryDate"
+                               Variant="Variant.Outlined"
+                               Class="w-full" />
+            </div>
+
+            <div class="flex justify-end pt-4 gap-3">
+                <MudButton Variant="Variant.Text"
+                           Color="Color.Default"
+                           Class="px-6 py-2"
+                           OnClick="() => MudDialog.Cancel()">
+                    Cancelar
+                </MudButton>
+
+                <MudButton Variant="Variant.Filled"
+                           Color="Color.Primary"
+                           OnClick="EditServiceOrder">
+                    Salvar Alterações
+                </MudButton>
+            </div>
+        </div>
+    </DialogContent>
+</MudDialog>
+
+
+@code {
+    private EditServiceOrderCommand _command;
+    
+    [CascadingParameter] IMudDialogInstance MudDialog { get; set; } = null!;
+    [Parameter] public ServiceOrder ServiceOrder { get; set; } = null!;
+    [Inject] public ServiceOrderHandler ServiceOrderHandler { get; set; } = null!;
+    [Inject] public CustomerHandler CustomerHandler { get; set; } = null!;
+    [Inject] public ISnackbar Snackbar { get; set; } = null!;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            _command = new EditServiceOrderCommand
+            {
+                Customer = ServiceOrder.Customer,
+                Brand = ServiceOrder.Product.Brand,
+                Model = ServiceOrder.Product.Model,
+                SerialNumber = ServiceOrder.Product.SerialNumber,
+                Defect = ServiceOrder.Product.Defect,
+                Accessories = ServiceOrder.Product.Accessories,
+                Type = ServiceOrder.Product.Type,
+                CustomerId = ServiceOrder.CustomerId,
+                DeliveryDate = ServiceOrder.DeliveryDate,
+                Solution = ServiceOrder.Solution?.ServiceOrderSolution ?? "",
+                Enterprise = ServiceOrder.Enterprise,
+                Guarantee = ServiceOrder.Guarantee?.ServiceOrderGuarantee ?? "",
+                LaborCost = ServiceOrder.LaborCost.ServiceOrderLaborCost,
+                ServiceOrderStatus = ServiceOrder.ServiceOrderStatus,
+                RepairStatus = ServiceOrder.RepairStatus,
+                RepairResult = ServiceOrder.RepairResult ?? new ERepairResult(),
+                PartCost = ServiceOrder.PartCost.ServiceOrderPartCost,
+                
+            };
+        }
+        catch (Exception e)
+        {
+            Snackbar.Add(e.Message, Severity.Error);
+        }
+    }
+
+    public async Task EditServiceOrder()
+    {
+        ServiceOrder.EditCustomer(_command.Customer);
+        ServiceOrder.EditEnterprise(_command.Enterprise);
+        ServiceOrder.EditGuarantee(new Guarantee(_command.Guarantee ?? ""));
+        ServiceOrder.EditProduct(new Product(_command.Brand, _command.Model, _command.SerialNumber, _command.Defect, _command.Accessories, _command.Type));
+        ServiceOrder.EditSolution(new Solution(_command.Solution ?? ""));
+        ServiceOrder.EditLaborCost(new LaborCost(_command.LaborCost));
+        ServiceOrder.EditPartCost(new PartCost(_command.PartCost));
+        ServiceOrder.EditRepairResult(_command.RepairResult);
+        ServiceOrder.EditRepairStatus(_command.RepairStatus);
+        ServiceOrder.EditServiceOrderStatus(_command.ServiceOrderStatus);
+        
+        var result = await ServiceOrderHandler.EditServiceOrderAsync(ServiceOrder);
+        if (result.IsSuccess)
+        {
+            Snackbar.Add(result.Message ?? "Ordem de serviço alterada com sucesso!", Severity.Success);
+            MudDialog.Close(DialogResult.Ok(true));
+        }
+        else
+            Snackbar.Add(result.Message ?? "Ocorreu um erro ao tentar alterar a ordem de serviço");
+        
+    }
+    
+    private async Task<IEnumerable<Customer>> SearchCustomers(string? searchTerm, CancellationToken cancellationToken)
+    {
+        if (string.IsNullOrWhiteSpace(searchTerm) || searchTerm.Length < 3)
+            return Enumerable.Empty<Customer>();
+
+        try
+        {
+            var result = await CustomerHandler.GetCustomerByNameAsync(searchTerm);
+
+            if (!result.IsSuccess || result.Data == null)
+            {
+                Snackbar.Add(result.Message ?? "Erro ao buscar clientes", Severity.Error);
+                return Enumerable.Empty<Customer>();
+            }
+
+            var normalizedTerm = Normalize(searchTerm);
+
+            return result.Data
+                .Where(c => Normalize(c.Name.CustomerName).Contains(normalizedTerm))
+                .Take(20);
+        }
+        catch (Exception e)
+        {
+            Snackbar.Add($"Erro: {e.Message}", Severity.Error);
+            return Enumerable.Empty<Customer>();
+        }
+    }
+    
+    private static string Normalize(string text)
+    {
+        return string.Concat(text.Normalize(NormalizationForm.FormD)
+                .Where(c => CharUnicodeInfo.GetUnicodeCategory(c) != UnicodeCategory.NonSpacingMark))
+            .ToLowerInvariant();
+    }
+    
+    private async Task UpdateLocation()
+    {
+        var command = new GetServiceOrderByIdCommand { Id = ServiceOrder.Id };
+        
+        var result = await ServiceOrderHandler.GetServiceOrderById(command);
+        if (result.IsSuccess)
+        {
+            if (result.Data != null)
+            {
+                ServiceOrder.Product.AddLocation(result.Data.Product.Location);
+                StateHasChanged();
+            }
+            else
+            {
+                Snackbar.Add("Ocorreu um erro ao obter a ordem de serviço", Severity.Error);
+            }
+        }
+    }
+}

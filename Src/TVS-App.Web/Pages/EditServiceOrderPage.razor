@@ -1,0 +1,18 @@
+@page "/alterar-os"
+@using Microsoft.AspNetCore.Authorization
+@layout MainLayout
+@attribute [Authorize]
+
+<div class="flex flex-row items-center justify-center gap-3 w-full min-h-[80vh]">
+    <MudTextField @bind-Value="_serviceOrderId"
+                  Label="Ordem de serviço"
+                  Variant="Variant.Outlined"
+                  Required="true"
+                  Class="max-w-[300px]"
+                  FullWidth="false" />
+
+    <MudButton OnClick="OpenEditServiceOrderDialog"
+               Variant="Variant.Filled"
+               Color="Color.Primary"
+               Size="Size.Large">Buscar</MudButton>
+</div>

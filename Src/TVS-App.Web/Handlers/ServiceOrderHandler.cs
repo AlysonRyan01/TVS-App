@@ -61,6 +61,33 @@ public class ServiceOrderHandler
             return ExceptionHandler.Handle<ServiceOrder?>(ex);
         }
     }
+    
+    public async Task<BaseResponse<ServiceOrder?>> EditServiceOrderAsync(ServiceOrder serviceOrder)
+    {
+        try
+        {
+            if (serviceOrder.Id == 0)
+                return new BaseResponse<ServiceOrder?>(null, 401, "O ID da ordem de serviço nao pode ser 0");
+                
+            var response = await _httpClient.PutAsJsonAsync("edit-service-order", serviceOrder);
+            if (!response.IsSuccessStatusCode)
+            {
+                var errorContent = await response.Content.ReadAsStringAsync();
+                return new BaseResponse<ServiceOrder?>(null, (int)response.StatusCode, 
+                    $"Erro na API: {response.StatusCode}. Detalhes: {errorContent}");
+            }
+            
+            var content = await response.Content.ReadFromJsonAsync<BaseResponse<ServiceOrder?>>();
+            if (content == null || !content.IsSuccess)
+                return new BaseResponse<ServiceOrder?>(null, 500, content?.Message);
+            
+            return content;
+        }
+        catch (Exception ex)
+        {
+            return ExceptionHandler.Handle<ServiceOrder?>(ex);
+        }
+    }
 
     public async Task<BaseResponse<ServiceOrder?>> GetServiceOrderById(GetServiceOrderByIdCommand command)
     {

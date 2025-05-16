@@ -101,7 +101,7 @@
                         <MudTd DataLabel="Cliente"><p class="text-sm font-sans font-normal uppercase">@context.Customer.Name.CustomerName</p></MudTd>
                         <MudTd DataLabel="Modelo"><p class="text-sm font-sans font-normal uppercase">@context.Product.Model</p></MudTd>
                         <MudTd DataLabel="Solução"><p class="text-sm font-sans font-normal uppercase">@context?.Solution?.ServiceOrderSolution</p></MudTd>
-                        <MudTd DataLabel="Comprado em"><p class="text-sm font-sans font-normal uppercase">@context.PurchasePartDate?.ToString("dd/MM/yyyy") (Há @( (DateTime.Now - context.EntryDate).Days ) dias)</p></MudTd>
+                        <MudTd DataLabel="Comprado em"><p class="text-sm font-sans font-normal uppercase">@context.PurchasePartDate?.ToString("dd/MM/yyyy")</p></MudTd>
                         <MudTd DataLabel="Ação"><MudButton OnClick="() => OpenAddRepairDialog(context)" EndIcon="@Icons.Material.Filled.Done" Variant="Variant.Filled" Color="Color.Primary">
                                 <p class="text-base">Conserto</p>
                             </MudButton></MudTd>

@@ -65,6 +65,7 @@ public class ServiceOrderRepository : IServiceOrderRepository
             var serviceOrders = await _context.ServiceOrders
                 .AsNoTracking()
                 .Include(x => x.Customer)
+                .OrderByDescending(x => x.Id)
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();
