@@ -104,9 +104,8 @@
                     <p class="text-lg font-semibold mb-3 text-gray-600">Informações do Cliente</p>
 
                     <div class="flex gap-4 mb-4">
-                        <MudTextField Value="@(SelectedCustomer?.Name?.CustomerName ?? string.Empty)"
+                        <MudTextField Variant="Variant.Outlined" Value="@(SelectedCustomer?.Name?.CustomerName ?? string.Empty)"
                                       Label="Nome do cliente"
-                                      Variant="Variant.Text"
                                       Required="true"
                                       ReadOnly="true"
                                       Class="w-48"/>
@@ -119,7 +118,7 @@
                         <MudSelect T="EProduct"
                                    @bind-Value="CreateServiceOrderCommand.ProductType"
                                    Label="Tipo de Produto"
-                                   Variant="Variant.Text"
+                                   Variant="Variant.Outlined"
                                    Class="flex-grow">
                             @foreach (EProduct productType in Enum.GetValues(typeof(EProduct)))
                             {
@@ -131,13 +130,13 @@
                     <div class="flex gap-4 mb-4">
                         <MudTextField @bind-Value="CreateServiceOrderCommand.ProductBrand"
                                       Label="Marca"
-                                      Variant="Variant.Text"
+                                      Variant="Variant.Outlined"
                                       Required="true"
                                       Class="flex-grow" />
 
                         <MudTextField @bind-Value="CreateServiceOrderCommand.ProductModel"
                                       Label="Modelo"
-                                      Variant="Variant.Text"
+                                      Variant="Variant.Outlined"
                                       Required="true"
                                       Class="flex-grow" />
                     </div>
@@ -145,7 +144,7 @@
                     <div class="flex gap-4 mb-4">
                         <MudTextField @bind-Value="CreateServiceOrderCommand.ProductSerialNumber"
                                       Label="Número de Série"
-                                      Variant="Variant.Text"
+                                      Variant="Variant.Outlined"
                                       Class="flex-grow" />
                     </div>
 
@@ -155,18 +154,16 @@
                     <div class="flex gap-4 mb-4">
                         <MudTextField @bind-Value="CreateServiceOrderCommand.ProductDefect"
                                       Label="Defeito Relatado"
-                                      Variant="Variant.Text"
+                                      Variant="Variant.Outlined"
                                       Lines="3"
-                                      Multiline="true"
                                       Class="flex-grow" />
                     </div>
 
                     <div class="flex gap-4 mb-4">
                         <MudTextField @bind-Value="CreateServiceOrderCommand.Accessories"
                                       Label="Acessórios Acompanhantes"
-                                      Variant="Variant.Text"
+                                      Variant="Variant.Outlined"
                                       Lines="2"
-                                      Multiline="true"
                                       Class="flex-grow" />
                     </div>
 
@@ -177,7 +174,7 @@
                         <MudSelect T="EEnterprise"
                                    @bind-Value="CreateServiceOrderCommand.Enterprise"
                                    Label="Tipo de Empresa"
-                                   Variant="Variant.Text"
+                                   Variant="Variant.Outlined"
                                    Class="flex-grow">
                             @foreach (EEnterprise enterprise in Enum.GetValues(typeof(EEnterprise)))
                             {
@@ -190,7 +187,7 @@
                 <div class="flex gap-4 mt-6">
                     <CreateServiceOrderButton command="@CreateServiceOrderCommand"/>
 
-                    <MudButton OnClick="CancelOrder" Variant="Variant.Text"
+                    <MudButton OnClick="CancelOrder" Variant="Variant.Outlined"
                                Color="Color.Default"
                                Size="Size.Large"
                                Class="px-8">Cancelar</MudButton>

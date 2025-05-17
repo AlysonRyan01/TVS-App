@@ -7,7 +7,7 @@
 <MudDialog Class="rounded-lg">
     <TitleContent>
         <h2 class="font-extrabold text-xl lg:text-3xl font-sans text-[#750303] text-center">
-            ADICIONAR RESPOSTA - OS @ServiceOrder.Id
+            ADICIONAR COMPRA DE PEÇA - OS @ServiceOrder.Id
         </h2>
     </TitleContent>
 
@@ -81,7 +81,7 @@
                         <MudTextField Variant="Variant.Outlined" Label="Valor" Value="@ServiceOrder.TotalAmount" ReadOnly="true" FullWidth="true" />
                     </MudItem>
                     <MudItem xs="12" md="6">
-                        <MudTextField Variant="Variant.Outlined" Label="Orçamento feito em" Value="@ServiceOrder.InspectionDate?.ToString("dd/MM/yyyy")" ReadOnly="true" FullWidth="true" />
+                        <MudTextField Variant="Variant.Outlined" Label="Data da resposta do cliente" Value="@ServiceOrder.ResponseDate?.ToString("dd/MM/yyyy")" ReadOnly="true" FullWidth="true" />
                     </MudItem>
                     <MudItem xs="12" md="6">
                         <MudTextField Variant="Variant.Outlined" Label="Situação" Value="@Situacao" ReadOnly="true" FullWidth="true" />
@@ -106,15 +106,9 @@
                 else
                 {
                     <MudItem>
-                        <MudButton OnClick="Aprovado" Disabled="_isProcessing" Variant="Variant.Filled" Color="Color.Success" Class="text-white text-lg font-semibold px-6 py-2 rounded-lg shadow-md">
-                            Aprovado
-                        </MudButton>
+                        <AddPurchasedPartButton ServiceOrder="ServiceOrder" DialogInstance="MudDialog"/>
                     </MudItem>
-                    <MudItem>
-                        <MudButton OnClick="Reprovado" Disabled="_isProcessing" Variant="Variant.Filled" Color="Color.Error" Class="text-white text-lg font-semibold px-6 py-2 rounded-lg shadow-md">
-                            Reprovado
-                        </MudButton>
-                    </MudItem>
+                    
                 }
             </MudGrid>
 
@@ -127,61 +121,10 @@
     
     [CascadingParameter] IMudDialogInstance MudDialog { get; set; } = null!;
     [Parameter] public ServiceOrder ServiceOrder { get; set; } = null!;
-    [Parameter] public EventCallback OnResponseAdded { get; set; }
+    [Parameter] public EventCallback OnPurchasePartAdded { get; set; }
     [Inject] public ServiceOrderHandler ServiceOrderHandler { get; set; } = null!;
     [Inject] public ISnackbar Snackbar { get; set; } = null!;
-
-    public async Task Aprovado()
-    {
-        try
-        {
-            _isProcessing = true;
-            var result = await ServiceOrderHandler.AddServiceOrderApproveEstimate(new GetServiceOrderByIdCommand { Id = ServiceOrder.Id });
-            if (result.IsSuccess)
-            {
-                Snackbar.Add("Resposta adicionada com sucesso!", Severity.Success);
-                await OnResponseAdded.InvokeAsync();
-                MudDialog.Close(DialogResult.Ok(true));
-            }
-            else
-                Snackbar.Add(result.Message ?? "Ocorreu um erro ao adicionar uma resposta na OS", Severity.Error);
-
-        }
-        catch (Exception e)
-        {
-            Snackbar.Add(e.Message, Severity.Error);
-        }
-        finally
-        {
-            _isProcessing = false;
-        }
-    }
-
-    public async Task Reprovado()
-    {
-        try
-        {
-            _isProcessing = true;
-            var result = await ServiceOrderHandler.AddServiceOrderRejectEstimate(new GetServiceOrderByIdCommand { Id = ServiceOrder.Id });
-            if (result.IsSuccess)
-            {
-                Snackbar.Add("Resposta adicionada com sucesso!", Severity.Success);
-                await OnResponseAdded.InvokeAsync();
-                MudDialog.Close(DialogResult.Ok(true));
-            }
-            else
-                Snackbar.Add(result.Message ?? "Ocorreu um erro ao adicionar uma resposta na OS", Severity.Error);
-        }
-        catch (Exception e)
-        {
-            Snackbar.Add(e.Message, Severity.Error);
-        }
-        finally
-        {
-            _isProcessing = false;
-        }
-    }
-
+    
     public string Situacao =>
         ServiceOrder.ServiceOrderStatus switch
         {

@@ -81,7 +81,9 @@
                         <MudTd DataLabel="Modelo"><p class="text-sm font-sans font-normal uppercase">@context.Product.Model</p></MudTd>
                         <MudTd DataLabel="Solução"><p class="text-sm font-sans font-normal uppercase">@context?.Solution?.ServiceOrderSolution</p></MudTd>
                         <MudTd DataLabel="Aprovação em"><p class="text-sm font-sans font-normal uppercase">@context.ResponseDate?.ToString("dd/MM/yyyy") (Há @( (DateTime.Now - context.EntryDate).Days ) dias)</p></MudTd>
-                        <MudTd DataLabel="Ação"><AddPurchasedPartButton ServiceOrder="context"/></MudTd>
+                        <MudTd DataLabel="Ação"><MudButton OnClick="() => OpenAddPerchasePartDialog(context)" EndIcon="@Icons.Material.Filled.Done" Variant="Variant.Filled" Color="Color.Primary">
+                                <p class="text-base">Comprado</p>
+                            </MudButton></MudTd>
                     </RowTemplate>
                 </MudTable>
             </div>

@@ -16,6 +16,7 @@ public partial class EditServiceOrderPage : ComponentBase
     public Customer SelectedCustomer { get; set; } = new();
     private string _serviceOrderId = string.Empty;
     private GetServiceOrderByIdCommand _printCommand = new();
+    private AddProductLocationCommand _locationCommand = new();
     
     [Inject] public ISnackbar Snackbar { get; set; } = null!;
     [Inject] public IDialogService DialogService { get; set; } = null!;
@@ -129,5 +130,21 @@ public partial class EditServiceOrderPage : ComponentBase
 
         var dialog = await DialogService.ShowAsync<ConfirmCustomerDialog>("Confirmar cliente", parameters, options);
         var result = await dialog.Result;
+    }
+
+    public async Task SetProductLocation()
+    {
+        try
+        {
+            var result = await ServiceOrderHandler.AddProductLocation(_locationCommand);
+            if (result.IsSuccess)
+                Snackbar.Add(result.Message ?? "Prateleira adicionada com sucesso!", Severity.Success);
+            else
+                Snackbar.Add(result.Message ?? "Ocorreu um erro ao adicionar a prateleira", Severity.Error);
+        }
+        catch (Exception e)
+        {
+            Snackbar.Add($"Erro: {e.Message}", Severity.Error);
+        }
     }
 }

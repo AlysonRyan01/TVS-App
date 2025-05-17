@@ -233,6 +233,30 @@ public partial class Home : ComponentBase
         }
     }
     
+    private async Task OpenAddPerchasePartDialog(ServiceOrder order)
+    {
+        var parameters = new DialogParameters
+        {
+            ["ServiceOrder"] = order,
+            ["OnPurchasePartAdded"] = EventCallback.Factory.Create(this, UpdateServiceOrdersAsync)
+        };
+
+        var options = new DialogOptions
+        {
+            CloseButton = true,
+            FullWidth = true,
+            MaxWidth = MaxWidth.Large
+        };
+
+        var dialog = await DialogService.ShowAsync<AddPurchasePartDialog>("Atualizar Ordem de Serviço", parameters, options);
+        var result = await dialog.Result;
+    
+        if (result!.Canceled)
+        {
+            await UpdateServiceOrdersAsync();
+        }
+    }
+    
     private async Task OpenAddRepairDialog(ServiceOrder order)
     {
         var parameters = new DialogParameters
