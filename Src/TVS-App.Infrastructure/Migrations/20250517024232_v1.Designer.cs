@@ -12,7 +12,7 @@ using TVS_App.Infrastructure.Data;
 namespace TVS_App.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDataContext))]
-    [Migration("20250513210539_v1")]
+    [Migration("20250517024232_v1")]
     partial class v1
     {
         /// <inheritdoc />
@@ -169,6 +169,37 @@ namespace TVS_App.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Customers", (string)null);
+
+                    b.HasAnnotation("Relational:JsonPropertyName", "customer");
+                });
+
+            modelBuilder.Entity("TVS_App.Domain.Entities.Notification", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsRead")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Notifications", (string)null);
                 });
 
             modelBuilder.Entity("TVS_App.Domain.Entities.ServiceOrder", b =>
@@ -191,6 +222,10 @@ namespace TVS_App.Infrastructure.Migrations
 
                     b.Property<DateTime>("EntryDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("EstimateMessage")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("EstimateMessage");
 
                     b.Property<DateTime?>("InspectionDate")
                         .HasColumnType("datetime2");
@@ -224,6 +259,8 @@ namespace TVS_App.Infrastructure.Migrations
                     b.HasIndex("CustomerId");
 
                     b.ToTable("ServiceOrders", (string)null);
+
+                    b.HasAnnotation("Relational:JsonPropertyName", "serviceOrders");
                 });
 
             modelBuilder.Entity("TVS_App.Infrastructure.Models.User", b =>
@@ -352,11 +389,14 @@ namespace TVS_App.Infrastructure.Migrations
                             b1.Property<string>("CustomerPhone")
                                 .HasMaxLength(20)
                                 .HasColumnType("nvarchar(20)")
-                                .HasColumnName("Phone");
+                                .HasColumnName("Phone")
+                                .HasAnnotation("Relational:JsonPropertyName", "customerPhone");
 
                             b1.HasKey("CustomerId");
 
                             b1.ToTable("Customers");
+
+                            b1.HasAnnotation("Relational:JsonPropertyName", "phone");
 
                             b1.WithOwner()
                                 .HasForeignKey("CustomerId");
@@ -370,11 +410,14 @@ namespace TVS_App.Infrastructure.Migrations
                             b1.Property<string>("CustomerPhone")
                                 .HasMaxLength(20)
                                 .HasColumnType("nvarchar(20)")
-                                .HasColumnName("Phone2");
+                                .HasColumnName("Phone2")
+                                .HasAnnotation("Relational:JsonPropertyName", "customerPhone");
 
                             b1.HasKey("CustomerId");
 
                             b1.ToTable("Customers");
+
+                            b1.HasAnnotation("Relational:JsonPropertyName", "phone2");
 
                             b1.WithOwner()
                                 .HasForeignKey("CustomerId");
@@ -388,36 +431,44 @@ namespace TVS_App.Infrastructure.Migrations
                             b1.Property<string>("City")
                                 .HasMaxLength(100)
                                 .HasColumnType("nvarchar(100)")
-                                .HasColumnName("City");
+                                .HasColumnName("City")
+                                .HasAnnotation("Relational:JsonPropertyName", "city");
 
                             b1.Property<string>("Neighborhood")
                                 .HasMaxLength(100)
                                 .HasColumnType("nvarchar(100)")
-                                .HasColumnName("Neighborhood");
+                                .HasColumnName("Neighborhood")
+                                .HasAnnotation("Relational:JsonPropertyName", "neighborhood");
 
                             b1.Property<string>("Number")
                                 .HasMaxLength(20)
                                 .HasColumnType("nvarchar(20)")
-                                .HasColumnName("Number");
+                                .HasColumnName("Number")
+                                .HasAnnotation("Relational:JsonPropertyName", "number");
 
                             b1.Property<string>("State")
                                 .HasMaxLength(2)
                                 .HasColumnType("nvarchar(2)")
-                                .HasColumnName("State");
+                                .HasColumnName("State")
+                                .HasAnnotation("Relational:JsonPropertyName", "state");
 
                             b1.Property<string>("Street")
                                 .HasMaxLength(150)
                                 .HasColumnType("nvarchar(150)")
-                                .HasColumnName("Street");
+                                .HasColumnName("Street")
+                                .HasAnnotation("Relational:JsonPropertyName", "street");
 
                             b1.Property<string>("ZipCode")
                                 .HasMaxLength(10)
                                 .HasColumnType("nvarchar(10)")
-                                .HasColumnName("ZipCode");
+                                .HasColumnName("ZipCode")
+                                .HasAnnotation("Relational:JsonPropertyName", "zipCode");
 
                             b1.HasKey("CustomerId");
 
                             b1.ToTable("Customers");
+
+                            b1.HasAnnotation("Relational:JsonPropertyName", "address");
 
                             b1.WithOwner()
                                 .HasForeignKey("CustomerId");
@@ -432,11 +483,14 @@ namespace TVS_App.Infrastructure.Migrations
                                 .IsRequired()
                                 .HasMaxLength(100)
                                 .HasColumnType("nvarchar(100)")
-                                .HasColumnName("Email");
+                                .HasColumnName("Email")
+                                .HasAnnotation("Relational:JsonPropertyName", "customerEmail");
 
                             b1.HasKey("CustomerId");
 
                             b1.ToTable("Customers");
+
+                            b1.HasAnnotation("Relational:JsonPropertyName", "email");
 
                             b1.WithOwner()
                                 .HasForeignKey("CustomerId");
@@ -451,11 +505,14 @@ namespace TVS_App.Infrastructure.Migrations
                                 .IsRequired()
                                 .HasMaxLength(150)
                                 .HasColumnType("nvarchar(150)")
-                                .HasColumnName("Name");
+                                .HasColumnName("Name")
+                                .HasAnnotation("Relational:JsonPropertyName", "customerName");
 
                             b1.HasKey("CustomerId");
 
                             b1.ToTable("Customers");
+
+                            b1.HasAnnotation("Relational:JsonPropertyName", "name");
 
                             b1.WithOwner()
                                 .HasForeignKey("CustomerId");
@@ -499,6 +556,8 @@ namespace TVS_App.Infrastructure.Migrations
 
                             b1.ToTable("ServiceOrders");
 
+                            b1.HasAnnotation("Relational:JsonPropertyName", "guarantee");
+
                             b1.WithOwner()
                                 .HasForeignKey("ServiceOrderId");
                         });
@@ -516,6 +575,8 @@ namespace TVS_App.Infrastructure.Migrations
                             b1.HasKey("ServiceOrderId");
 
                             b1.ToTable("ServiceOrders");
+
+                            b1.HasAnnotation("Relational:JsonPropertyName", "laborCost");
 
                             b1.WithOwner()
                                 .HasForeignKey("ServiceOrderId");
@@ -535,6 +596,8 @@ namespace TVS_App.Infrastructure.Migrations
 
                             b1.ToTable("ServiceOrders");
 
+                            b1.HasAnnotation("Relational:JsonPropertyName", "partCost");
+
                             b1.WithOwner()
                                 .HasForeignKey("ServiceOrderId");
                         });
@@ -547,44 +610,53 @@ namespace TVS_App.Infrastructure.Migrations
                             b1.Property<string>("Accessories")
                                 .HasMaxLength(300)
                                 .HasColumnType("nvarchar(300)")
-                                .HasColumnName("Product_Accessories");
+                                .HasColumnName("Product_Accessories")
+                                .HasAnnotation("Relational:JsonPropertyName", "accessories");
 
                             b1.Property<string>("Brand")
                                 .IsRequired()
                                 .HasMaxLength(100)
                                 .HasColumnType("nvarchar(100)")
-                                .HasColumnName("Product_Brand");
+                                .HasColumnName("Product_Brand")
+                                .HasAnnotation("Relational:JsonPropertyName", "brand");
 
                             b1.Property<string>("Defect")
                                 .HasMaxLength(300)
                                 .HasColumnType("nvarchar(300)")
-                                .HasColumnName("Product_Defect");
+                                .HasColumnName("Product_Defect")
+                                .HasAnnotation("Relational:JsonPropertyName", "defect");
 
                             b1.Property<string>("Location")
                                 .IsRequired()
                                 .HasMaxLength(100)
                                 .HasColumnType("nvarchar(100)")
-                                .HasColumnName("Product_Location");
+                                .HasColumnName("Product_Location")
+                                .HasAnnotation("Relational:JsonPropertyName", "location");
 
                             b1.Property<string>("Model")
                                 .IsRequired()
                                 .HasMaxLength(100)
                                 .HasColumnType("nvarchar(100)")
-                                .HasColumnName("Product_Model");
+                                .HasColumnName("Product_Model")
+                                .HasAnnotation("Relational:JsonPropertyName", "model");
 
                             b1.Property<string>("SerialNumber")
                                 .IsRequired()
                                 .HasMaxLength(200)
                                 .HasColumnType("nvarchar(200)")
-                                .HasColumnName("Product_SerialNumber");
+                                .HasColumnName("Product_SerialNumber")
+                                .HasAnnotation("Relational:JsonPropertyName", "serialNumber");
 
                             b1.Property<int>("Type")
                                 .HasColumnType("int")
-                                .HasColumnName("Product_Type");
+                                .HasColumnName("Product_Type")
+                                .HasAnnotation("Relational:JsonPropertyName", "type");
 
                             b1.HasKey("ServiceOrderId");
 
                             b1.ToTable("ServiceOrders");
+
+                            b1.HasAnnotation("Relational:JsonPropertyName", "product");
 
                             b1.WithOwner()
                                 .HasForeignKey("ServiceOrderId");
@@ -599,11 +671,14 @@ namespace TVS_App.Infrastructure.Migrations
                                 .IsRequired()
                                 .HasMaxLength(500)
                                 .HasColumnType("nvarchar(500)")
-                                .HasColumnName("Solution");
+                                .HasColumnName("Solution")
+                                .HasAnnotation("Relational:JsonPropertyName", "serviceOrderSolution");
 
                             b1.HasKey("ServiceOrderId");
 
                             b1.ToTable("ServiceOrders");
+
+                            b1.HasAnnotation("Relational:JsonPropertyName", "solution");
 
                             b1.WithOwner()
                                 .HasForeignKey("ServiceOrderId");

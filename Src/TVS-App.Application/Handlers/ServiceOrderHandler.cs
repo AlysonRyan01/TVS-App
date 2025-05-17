@@ -244,7 +244,7 @@ public class ServiceOrderHandler
         }
     }
 
-    public async Task<BaseResponse<ServiceOrder?>> GetServiceOrderForCustomer(GetServiceOrdersForCustomerCommand command)
+    public async Task<BaseResponse<EstimateServiceOrder>> GetServiceOrderForCustomer(GetServiceOrdersForCustomerCommand command)
     {
         try
         {
@@ -253,22 +253,34 @@ public class ServiceOrderHandler
 
             var orderResult = await _serviceOrderRepository.GetById(command.ServiceOrderId);
             if (!orderResult.IsSuccess)
-                return new BaseResponse<ServiceOrder?>(null, 404, "Nenhuma ordem de serviço encontrada");
+                return new BaseResponse<EstimateServiceOrder>(null, 404, "Nenhuma ordem de serviço encontrada");
 
             var serviceOrder = orderResult.Data;
 
             if (!string.Equals(serviceOrder?.SecurityCode, command.SecurityCode))
-                return new BaseResponse<ServiceOrder?>(null, 404, "O código de segurança está incorreto");
+                return new BaseResponse<EstimateServiceOrder>(null, 404, "O código de segurança está incorreto");
+            
+            if (serviceOrder == null)
+                return new BaseResponse<EstimateServiceOrder>(null, 404, "Ocorreu um erro ao buscar a ordem de serviço");
+            
+            var dto = new EstimateServiceOrder(
+                serviceOrder.Id, 
+                serviceOrder.Customer.Name.CustomerName, 
+                serviceOrder.Product.Brand, 
+                serviceOrder.Product.Model,
+                serviceOrder.Product.Defect ?? "",
+                serviceOrder.Guarantee?.ServiceOrderGuarantee,
+                serviceOrder.TotalAmount, serviceOrder.EstimateMessage);
 
-            return new BaseResponse<ServiceOrder?>(serviceOrder, 200, "Ordem de serviço obtida com sucesso!");
+            return new BaseResponse<EstimateServiceOrder>(dto, 200, "Ordem de serviço obtida com sucesso!");
         }
         catch (CommandException<GetServiceOrdersForCustomerCommand> ex)
         {
-            return new BaseResponse<ServiceOrder?>(null, 400, $"Erro de validação: {ex.Message}");
+            return new BaseResponse<EstimateServiceOrder>(null, 400, $"Erro de validação: {ex.Message}");
         }
         catch (Exception ex)
         {
-            return new BaseResponse<ServiceOrder?>(null, 500, $"Ocorreu um erro: {ex.Message}");
+            return new BaseResponse<EstimateServiceOrder>(null, 500, $"Ocorreu um erro: {ex.Message}");
         }
     }
 

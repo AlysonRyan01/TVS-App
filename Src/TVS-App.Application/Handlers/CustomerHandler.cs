@@ -44,10 +44,6 @@ public class CustomerHandler
         {
             return new BaseResponse<Customer?>(null, 400, $"Erro de validação: {ex.Message}");
         }
-        catch (Exception ex)
-        {
-            return new BaseResponse<Customer?>(null, 500, $"Ocorreu um erro ao criar o cliente: {ex.Message}");
-        }
     }
 
     public async Task<BaseResponse<Customer?>> UpdateCustomerAsync(UpdateCustomerCommand command)
@@ -80,10 +76,6 @@ public class CustomerHandler
         {
             return new BaseResponse<Customer?>(null, 400, $"Erro de validação: {ex.Message}");
         }
-        catch (Exception ex)
-        {
-            return new BaseResponse<Customer?>(null, 500, $"Ocorreu um erro ao atualizar o cliente: {ex.Message}");
-        }
     }
 
     public async Task<BaseResponse<Customer?>> GetCustomerByIdAsync(GetCustomerByIdCommand command)
@@ -98,22 +90,11 @@ public class CustomerHandler
         {
             return new BaseResponse<Customer?>(null, 400, $"Erro de validação: {ex.Message}");
         }
-        catch (Exception ex)
-        {
-            return new BaseResponse<Customer?>(null, 500, $"Ocorreu um erro ao buscar o cliente: {ex.Message}");
-        }
     }
     
     public async Task<BaseResponse<List<Customer>>> GetCustomerByNameAsync(string name)
     {
-        try
-        {
-            return await _customerRepository.GetCustomerByName(name);
-        }
-        catch (Exception ex)
-        {
-            return new BaseResponse<List<Customer>>(null, 500, ex.Message);
-        }
+        return await _customerRepository.GetCustomerByName(name);
     }
 
     public async Task<BaseResponse<PaginatedResult<Customer?>>> GetAllCustomersAsync(PaginationCommand command)
@@ -124,9 +105,10 @@ public class CustomerHandler
 
             return await _customerRepository.GetAllAsync(command.PageNumber, command.PageSize);
         }
-        catch (Exception ex)
+        catch (CommandException<PaginationCommand> ex)
         {
-            return new BaseResponse<PaginatedResult<Customer?>>(null, 500, $"Ocorreu um erro ao buscar todos os clientes: {ex.Message}");
+            return new BaseResponse<PaginatedResult<Customer?>>(null, 400, $"Erro de validação: {ex.Message}");
         }
     }
 }
+

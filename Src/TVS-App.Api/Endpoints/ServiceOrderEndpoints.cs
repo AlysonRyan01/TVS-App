@@ -178,8 +178,6 @@ public static class ServiceOrderEndpoints
                 command.Validate();
 
                 var createOrderResult = await handler.GetServiceOrderForCustomer(command);
-                if (!createOrderResult.IsSuccess)
-                    return Results.Ok(createOrderResult);
 
                 return Results.Ok(createOrderResult);
             }
@@ -391,7 +389,7 @@ public static class ServiceOrderEndpoints
                 var response = EndpointExceptions.Handle<ServiceOrder>(ex);
                 return Results.Ok(response);
             }
-        }).WithTags("ServiceOrder").RequireAuthorization();
+        }).WithTags("ServiceOrder");
 
         app.MapPut("/add-service-order-reject-estimate", async (ServiceOrderHandler handler, GetServiceOrderByIdCommand command, IHubContext<ServiceOrderHub> hubContext) =>
         {
@@ -412,7 +410,7 @@ public static class ServiceOrderEndpoints
                 var response = EndpointExceptions.Handle<ServiceOrder>(ex);
                 return Results.Ok(response);
             }
-        }).WithTags("ServiceOrder").RequireAuthorization();
+        }).WithTags("ServiceOrder");
 
         app.MapPut("/add-service-order-purchased-part", async (ServiceOrderHandler handler, GetServiceOrderByIdCommand command, IHubContext<ServiceOrderHub> hubContext) =>
         {

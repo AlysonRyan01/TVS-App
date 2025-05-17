@@ -19,7 +19,7 @@ public static class DbExceptionHandler
             TimeoutException timeoutEx => new BaseResponse<T>(default, 408, $"Tempo de resposta do banco expirou: {timeoutEx.Message}"),
             DBConcurrencyException dbConcurrencyEx => new BaseResponse<T>(default, 409, $"Erro de concorrência: {dbConcurrencyEx.Message}"),
             DbException dbEx => new BaseResponse<T>(default, 500, $"Erro de banco de dados: {dbEx.Message}"),
-            _ => new BaseResponse<T>(default, 500, $"Erro inesperado: {ex.Message}")
+            _ => new BaseResponse<T>(default, 500, $"{ex.Message}")
         };
     }
 }

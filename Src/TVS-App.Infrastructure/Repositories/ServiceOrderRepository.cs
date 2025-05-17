@@ -331,13 +331,13 @@ public class ServiceOrderRepository : IServiceOrderRepository
             if (pageSize < 1)
                 return new BaseResponse<PaginatedResult<ServiceOrder?>>(null, 400, "O tamanho da página deve ser maior que zero.");
 
-            var twoMonthAgo = DateTime.UtcNow.AddMonths(-2);
+            var treeMonthAgo = DateTime.UtcNow.AddMonths(-3);
 
             var query = _context.ServiceOrders
                 .Where(x => x.ServiceOrderStatus == EServiceOrderStatus.OrderPart &&
                     x.RepairStatus == ERepairStatus.Approved &&
                     x.PurchasePartDate.HasValue &&
-                    x.PurchasePartDate >= twoMonthAgo)
+                    x.PurchasePartDate >= treeMonthAgo)
                 .OrderBy(x => x.Id);
 
             var totalCount = await query.CountAsync();

@@ -50,9 +50,11 @@ public static class BuilderExtensions
     {
         builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
         builder.Services.AddScoped<IServiceOrderRepository, ServiceOrderRepository>();
+        builder.Services.AddScoped<INotificationRepository, NotificationRepository>();
         builder.Services.AddTransient<IGenerateServiceOrderPdf, GenerateServiceOrderPdfService>();
         builder.Services.AddScoped<CustomerHandler>();
         builder.Services.AddScoped<ServiceOrderHandler>();
+        builder.Services.AddScoped<NotificationHandler>();
     }
 
     public static void AddJwtService(this WebApplicationBuilder builder)

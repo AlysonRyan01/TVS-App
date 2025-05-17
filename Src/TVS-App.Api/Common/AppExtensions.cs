@@ -15,6 +15,7 @@ public static class AppExtensions
         app.MapAuthEndpoints();
         app.MapCustomerEndpoints();
         app.MapServiceOrderEndpoints();
+        app.MapNotificationEndpoints();
     }
 
     public static void AddSwagger(this WebApplication app)
