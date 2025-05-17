@@ -118,7 +118,8 @@ public static class BuilderExtensions
         var configuration = builder.Configuration;
         
         var policyName = configuration["Cors:PolicyName"];
-        var origins = configuration.GetSection("Cors:Origins").Get<string[]>();
+        var origins = configuration["Cors:Origins"]?
+            .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
 
         builder.Services.AddCors(options =>
         {

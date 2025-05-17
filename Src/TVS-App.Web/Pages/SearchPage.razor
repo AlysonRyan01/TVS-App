@@ -5,57 +5,62 @@
 @layout MainLayout
 @attribute [Authorize] 
 
-<div class="flex flex-col lg:flex-row justify-center min-h-[95vh]">
+<div class="flex flex-col lg:flex-row justify-center min-h-[95vh] bg-cinza">
     <div class="flex w-full lg:max-w-[50%] p-3">
         <div class="flex flex-wrap w-full gap-4">
             <!-- Coluna 1 -->
             <div class="flex w-full lg:w-[48%] lg:mb-8">
                 <div class="flex flex-col w-full p-5 items-start gap-3">
                     <!-- Filtro por número da ordem -->
-                    <div class="flex flex-col w-full mb-12">
-                        <h1 class="font-sans mb-3 font-bold text-xl text-titlecolor">Filtrar pelo número da ordem</h1>
-                        <MudTextField
-                            @bind-Value="_numberFilter"
-                            Loading="@_isLoading"
-                            ResetValueOnEmptyText="true"
-                            AdornmentIcon="@Icons.Material.Filled.Person2"
-                            IconSize="Size.Large"
-                            AdornmentColor="Color.Primary"
-                            Variant="Variant.Outlined"
-                            Placeholder="Digite o número da ordem"
-                            Class="max-w-[300px]" />
-                        <MudButton OnClick="SearchByNumberAsync" Class="self-start mt-2" Variant="Variant.Filled" Color="Color.Primary">Filtrar</MudButton>
-                    </div>
+                    <MudPaper Class="w-full mb-5 rounded-lg shadow-lg">
+                        <div class="w-full p-5">
+                            <h1 class="font-playpen mb-3 font-bold text-xl text-[#750303]">Filtrar Por OS</h1>
+                            <MudTextField
+                                @bind-Value="_numberFilter"
+                                Loading="@_isLoading"
+                                ResetValueOnEmptyText="true"
+                                AdornmentIcon="@Icons.Material.Filled.Person2"
+                                IconSize="Size.Large"
+                                AdornmentColor="Color.Primary"
+                                Variant="Variant.Outlined"
+                                Placeholder="Digite o número da ordem"
+                                Class="max-w-[300px]" />
+                            <MudButton OnClick="SearchByNumberAsync" Class="self-start mt-2" Variant="Variant.Filled" Color="Color.Primary">Filtrar</MudButton>
+                        </div>
+                    </MudPaper>
 
-                    <!-- Filtro por cliente -->
-                    <div class="flex flex-col w-full mb-12">
-                        <h1 class="font-sans mb-3 font-bold text-xl text-titlecolor">Filtrar pelo cliente</h1>
-                        <MudAutocomplete T="Customer"
-                                         @bind-Value="_customerFilter"
-                                         SearchFunc="SearchCustomers"
-                                         ToStringFunc="@(c => c?.Name?.CustomerName ?? "")"
-                                         MinCharacters="2"
-                                         ResetValueOnEmptyText="true"
-                                         Clearable="true"
-                                         Loading="@_isLoading"
-                                         Variant="Variant.Outlined"
-                                         Class="max-w-[300px]"
-                                         Placeholder="Digite o nome do cliente" />
-                        <MudButton OnClick="SearchByCustomerNameAsync" Class="self-start mt-2" Variant="Variant.Filled" Color="Color.Primary">Filtrar</MudButton>
-                    </div>
+                    <MudPaper Class="w-full mb-5 rounded-lg shadow-lg">
+                        <div class="w-full p-5">
+                            <h1 class="font-playpen mb-3 font-bold text-xl text-[#750303]">Filtrar Por Cliente</h1>
+                            <MudAutocomplete T="Customer"
+                                             @bind-Value="_customerFilter"
+                                             SearchFunc="SearchCustomers"
+                                             ToStringFunc="@(c => c?.Name?.CustomerName ?? "")"
+                                             MinCharacters="2"
+                                             ResetValueOnEmptyText="true"
+                                             Clearable="true"
+                                             Loading="@_isLoading"
+                                             Variant="Variant.Outlined"
+                                             Class="max-w-[300px]"
+                                             Placeholder="Selecione o cliente" />
+                            <MudButton OnClick="SearchByCustomerNameAsync" Class="self-start mt-2" Variant="Variant.Filled" Color="Color.Primary">Filtrar</MudButton>
+                        </div>
+                    </MudPaper>
 
-                    <!-- Filtro por número de série -->
-                    <div class="flex flex-col w-full">
-                        <h1 class="font-sans mb-3 font-bold text-xl text-titlecolor">Filtrar pelo número de série</h1>
-                        <MudTextField
-                            @bind-Value="_serialNumberFilter"
-                            Loading="@_isLoading"
-                            ResetValueOnEmptyText="true"
-                            Variant="Variant.Outlined"
-                            Placeholder="Digite o número de série do produto"
-                            Class="max-w-[300px]" />
-                        <MudButton OnClick="SearchBySerialNumberAsync" Class="self-start mt-2" Variant="Variant.Filled" Color="Color.Primary">Filtrar</MudButton>
-                    </div>
+                    <MudPaper Class="w-full mb-5 rounded-lg shadow-lg">
+                        <div class="w-full p-5">
+                            <h1 class="font-playpen mb-3 font-bold text-xl text-[#750303]">Filtrar Por N. Série</h1>
+                            <MudTextField
+                                @bind-Value="_serialNumberFilter"
+                                Loading="@_isLoading"
+                                ResetValueOnEmptyText="true"
+                                Variant="Variant.Outlined"
+                                Placeholder="Digite o número de série do produto"
+                                Class="max-w-[300px]" />
+                            <MudButton OnClick="SearchBySerialNumberAsync" Class="self-start mt-2" Variant="Variant.Filled" Color="Color.Primary">Filtrar</MudButton>
+                        </div>
+                    </MudPaper>
+                    
                 </div>
             </div>
 
@@ -63,31 +68,34 @@
             <div class="flex w-full lg:w-[48%]">
                 <div class="flex flex-col w-full p-5 items-start gap-3">
                     <!-- Filtro por modelo -->
-                    <div class="flex flex-col w-full mb-12">
-                        <h1 class="font-sans mb-3 font-bold text-xl text-titlecolor">Filtrar pelo modelo do produto</h1>
-                        <MudTextField
-                            @bind-Value="_modelFilter"
-                            Loading="@_isLoading"
-                            ResetValueOnEmptyText="true"
-                            Variant="Variant.Outlined"
-                            Placeholder="Digite o modelo do produto"
-                            Class="max-w-[300px]" />
-                        <MudButton OnClick="SearchByModelAsync" Class="self-start mt-2" Variant="Variant.Filled" Color="Color.Primary">Filtrar</MudButton>
-                    </div>
+                    <MudPaper Class="w-full mb-5 rounded-lg shadow-lg">
+                        <div class="w-full p-5">
+                            <h1 class="font-playpen mb-3 font-bold text-xl text-[#750303]">Filtrar Por Modelo</h1>
+                            <MudTextField
+                                @bind-Value="_modelFilter"
+                                Loading="@_isLoading"
+                                ResetValueOnEmptyText="true"
+                                Variant="Variant.Outlined"
+                                Placeholder="Digite o modelo do produto"
+                                Class="max-w-[300px]" />
+                            <MudButton OnClick="SearchByModelAsync" Class="self-start mt-2" Variant="Variant.Filled" Color="Color.Primary">Filtrar</MudButton>
+                        </div>
+                    </MudPaper>
 
-                    <!-- Filtro por data -->
-                    <div class="flex flex-col w-full mb-12">
-                        <h1 class="font-sans mb-3 font-bold text-xl text-titlecolor">Filtrar por data</h1>
-                        <MudDatePicker Label="Data inicial"
-                                       @bind-Date="_startDateFilter"
-                                       Class="max-w-[300px]"
-                                       Variant="Variant.Outlined" />
-                        <MudDatePicker Label="Data final"
-                                       @bind-Date="_endDateFilter"
-                                       Class="max-w-[300px] mt-2"
-                                       Variant="Variant.Outlined" />
-                        <MudButton OnClick="SearchByDateAsync" Class="self-start mt-2" Variant="Variant.Filled" Color="Color.Primary">Filtrar</MudButton>
-                    </div>
+                    <MudPaper Class="w-full mb-5 rounded-lg shadow-lg">
+                        <div class="w-full p-5">
+                            <h1 class="font-playpen mb-3 font-extrabold text-xl text-[#750303]">Filtrar Por Data</h1>
+                            <MudDatePicker Label="Data inicial"
+                                           @bind-Date="_startDateFilter"
+                                           Class="max-w-[300px]"
+                                           Variant="Variant.Outlined" />
+                            <MudDatePicker Label="Data final"
+                                           @bind-Date="_endDateFilter"
+                                           Class="max-w-[300px] mt-2"
+                                           Variant="Variant.Outlined" />
+                            <MudButton OnClick="SearchByDateAsync" Class="self-start mt-2" Variant="Variant.Filled" Color="Color.Primary">Filtrar</MudButton>
+                        </div>
+                    </MudPaper>
                 </div>
             </div>
         </div>

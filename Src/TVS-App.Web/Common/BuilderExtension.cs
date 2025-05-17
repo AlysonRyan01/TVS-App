@@ -13,6 +13,7 @@ public static class BuilderExtension
     public static void AddServices(this WebAssemblyHostBuilder builder)
     {
         builder.Services.AddTransient<CustomerHandler>();
+        builder.Services.AddTransient<NotificationHandler>();
         builder.Services.AddTransient<AuthorizationMessageHandler>();
         builder.Services.AddTransient<ServiceOrderHandler>();
         builder.Services.AddScoped<CustomAuthStateProvider>();

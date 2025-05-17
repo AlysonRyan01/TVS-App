@@ -4,62 +4,109 @@
 
 <MudDialog>
     <TitleContent>
-        <h2 class="font-extrabold text-xl lg:text-3xl font-sans text-[#750303] text-center">
+        <MudText Typo="Typo.h5" Align="Align.Center" Color="Color.Primary" Class="font-extrabold">
             DETALHES DA ORDEM DE SERVIÇO - OS @ServiceOrder.Id
-        </h2>
+        </MudText>
     </TitleContent>
 
     <DialogContent>
+
         <!-- EMPRESA -->
-        <section class="border-b border-[#dfdfdf] py-4">
-            <h2 class="text-[#750303] text-lg font-bold uppercase mb-2">Empresa</h2>
-            <p class="text-base font-semibold">@ServiceOrder.Enterprise.GetDisplayName()</p>
-        </section>
+        <MudPaper Class="p-4 mb-4" Elevation="0" Style="border-bottom: 1px solid #dfdfdf;">
+            <MudText Typo="Typo.h6" Color="Color.Primary" Class="font-bold uppercase mb-2">Empresa</MudText>
+            <MudTextField T="string" Label="Empresa" Value="@ServiceOrder.Enterprise.GetDisplayName()" ReadOnly="true" Variant="Variant.Outlined" FullWidth="true" />
+        </MudPaper>
 
         <!-- DADOS DO CLIENTE -->
-        <section class="border-b border-[#dfdfdf] py-4">
-            <h2 class="text-[#750303] text-lg font-bold uppercase mb-4">Dados do Cliente</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <p class="text-base font-semibold"><span class="font-bold text-[#750303]">Nome:</span> @ServiceOrder.Customer.Name.CustomerName</p>
-                <p class="text-base font-semibold"><span class="font-bold text-[#750303]">Telefone 1:</span> @ServiceOrder.Customer.Phone.CustomerPhone</p>
-                <p class="text-base font-semibold"><span class="font-bold text-[#750303]">Endereço:</span> @ServiceOrder.Customer.Address.ToString().ToUpper()</p>
-                <p class="text-base font-semibold"><span class="font-bold text-[#750303]">Telefone 2:</span> @ServiceOrder.Customer.Phone2.CustomerPhone</p>
-            </div>
-        </section>
+        <MudPaper Class="p-4 mb-4" Elevation="0" Style="border-bottom: 1px solid #dfdfdf;">
+            <MudText Typo="Typo.h6" Color="Color.Primary" Class="font-bold uppercase mb-4">Dados do Cliente</MudText>
+            <MudGrid>
+                <MudItem xs="12" md="6">
+                    <MudTextField T="string" Label="Nome" Value="@ServiceOrder.Customer.Name.CustomerName" ReadOnly="true" Variant="Variant.Outlined" FullWidth="true" />
+                </MudItem>
+                <MudItem xs="12" md="6">
+                    <MudTextField T="string" Label="Telefone 1" Value="@ServiceOrder.Customer.Phone.CustomerPhone" ReadOnly="true" Variant="Variant.Outlined" FullWidth="true" />
+                </MudItem>
+                <MudItem xs="12" md="6">
+                    <MudTextField T="string" Label="Endereço" Value="@ServiceOrder.Customer.Address.ToString().ToUpper()" ReadOnly="true" Variant="Variant.Outlined" FullWidth="true" />
+                </MudItem>
+                <MudItem xs="12" md="6">
+                    <MudTextField T="string" Label="Telefone 2" Value="@ServiceOrder.Customer.Phone2.CustomerPhone" ReadOnly="true" Variant="Variant.Outlined" FullWidth="true" />
+                </MudItem>
+            </MudGrid>
+        </MudPaper>
 
         <!-- DADOS DO PRODUTO -->
-        <section class="border-b border-[#dfdfdf] py-4">
-            <h2 class="text-[#750303] text-lg font-bold uppercase mb-4">Dados do Produto</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <p class="text-base font-semibold"><span class="font-bold text-[#750303]">Tipo:</span> @ServiceOrder.Product.Type.GetDisplayName()</p>
-                <p class="text-base font-semibold"><span class="font-bold text-[#750303]">Marca:</span> @ServiceOrder.Product.Brand</p>
-                <p class="text-base font-semibold"><span class="font-bold text-[#750303]">Modelo:</span> @ServiceOrder.Product.Model</p>
-                <p class="text-base font-semibold"><span class="font-bold text-[#750303]">Série:</span> @ServiceOrder.Product.SerialNumber</p>
-                <p class="md:col-span-2 text-base font-semibold"><span class="font-bold text-[#750303]">Defeito:</span> @ServiceOrder.Product.Defect</p>
-                <p class="text-base font-semibold"><span class="font-bold text-[#750303]">Data de Entrada:</span> @ServiceOrder.EntryDate.ToString("dd/MM/yyyy")</p>
-                <p class="text-base font-semibold"><span class="font-bold text-[#750303]">Data da compra:</span> @ServiceOrder.PurchasePartDate?.ToString("dd/MM/yyyy")</p>
-                <p class="text-base font-semibold"><span class="font-bold text-[#750303]">Prateleira:</span> @ServiceOrder.Product.Location</p>
-                <p class="text-base font-semibold"><span class="font-bold text-[#750303]">Acessórios:</span> @ServiceOrder.Product.Accessories</p>
-            </div>
-        </section>
+        <MudPaper Class="p-4 mb-4" Elevation="0" Style="border-bottom: 1px solid #dfdfdf;">
+            <MudText Typo="Typo.h6" Color="Color.Primary" Class="font-bold uppercase mb-4">Dados do Produto</MudText>
+            <MudGrid>
+                <MudItem xs="12" md="6">
+                    <MudTextField T="string" Label="Tipo" Value="@ServiceOrder.Product.Type.GetDisplayName()" ReadOnly="true" Variant="Variant.Outlined" FullWidth="true" />
+                </MudItem>
+                <MudItem xs="12" md="6">
+                    <MudTextField T="string" Label="Marca" Value="@ServiceOrder.Product.Brand" ReadOnly="true" Variant="Variant.Outlined" FullWidth="true" />
+                </MudItem>
+                <MudItem xs="12" md="6">
+                    <MudTextField T="string" Label="Modelo" Value="@ServiceOrder.Product.Model" ReadOnly="true" Variant="Variant.Outlined" FullWidth="true" />
+                </MudItem>
+                <MudItem xs="12" md="6">
+                    <MudTextField T="string" Label="Série" Value="@ServiceOrder.Product.SerialNumber" ReadOnly="true" Variant="Variant.Outlined" FullWidth="true" />
+                </MudItem>
+                <MudItem xs="12">
+                    <MudTextField T="string" Label="Defeito" Value="@ServiceOrder.Product.Defect" ReadOnly="true" Variant="Variant.Outlined" FullWidth="true" />
+                </MudItem>
+                <MudItem xs="12" md="6">
+                    <MudTextField T="string" Label="Data de Entrada" Value="@ServiceOrder.EntryDate.ToString("dd/MM/yyyy")" ReadOnly="true" Variant="Variant.Outlined" FullWidth="true" />
+                </MudItem>
+                <MudItem xs="12" md="6">
+                    <MudTextField T="string" Label="Data da Compra" Value="@ServiceOrder.PurchasePartDate?.ToString("dd/MM/yyyy")" ReadOnly="true" Variant="Variant.Outlined" FullWidth="true" />
+                </MudItem>
+                <MudItem xs="12" md="6">
+                    <MudTextField T="string" Label="Prateleira" Value="@ServiceOrder.Product.Location" ReadOnly="true" Variant="Variant.Outlined" FullWidth="true" />
+                </MudItem>
+                <MudItem xs="12" md="6">
+                    <MudTextField T="string" Label="Acessórios" Value="@ServiceOrder.Product.Accessories" ReadOnly="true" Variant="Variant.Outlined" FullWidth="true" />
+                </MudItem>
+            </MudGrid>
+        </MudPaper>
 
         <!-- INFORMAÇÕES DO ORÇAMENTO -->
-        <section class=" py-4 mb-10">
-            <h2 class="text-[#750303] text-lg font-bold uppercase mb-4">Informações do Orçamento</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <p class="text-base font-semibold"><span class="font-bold text-[#750303]">Solução:</span> @ServiceOrder.Solution?.ServiceOrderSolution</p>
-                <p class="text-base font-semibold"><span class="font-bold text-[#750303]">Valor:</span> @ServiceOrder.TotalAmount.ToString("C")</p>
-                <p class="text-base font-semibold"><span class="font-bold text-[#750303]">Data da Aprovação:</span> @ServiceOrder.ResponseDate?.ToString("dd/MM/yyyy")</p>
-                <p class="text-base font-semibold"><span class="font-bold text-[#750303]">Data do Conserto:</span> @ServiceOrder.RepairDate?.ToString("dd/MM/yyyy")</p>
-                <p class="text-base font-semibold"><span class="font-bold text-[#750303]">Data da Entrega:</span> @ServiceOrder.DeliveryDate?.ToString("dd/MM/yyyy")</p>
-                <p class="text-base font-semibold"><span class="font-bold text-[#750303]">Situação:</span> @Situacao</p>
-                <p class="text-base font-semibold"><span class="font-bold text-[#750303]">Resultado:</span> @TemConserto</p>
-                <p class="text-base font-semibold"><span class="font-bold text-[#750303]">Resposta do Cliente:</span> @Resposta</p>
-                <p class="text-base font-semibold"><span class="font-bold text-[#750303]">Mensagem de orçamento:</span> @ServiceOrder.EstimateMessage</p>
-            </div>
-        </section>
+        <MudPaper Class="p-4 mb-4" Elevation="0">
+            <MudText Typo="Typo.h6" Color="Color.Primary" Class="font-bold uppercase mb-4">Informações do Orçamento</MudText>
+            <MudGrid>
+                <MudItem xs="12" md="6">
+                    <MudTextField T="string" Label="Situação" Value="@Situacao" ReadOnly="true" Variant="Variant.Outlined" FullWidth="true" />
+                </MudItem>
+                <MudItem xs="12" md="6">
+                    <MudTextField T="string" Label="Resposta do Cliente" Value="@Resposta" ReadOnly="true" Variant="Variant.Outlined" FullWidth="true"/>
+                </MudItem>
+                <MudItem xs="12" md="6">
+                    <MudTextField T="string" Label="Resultado" Value="@TemConserto" ReadOnly="true" Variant="Variant.Outlined" FullWidth="true"/>
+                </MudItem>
+                <MudItem xs="12" md="6">
+                    <MudTextField T="string" Label="Solução" Value="@ServiceOrder.Solution?.ServiceOrderSolution" ReadOnly="true" Variant="Variant.Outlined" FullWidth="true"/>
+                </MudItem>
+                <MudItem xs="12" md="6">
+                    <MudTextField T="string" Label="Valor" Value="@ServiceOrder.TotalAmount.ToString("C")" ReadOnly="true" Variant="Variant.Outlined" FullWidth="true"/>
+                </MudItem>
+                <MudItem xs="12" md="6">
+                    <MudTextField T="string" Label="Data da Aprovação" Value="@ServiceOrder.ResponseDate?.ToString("dd/MM/yyyy")" ReadOnly="true" Variant="Variant.Outlined" FullWidth="true"/>
+                </MudItem>
+                <MudItem xs="12" md="6">
+                    <MudTextField T="string" Label="Data do Conserto" Value="@ServiceOrder.RepairDate?.ToString("dd/MM/yyyy")" ReadOnly="true" Variant="Variant.Outlined" FullWidth="true"/>
+                </MudItem>
+                <MudItem xs="12" md="6">
+                    <MudTextField T="string" Label="Data da Entrega" Value="@ServiceOrder.DeliveryDate?.ToString("dd/MM/yyyy")" ReadOnly="true" Variant="Variant.Outlined" FullWidth="true"/>
+                </MudItem>
+                <MudItem xs="12">
+                    <MudTextField T="string" Label="Mensagem de Orçamento" Value="@ServiceOrder.EstimateMessage" ReadOnly="true" Variant="Variant.Outlined" FullWidth="true"/>
+                </MudItem>
+            </MudGrid>
+        </MudPaper>
     </DialogContent>
 </MudDialog>
+
+
 
 @code {
     [CascadingParameter] IMudDialogInstance MudDialog { get; set; } = null!;
@@ -82,7 +129,7 @@
             ERepairResult.Repair => "Pode ser consertado",
             ERepairResult.Unrepaired => "Não tem conserto",
             ERepairResult.NoDefectFound => "Não apresentou defeito",
-            _ => "Desconhecido"
+            _ => "Não foi avaliado ainda"
         };
 
     public string Resposta =>

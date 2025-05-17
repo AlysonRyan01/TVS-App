@@ -17,7 +17,7 @@ builder.Services.AddSignalR();
 
 var app = builder.Build();
 
-app.UseCors(builder.Configuration["Cors:PolicyName"]??"");
+app.UseCors(builder.Configuration["Cors:PolicyName"]!);
 
 app.MapHub<ServiceOrderHub>("/osHub");
 app.AddAuthorization();

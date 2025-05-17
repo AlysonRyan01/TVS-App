@@ -16,7 +16,7 @@ public class EditServiceOrderCommand : ICommand
     public string? Defect { get; set; }
     public string? Accessories { get; set; }
     public EProduct Type { get; set; }
-    public string Location { get; private set; } = string.Empty;
+    public string Location { get; set; } = string.Empty;
         
     public EEnterprise Enterprise { get; set; }
     public DateTime? DeliveryDate { get; set; }

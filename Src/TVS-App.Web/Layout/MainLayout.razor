@@ -14,12 +14,12 @@
     </MudAppBar>
     <MudDrawer Color="Color.Secondary" @bind-Open="_drawer">
         <div class="flex justify-center flex-col w-full">
-            <div class="flex self-center flex-col w-[80%] h-[90%] mt-[20px] gap-4">
+            <div class="flex self-center flex-col w-[80%] h-[90%] mt-[20px] mb-[100px] gap-4">
                 <img src="/img/tvs-logo.png" class="w-[80%] self-center" alt="logo"/>
+                <MudDivider Class="mb-[70px]" />
             </div>
             <div class="flex self-center flex-col w-[100%] h-[90%] mt-[20px] gap-4">
                 <MudNavMenu Dense="false" Rounded="true" Margin="Margin.Dense" Color="Color.Primary" Class="mud-width-full">
-                    <MudDivider Class="mb-[70px]" />
                     <MudNavLink Href="/" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Dashboard" IconColor="Color.Primary"><p class="font-sans text-titlecolor text-base font-bold">Gerenciar</p></MudNavLink>
                     <MudNavLink Href="/criar-os" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Add" IconColor="Color.Primary"><p class="font-sans text-titlecolor text-base font-bold">Adicionar OS</p></MudNavLink>
                     <MudNavLink Href="/buscar-os" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Search" IconColor="Color.Primary"><p class="font-sans text-titlecolor text-base font-bold">Buscar OS</p></MudNavLink>

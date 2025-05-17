@@ -74,13 +74,13 @@
         <!-- FORMULÁRIO DE ORÇAMENTO -->
         <MudPaper Class="py-4 px-2" Elevation="0">
             <MudText Typo="Typo.h6" Color="Color.Primary" Class="uppercase font-bold mb-4">Adicionar Orçamento</MudText>
-            <MudForm @ref="_form" @onsubmit="AdicionarOrcamento">
+            <MudForm @ref="_form">
                 <MudGrid>
                     <MudItem xs="12" md="6">
-                        <MudTextField Label="Solução" @bind-Value="Request.Solution" For="@(() => Request.Solution)" Variant="Variant.Outlined" />
+                        <MudTextField Label="Solução" Lines="2" @bind-Value="Request.Solution" For="@(() => Request.Solution)" Variant="Variant.Outlined" />
                     </MudItem>
                     <MudItem xs="12" md="6">
-                        <MudTextField Label="Mensagem de orçamento" Lines="4" @bind-Value="Request.EstimateMessage" For="@(() => Request.EstimateMessage)" Variant="Variant.Outlined" />
+                        <MudTextField Label="Mensagem de orçamento" Lines="2" @bind-Value="Request.EstimateMessage" For="@(() => Request.EstimateMessage)" Variant="Variant.Outlined" />
                     </MudItem>
                     <MudItem xs="12" md="6">
                         <MudTextField Label="Valor da peça" @bind-Value="Request.PartCost" For="@(() => Request.PartCost)" Variant="Variant.Outlined" />
@@ -112,7 +112,7 @@
                                    Disabled="_isProcessing"
                                    Variant="Variant.Filled"
                                    Color="Color.Primary"
-                                   Class="text-white text-lg font-semibold px-6 py-2 rounded-lg shadow-md">
+                                   Class="text-white px-6 py-2 shadow-md mt-3">
                             Adicionar
                         </MudButton>
                     }
